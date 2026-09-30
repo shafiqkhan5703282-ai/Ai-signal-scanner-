@@ -1,3 +1,895 @@
-</script>
-</body>
-</html>
+(function () {
+  'use strict';
+
+  const $ = id => document.getElementById(id);
+
+  let running = false;
+  let interval = null;
+  let candles = [];
+  let history = [];
+  let last = null;
+  let seq = 1;
+  let countdown = 5;
+  let touchLock = 0;
+
+  const pairs = [
+    "EUR/USD","GBP/USD","USD/JPY","USD/CHF","AUD/USD","USD/CAD","NZD/USD",
+    "EUR/GBP","EUR/JPY","GBP/JPY","EUR/CHF","GBP/CHF","AUD/JPY","CAD/JPY",
+    "CHF/JPY","NZD/JPY","AUD/CAD","AUD/CHF","AUD/NZD","CAD/CHF",
+    "EUR/AUD","EUR/CAD","EUR/NZD","GBP/AUD","GBP/CAD","GBP/NZD",
+    "EUR/USD (OTC)","GBP/USD (OTC)","USD/JPY (OTC)","USD/CHF (OTC)",
+    "AUD/USD (OTC)","USD/CAD (OTC)","NZD/USD (OTC)","EUR/GBP (OTC)",
+    "EUR/JPY (OTC)","GBP/JPY (OTC)","EUR/CHF (OTC)","GBP/CHF (OTC)",
+    "AUD/JPY (OTC)","USD/ARS (OTC)","USD/BRL (OTC)","USD/INR (OTC)",
+    "USD/MXN (OTC)","USD/PKR (OTC)","USD/BDT (OTC)","USD/TRY (OTC)"
+  ];
+
+  if ($("pairCount")) {
+    $("pairCount").textContent = pairs.length;
+  }
+
+  function now() {
+    return new Date().toLocaleTimeString([], {
+      hour12: false
+    });
+  }
+
+  function formatDuration(seconds) {
+    seconds = Number(seconds) || 0;
+
+    if (seconds < 60) {
+      return seconds + " sec";
+    }
+
+    const m = Math.floor(seconds / 60);
+    const s = seconds % 60;
+
+    return s === 0
+      ? m + " min"
+      : m + "m " + s + "s";
+  }
+
+  /* -------------------------
+     SIMULATED INTERNAL DATA
+     ------------------------- */
+
+  function seed() {
+
+    candles = [];
+
+    let price = 100;
+
+    for (let i = 0; i < 200; i++) {
+
+      const change =
+        (Math.random() - 0.5) * 0.5;
+
+      const open = price;
+
+      price += change;
+
+      const close = price;
+
+      candles.push({
+        open: open,
+        high: Math.max(open, close) + Math.random() * 0.15,
+        low: Math.min(open, close) - Math.random() * 0.15,
+        close: close
+      });
+    }
+  }
+
+  function updateMarket() {
+
+    if (!candles.length) {
+      seed();
+    }
+
+    const previous =
+      candles[candles.length - 1].close;
+
+    const recent =
+      candles.slice(-20);
+
+    let trend = 0;
+
+    if (recent.length > 5) {
+      trend =
+        recent[recent.length - 1].close -
+        recent[0].close;
+    }
+
+    const drift =
+      trend > 0 ? 0.025 :
+      trend < 0 ? -0.025 :
+      0;
+
+    const movement =
+      drift +
+      (Math.random() - 0.5) * 0.45;
+
+    const open = previous;
+
+    const close =
+      Math.max(1, open + movement);
+
+    candles.push({
+      open: open,
+      high:
+        Math.max(open, close) +
+        Math.random() * 0.12,
+      low:
+        Math.min(open, close) -
+        Math.random() * 0.12,
+      close: close
+    });
+
+    if (candles.length > 220) {
+      candles.shift();
+    }
+  }
+
+  function prices() {
+    return candles.map(c => c.close);
+  }
+
+  /* -------------------------
+     EMA
+     ------------------------- */
+
+  function ema(data, period) {
+
+    if (data.length < period) {
+      return null;
+    }
+
+    const multiplier =
+      2 / (period + 1);
+
+    let value = 0;
+
+    for (let i = 0; i < period; i++) {
+      value += data[i];
+    }
+
+    value /= period;
+
+    for (
+      let i = period;
+      i < data.length;
+      i++
+    ) {
+      value =
+        (data[i] - value) *
+        multiplier +
+        value;
+    }
+
+    return value;
+  }
+
+  /* -------------------------
+     RSI
+     ------------------------- */
+
+  function rsi(data, period) {
+
+    period = period || 14;
+
+    if (data.length <= period) {
+      return 50;
+    }
+
+    let gain = 0;
+    let loss = 0;
+
+    for (
+      let i = data.length - period;
+      i < data.length;
+      i++
+    ) {
+
+      const change =
+        data[i] - data[i - 1];
+
+      if (change > 0) {
+        gain += change;
+      } else {
+        loss += Math.abs(change);
+      }
+    }
+
+    if (loss === 0) {
+      return 100;
+    }
+
+    const rs = gain / loss;
+
+    return 100 - (100 / (1 + rs));
+  }
+
+  /* -------------------------
+     BOLLINGER
+     ------------------------- */
+
+  function bollinger(data) {
+
+    const period = 20;
+
+    if (data.length < period) {
+      return null;
+    }
+
+    const section =
+      data.slice(-period);
+
+    const mean =
+      section.reduce(
+        (a, b) => a + b,
+        0
+      ) / period;
+
+    let variance = 0;
+
+    section.forEach(v => {
+      variance +=
+        Math.pow(v - mean, 2);
+    });
+
+    variance /= period;
+
+    const deviation =
+      Math.sqrt(variance);
+
+    return {
+      middle: mean,
+      upper: mean + deviation * 2,
+      lower: mean - deviation * 2
+    };
+  }
+
+  /* -------------------------
+     ANALYSIS
+     ------------------------- */
+
+  function analyze() {
+
+    const data = prices();
+
+    const current =
+      data[data.length - 1];
+
+    const e9 = ema(data, 9);
+    const e21 = ema(data, 21);
+    const e50 = ema(data, 50);
+
+    const r = rsi(data, 14);
+
+    const bands =
+      bollinger(data);
+
+    let up = 0;
+    let down = 0;
+
+    /* EMA */
+
+    if (e9 !== null && e21 !== null) {
+
+      if (e9 > e21) {
+        up += 2;
+      }
+
+      if (e9 < e21) {
+        down += 2;
+      }
+    }
+
+    if (e21 !== null && e50 !== null) {
+
+      if (e21 > e50) {
+        up += 2;
+      }
+
+      if (e21 < e50) {
+        down += 2;
+      }
+    }
+
+    /* RSI */
+
+    if (r >= 52 && r <= 70) {
+      up += 2;
+    }
+
+    if (r <= 48 && r >= 30) {
+      down += 2;
+    }
+
+    /* Recent momentum */
+
+    if (data.length >= 10) {
+
+      const momentum =
+        data[data.length - 1] -
+        data[data.length - 10];
+
+      if (momentum > 0) {
+        up += 2;
+      }
+
+      if (momentum < 0) {
+        down += 2;
+      }
+    }
+
+    /* Candle pressure */
+
+    let pressure = 0;
+
+    candles
+      .slice(-6)
+      .forEach(c => {
+
+        if (c.close > c.open) {
+          pressure++;
+        }
+
+        if (c.close < c.open) {
+          pressure--;
+        }
+
+      });
+
+    if (pressure >= 3) {
+      up += 2;
+    }
+
+    if (pressure <= -3) {
+      down += 2;
+    }
+
+    /* Bollinger */
+
+    if (bands) {
+
+      if (current > bands.middle) {
+        up++;
+      }
+
+      if (current < bands.middle) {
+        down++;
+      }
+    }
+
+    /* Direction */
+
+    let direction = "WAIT";
+
+    if (
+      up >= 7 &&
+      up - down >= 3
+    ) {
+      direction = "UP";
+    }
+
+    if (
+      down >= 7 &&
+      down - up >= 3
+    ) {
+      direction = "DOWN";
+    }
+
+    /* Avoid extreme RSI */
+
+    if (
+      direction === "UP" &&
+      r > 75
+    ) {
+      direction = "WAIT";
+    }
+
+    if (
+      direction === "DOWN" &&
+      r < 25
+    ) {
+      direction = "WAIT";
+    }
+
+    const total = up + down;
+
+    let strength = 0;
+
+    if (total > 0) {
+
+      strength = Math.round(
+        Math.max(up, down) /
+        total * 100
+      );
+    }
+
+    strength =
+      Math.max(50, Math.min(99, strength));
+
+    let trend = "Neutral";
+
+    if (
+      e21 !== null &&
+      e50 !== null
+    ) {
+
+      trend =
+        e21 > e50
+          ? "Bullish"
+          : "Bearish";
+    }
+
+    let momentum = "Neutral";
+
+    if (data.length >= 10) {
+
+      const m =
+        data[data.length - 1] -
+        data[data.length - 10];
+
+      momentum =
+        m > 0
+          ? "Positive"
+          : m < 0
+            ? "Negative"
+            : "Neutral";
+    }
+
+    return {
+      direction: direction,
+      strength: strength,
+      confidence: strength,
+      rsi: Math.round(r),
+      trend: trend,
+      momentum: momentum,
+      marketState:
+        direction === "WAIT"
+          ? "SIDEWAYS"
+          : "TRENDING"
+    };
+  }
+
+  /* -------------------------
+     ORB
+     ------------------------- */
+
+  function setOrb(sig) {
+
+    const orb = $("orb");
+    const arrow = $("arrow");
+
+    if (!orb || !arrow) {
+      return;
+    }
+
+    orb.classList.remove(
+      "up",
+      "down"
+    );
+
+    if (!sig) {
+      arrow.textContent = "◆";
+      return;
+    }
+
+    if (sig.direction === "UP") {
+
+      arrow.textContent = "↑";
+      orb.classList.add("up");
+
+    } else if (
+      sig.direction === "DOWN"
+    ) {
+
+      arrow.textContent = "↓";
+      orb.classList.add("down");
+
+    } else {
+
+      arrow.textContent = "◆";
+    }
+  }
+
+  /* -------------------------
+     SUGGESTION
+     ------------------------- */
+
+  function renderSuggestion(sig) {
+
+    const box =
+      $("suggestion");
+
+    if (!box || !sig) {
+      return;
+    }
+
+    if (sig.direction === "UP") {
+
+      box.textContent =
+        "UP — multiple indicators are aligned.";
+
+    } else if (
+      sig.direction === "DOWN"
+    ) {
+
+      box.textContent =
+        "DOWN — multiple indicators are aligned.";
+
+    } else {
+
+      box.textContent =
+        "WAIT — confirmation is insufficient.";
+    }
+  }
+
+  /* -------------------------
+     HISTORY
+     ------------------------- */
+
+  function addHistory(sig) {
+
+    history.unshift({
+      id:
+        "#DEMO" +
+        String(seq).padStart(4, "0"),
+      time: now(),
+      pair:
+        $("pair")
+          ? $("pair").value
+          : "",
+      direction:
+        sig.direction
+    });
+
+    if (history.length > 20) {
+      history.pop();
+    }
+
+    renderHistory();
+  }
+
+  function renderHistory() {
+
+    const box =
+      $("history");
+
+    if (!box) {
+      return;
+    }
+
+    /*
+      Keep the existing history container.
+      Do not assume any new CSS classes.
+    */
+
+    if (!history.length) {
+      box.innerHTML =
+        "<div>No signals yet.</div>";
+      return;
+    }
+
+    box.innerHTML =
+      history.map(item => {
+
+        return (
+          "<div>" +
+          "<strong>" +
+          item.direction +
+          "</strong> " +
+          item.pair +
+          " — " +
+          item.time +
+          "</div>"
+        );
+
+      }).join("");
+  }
+
+  /* -------------------------
+     MAIN SCAN
+     ------------------------- */
+
+  function scan() {
+
+    updateMarket();
+
+    const sig =
+      analyze();
+
+    last = sig;
+
+    const expiry =
+      $("expiry")
+        ? Number($("expiry").value)
+        : 5;
+
+    countdown =
+      Math.min(5, expiry);
+
+    const id =
+      "#DEMO" +
+      String(seq++).padStart(4, "0");
+
+    if ($("signalId"))
+      $("signalId").textContent = id;
+
+    if ($("entry"))
+      $("entry").textContent = now();
+
+    if ($("pairView") && $("pair"))
+      $("pairView").textContent =
+        $("pair").value;
+
+    if ($("platformView") && $("platform"))
+      $("platformView").textContent =
+        $("platform").value;
+
+    if ($("expires"))
+      $("expires").textContent =
+        formatDuration(expiry);
+
+    if ($("strength"))
+      $("strength").textContent =
+        sig.strength + "%";
+
+    if ($("confidence"))
+      $("confidence").textContent =
+        sig.confidence + "%";
+
+    if ($("trend"))
+      $("trend").textContent =
+        sig.trend;
+
+    if ($("momentum"))
+      $("momentum").textContent =
+        sig.momentum;
+
+    if ($("rsi"))
+      $("rsi").textContent =
+        sig.rsi;
+
+    if ($("market"))
+      $("market").textContent =
+        sig.marketState;
+
+    if ($("signalStatus"))
+      $("signalStatus").textContent =
+        sig.direction === "WAIT"
+          ? "WAIT"
+          : "ACTIVE";
+
+    if ($("scannerStatus"))
+      $("scannerStatus").textContent =
+        "ONLINE ●";
+
+    if ($("scanning"))
+      $("scanning").textContent =
+        sig.direction === "WAIT"
+          ? "WAIT — NO STRONG SIGNAL"
+          : "AI-STYLE ANALYSIS COMPLETED";
+
+    setOrb(sig);
+    renderSuggestion(sig);
+    addHistory(sig);
+  }
+
+  /* -------------------------
+     START / STOP
+     ------------------------- */
+
+  function start() {
+
+    if (running) {
+      return;
+    }
+
+    running = true;
+
+    if ($("scannerStatus"))
+      $("scannerStatus").textContent =
+        "ONLINE ●";
+
+    scan();
+
+    interval =
+      setInterval(function () {
+
+        countdown--;
+
+        if (countdown <= 0) {
+
+          scan();
+
+          const expiry =
+            $("expiry")
+              ? Number($("expiry").value)
+              : 5;
+
+          countdown =
+            Math.min(5, expiry);
+        }
+
+      }, 1000);
+  }
+
+  function stop() {
+
+    running = false;
+
+    if (interval) {
+      clearInterval(interval);
+      interval = null;
+    }
+
+    if ($("scannerStatus"))
+      $("scannerStatus").textContent =
+        "STOPPED";
+  }
+
+  function generate() {
+    scan();
+  }
+
+  function clearHistory() {
+
+    history = [];
+
+    renderHistory();
+  }
+
+  /* -------------------------
+     SAFE BUTTON HANDLER
+     ------------------------- */
+
+  function tap(el, fn) {
+
+    if (!el) {
+      return;
+    }
+
+    el.addEventListener(
+      "click",
+      function () {
+
+        if (
+          Date.now() - touchLock < 400
+        ) {
+          return;
+        }
+
+        fn();
+      }
+    );
+
+    el.addEventListener(
+      "touchend",
+      function (e) {
+
+        e.preventDefault();
+
+        touchLock =
+          Date.now();
+
+        fn();
+
+      },
+      { passive: false }
+    );
+  }
+
+  /* -------------------------
+     EVENTS
+     ------------------------- */
+
+  if ($("platform")) {
+
+    $("platform")
+      .addEventListener(
+        "change",
+        function () {
+
+          seed();
+
+          last = null;
+
+          setOrb(null);
+
+          if ($("platformView"))
+            $("platformView").textContent =
+              this.value;
+        }
+      );
+  }
+
+  if ($("pair")) {
+
+    $("pair")
+      .addEventListener(
+        "change",
+        function () {
+
+          seed();
+
+          last = null;
+
+          setOrb(null);
+
+          if ($("pairView"))
+            $("pairView").textContent =
+              this.value;
+        }
+      );
+  }
+
+  if ($("expiry")) {
+
+    $("expiry")
+      .addEventListener(
+        "change",
+        function () {
+
+          const value =
+            Number(this.value);
+
+          countdown =
+            Math.min(5, value);
+
+          if ($("modeStatus")) {
+
+            $("modeStatus").textContent =
+              formatDuration(value)
+                .toUpperCase();
+          }
+        }
+      );
+  }
+
+  tap($("startBot"), start);
+
+  tap($("stopBot"), stop);
+
+  tap($("autoBtn"), function () {
+    running ? stop() : start();
+  });
+
+  tap($("suggestBtn"), function () {
+    last
+      ? renderSuggestion(last)
+      : scan();
+  });
+
+  tap($("generate"), generate);
+
+  tap($("clear"), clearHistory);
+
+  tap($("orb"), function () {
+    running ? stop() : start();
+  });
+
+  /* -------------------------
+     INITIALIZE
+     ------------------------- */
+
+  seed();
+
+  if ($("pairCount"))
+    $("pairCount").textContent =
+      pairs.length;
+
+  if ($("platformView") && $("platform"))
+    $("platformView").textContent =
+      $("platform").value;
+
+  if ($("modeStatus") && $("expiry"))
+    $("modeStatus").textContent =
+      formatDuration(
+        Number($("expiry").value)
+      ).toUpperCase();
+
+  renderHistory();
+
+})();
