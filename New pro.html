@@ -1,0 +1,274 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#020711">
+<title>AI Signal Scanner</title>
+
+<style>
+:root{--bg:#020711;--panel:#071323;--panel2:#091a30;--line:#12365b;--text:#f7fbff;--muted:#8ba0ba;--cyan:#19c9ff;--blue:#1976ff;--green:#25ef9b;--red:#ff5279;--gold:#ffd66b}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;min-height:100%;background:#020711;color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display",Inter,Arial,sans-serif}
+body{overflow-x:hidden;background:radial-gradient(circle at 50% 0,#10376a 0,#061426 25%,#020711 65%)}
+button,select{font:inherit}.app{width:min(100%,540px);margin:auto;padding:12px 14px calc(28px + env(safe-area-inset-bottom))}
+.top{display:flex;gap:10px;align-items:center;margin-bottom:10px}.brand{font-size:24px;font-weight:950;letter-spacing:-.5px;flex:1}.brand span{color:#18bfff}.search{border:1px solid #23527e;background:rgba(2,12,25,.75);color:#dcecff;border-radius:14px;padding:9px 12px;font-size:13px}
+.heroTitle{font-size:29px;text-align:center;font-weight:950;letter-spacing:-1px;margin:4px 0 12px}.heroTitle span{color:var(--cyan)}
+.statusStrip{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:10px}.statusCard{background:linear-gradient(145deg,#0b1c32,#061021);border:1px solid #12416a;border-radius:20px;padding:11px 8px;text-align:center;box-shadow:0 8px 30px rgba(0,0,0,.25)}.statusIcon{font-size:21px}.statusLabel{font-size:9px;letter-spacing:.7px;color:var(--muted);margin-top:4px;text-transform:uppercase}.statusValue{font-weight:900;font-size:14px;margin-top:2px}.green{color:var(--green)}.blue{color:#55bfff}.gold{color:var(--gold)}
+.badge{border:1px solid #7f6b29;background:linear-gradient(90deg,rgba(122,92,15,.35),rgba(37,31,10,.7));border-radius:24px;padding:12px;text-align:center;font-weight:950;letter-spacing:1.5px;color:#ffe47c;margin-bottom:8px}.demo{font-size:9px;letter-spacing:.7px;color:#a9b8c9;text-align:center;margin:-2px 0 9px}
+.card{background:linear-gradient(145deg,rgba(8,24,43,.97),rgba(2,10,21,.98));border:1px solid #12395f;border-radius:25px;box-shadow:0 14px 50px rgba(0,0,0,.4);padding:15px;margin-bottom:10px}.controls{display:grid;grid-template-columns:1fr 1fr;gap:9px}.controlFull{margin-bottom:10px}.label{font-size:9px;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin:0 0 5px 4px}.select,.input{width:100%;background:#061224;border:1px solid #1b4770;color:#fff;border-radius:12px;padding:11px 9px;outline:none}.pairCount{color:var(--cyan);font-size:9px;text-align:right;margin-top:5px}
+.mainSignal{position:relative;min-height:455px;padding:10px 4px 14px;overflow:hidden}.mainSignal:before{content:"";position:absolute;inset:10% 15%;background:radial-gradient(circle,rgba(0,154,255,.18),transparent 66%);filter:blur(14px);pointer-events:none}.signalTop{display:flex;justify-content:space-between;gap:12px;position:relative;z-index:2}.miniInfo{flex:1}.miniLabel{font-size:9px;color:var(--muted);letter-spacing:1px;text-transform:uppercase}.miniValue{font-size:16px;font-weight:900;margin-top:4px}.miniValue small{display:block;font-size:9px;color:var(--muted);font-weight:600;margin-top:2px}.id{text-align:right}
+.orb{width:245px;height:245px;margin:22px auto 13px;border-radius:50%;position:relative;display:grid;place-items:center;border:2px solid rgba(25,239,155,.9);box-shadow:0 0 0 8px rgba(25,239,155,.035),0 0 0 17px rgba(25,239,155,.03),0 0 45px rgba(25,239,155,.35),inset 0 0 55px rgba(25,239,155,.12);transition:.25s}.orb:before,.orb:after{content:"";position:absolute;border-radius:50%;border:1px solid rgba(25,239,155,.35)}.orb:before{inset:23px}.orb:after{inset:46px}.orb.down{border-color:rgba(255,82,121,.9);box-shadow:0 0 0 8px rgba(255,82,121,.035),0 0 0 17px rgba(255,82,121,.03),0 0 45px rgba(255,82,121,.32),inset 0 0 55px rgba(255,82,121,.1)}.orb.down:before,.orb.down:after{border-color:rgba(255,82,121,.35)}.orb.ready{border-color:#1687c5;box-shadow:0 0 35px rgba(25,201,255,.25),inset 0 0 55px rgba(25,201,255,.08)}
+.needle{position:absolute;top:6px;left:50%;width:2px;height:18px;background:currentColor;transform:translateX(-50%);opacity:.8}.core{z-index:2;text-align:center}.arrow{font-size:76px;line-height:.8;font-weight:950;text-shadow:0 0 22px currentColor}.upColor{color:var(--green)}.downColor{color:var(--red)}.readyColor{color:var(--cyan)}.dir{font-size:39px;font-weight:950;letter-spacing:1px;margin-top:8px}.subSignal{font-size:10px;letter-spacing:1.5px;font-weight:900;margin-top:5px}.scanning{font-size:12px;color:var(--cyan);letter-spacing:1.5px;font-weight:900;margin-top:8px;min-height:18px;text-align:center}
+.signalMeta{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;margin-top:12px}.meta{text-align:center;background:rgba(3,14,27,.78);border:1px solid #143555;border-radius:13px;padding:9px 4px}.meta b{display:block;font-size:15px}.meta span{display:block;font-size:8px;color:var(--muted);text-transform:uppercase;margin-top:4px}
+.generate{width:100%;border:0;border-radius:15px;padding:14px 12px;background:linear-gradient(90deg,#0879ff,#18cfff);color:white;font-weight:950;font-size:15px;letter-spacing:.4px;box-shadow:0 8px 25px rgba(0,142,255,.25);touch-action:manipulation}.generate:active,.action:active{transform:scale(.98)}
+.analysis{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}.analysisItem{background:#061222;border:1px solid #123252;border-radius:12px;padding:10px}.analysisItem span{font-size:8px;color:var(--muted);text-transform:uppercase}.analysisItem b{display:block;font-size:12px;margin-top:4px}
+.suggestion{display:none;border:1px solid #185277;border-radius:15px;padding:11px;margin-top:10px;background:linear-gradient(145deg,#071c30,#06101e)}.suggestion.show{display:block}.suggestionMain{font-size:16px;font-weight:950}.suggestionSub{font-size:10px;color:var(--muted);margin-top:4px;line-height:1.4}
+.tools{display:grid;grid-template-columns:1fr 1fr;gap:8px}.action{border:1px solid #21486b;background:#07172a;color:#fff;border-radius:13px;padding:12px;font-weight:900;touch-action:manipulation}.action.primary{background:linear-gradient(90deg,#0b8ec1,#0a5fff);border:0}.action.stop{background:#2b101b;border-color:#68263a;color:#ff9bb2}.action.active{outline:2px solid rgba(25,201,255,.35)}
+.historyTitle{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}.historyTitle b{font-size:14px}.clear{border:0;background:transparent;color:#6ea9d2;font-size:11px;padding:6px 4px}.row{display:grid;grid-template-columns:1.2fr .65fr .65fr .65fr;gap:5px;align-items:center;background:#061222;border:1px solid #123252;border-radius:11px;padding:9px;font-size:10px;margin-bottom:5px}.upTxt{color:var(--green);font-weight:900}.downTxt{color:var(--red);font-weight:900}.note{font-size:9px;color:#71849b;line-height:1.5;margin-top:9px}
+.bottomNav{position:sticky;bottom:8px;display:grid;grid-template-columns:repeat(4,1fr);gap:5px;padding:7px;margin-top:8px;background:rgba(2,10,20,.9);border:1px solid #173452;border-radius:18px;backdrop-filter:blur(14px)}.navItem{text-align:center;color:#8ca2ba;font-size:9px;padding:7px 2px}.navItem b{display:block;font-size:17px;color:#dceeff;margin-bottom:3px}.footer{text-align:center;font-size:9px;color:#536b84;margin-top:10px}
+@media(max-width:380px){.orb{width:215px;height:215px}.mainSignal{min-height:425px}.arrow{font-size:65px}.dir{font-size:34px}}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="top"><div class="brand">DXB <span>PRO BOT</span></div><div class="search">⌕ Search</div></div>
+  <div class="heroTitle">DXB <span>PRO BOT</span></div>
+  <div class="statusStrip">
+    <div class="statusCard"><div class="statusIcon">◈</div><div class="statusLabel">Scanner</div><div class="statusValue green" id="scannerStatus">READY ●</div></div>
+    <div class="statusCard"><div class="statusIcon">✦</div><div class="statusLabel">Engine</div><div class="statusValue blue" id="engineStatus">PRO</div></div>
+    <div class="statusCard"><div class="statusIcon">◎</div><div class="statusLabel">Timeframe</div><div class="statusValue gold" id="modeStatus">5 SEC</div></div>
+  </div>
+  <div class="badge">♛ DXB-PRO BOT ✓</div>
+  <div class="demo">SIMULATED SIGNALS — LIVE BROKER DATA NOT CONNECTED</div>
+
+  <div class="card">
+    <div class="controlFull"><div class="label">Trading Platform</div><select id="platform" class="select"><option value="POCKET OPTION">POCKET OPTION</option><option value="QUOTEX">QUOTEX</option></select></div>
+    <div class="controls">
+      <div><div class="label">Trading Pair</div><select id="pair" class="select">
+        <optgroup label="Major Pairs"><option>EUR/USD</option><option>GBP/USD</option><option>USD/JPY</option><option>USD/CHF</option><option>AUD/USD</option><option>USD/CAD</option><option>NZD/USD</option></optgroup>
+        <optgroup label="Cross Pairs"><option>EUR/GBP</option><option>EUR/JPY</option><option>GBP/JPY</option><option>EUR/CHF</option><option>GBP/CHF</option><option>AUD/JPY</option><option>CAD/JPY</option><option>CHF/JPY</option><option>NZD/JPY</option><option>AUD/CAD</option><option>AUD/CHF</option><option>AUD/NZD</option><option>CAD/CHF</option><option>EUR/AUD</option><option>EUR/CAD</option><option>EUR/NZD</option><option>GBP/AUD</option><option>GBP/CAD</option><option>GBP/NZD</option></optgroup>
+        <optgroup label="OTC Pairs"><option>EUR/USD (OTC)</option><option>GBP/USD (OTC)</option><option>USD/JPY (OTC)</option><option>USD/CHF (OTC)</option><option>AUD/USD (OTC)</option><option>USD/CAD (OTC)</option><option>NZD/USD (OTC)</option><option>EUR/GBP (OTC)</option><option>EUR/JPY (OTC)</option><option>GBP/JPY (OTC)</option><option>EUR/CHF (OTC)</option><option>GBP/CHF (OTC)</option><option>AUD/JPY (OTC)</option><option>USD/ARS (OTC)</option><option>USD/BRL (OTC)</option><option>USD/INR (OTC)</option><option>USD/MXN (OTC)</option><option>USD/PKR (OTC)</option><option>USD/BDT (OTC)</option><option>USD/TRY (OTC)</option></optgroup>
+      </select><div class="pairCount">PAIRS AVAILABLE: <span id="pairCount">—</span></div></div>
+      <div><div class="label">Signal Time</div><select id="expiry" class="select">
+        <option value="3">3 seconds</option><option value="5" selected>5 seconds</option><option value="10">10 seconds</option><option value="15">15 seconds</option><option value="30">30 seconds</option><option value="45">45 seconds</option><option value="60">1 minute</option><option value="120">2 minutes</option><option value="180">3 minutes</option><option value="240">4 minutes</option><option value="300">5 minutes</option><option value="600">10 minutes</option><option value="900">15 minutes</option><option value="1800">30 minutes</option><option value="3600">1 hour</option>
+      </select></div>
+    </div>
+  </div>
+
+  <div class="card mainSignal">
+    <div class="signalTop">
+      <div class="miniInfo"><div class="miniLabel">Pair</div><div class="miniValue" id="pairView">EUR/USD</div><div class="miniLabel" style="margin-top:12px">Platform</div><div class="miniValue" id="platformView">Pocket Option</div></div>
+      <div class="miniInfo id"><div class="miniLabel">Signal ID</div><div class="miniValue" id="signalId">#PRO0001</div><div class="miniLabel" style="margin-top:12px">Status</div><div class="miniValue green" id="signalStatus">READY</div></div>
+    </div>
+    <div id="orb" class="orb ready" role="button" tabindex="0" aria-label="Start or stop scanner"><div class="needle"></div><div class="core"><div id="arrow" class="arrow readyColor">✦</div><div id="dir" class="dir readyColor">READY</div><div id="subSignal" class="subSignal readyColor">TAP START TO SCAN</div></div></div>
+    <div class="scanning" id="scanning">AI ANALYSIS READY</div>
+    <div class="signalMeta"><div class="meta"><b id="entry">--:--:--</b><span>Entry</span></div><div class="meta"><b id="expires">--</b><span>Expiry</span></div><div class="meta"><b id="strength">--%</b><span>Strength</span></div><div class="meta"><b id="confidence">--%</b><span>Confidence</span></div></div>
+    <div style="margin-top:10px"><button type="button" id="generate" class="generate">⟳ GENERATE NEW SIGNAL</button></div>
+    <div id="suggestion" class="suggestion"><div id="suggestionMain" class="suggestionMain">WAITING</div><div id="suggestionSub" class="suggestionSub">Press Generate New Signal to create a simulated setup.</div></div>
+  </div>
+
+  <div class="card">
+    <div class="tools"><button type="button" id="startBot" class="action primary">▶ START SCANNER</button><button type="button" id="stopBot" class="action stop">■ STOP</button><button type="button" id="autoBtn" class="action">⟳ AUTO SCAN</button><button type="button" id="suggestBtn" class="action">♛ SUGGESTION</button></div>
+    <div class="analysis"><div class="analysisItem"><span>Trend</span><b id="trend">Waiting</b></div><div class="analysisItem"><span>Momentum</span><b id="momentum">Waiting</b></div><div class="analysisItem"><span>RSI</span><b id="rsi">--</b></div><div class="analysisItem"><span>Market State</span><b id="market">Waiting</b></div></div>
+  </div>
+
+  <div class="card">
+    <div class="historyTitle"><b>Signal History</b><button type="button" id="clear" class="clear">CLEAR</button></div>
+    <div id="history" class="history"><div class="row"><span>Waiting for signal</span><span>—</span><span>—</span><span>—</span></div></div>
+    <div class="note">Signals are generated by a local simulated PRO-style engine. They are not verified win rates and do not guarantee profitable trades. Pocket Option and Quotex are not directly connected to this page.</div>
+  </div>
+
+  <div class="bottomNav"><div class="navItem"><b>⌂</b>Dashboard</div><div class="navItem"><b>◷</b>History</div><div class="navItem"><b>▥</b>Analysis</div><div class="navItem"><b>⚙</b>Settings</div></div>
+  <div class="footer">DXB-PRO BOT • Mobile optimized • Demo / educational use</div>
+</div>
+
+<script>
+(function(){
+'use strict';
+const $=id=>document.getElementById(id);
+let running=false, interval=null, countdown=5, expiryTimer=0, candles=[], history=[], last=null, seq=1, touchLock=0;
+
+const pairs=["EUR/USD","GBP/USD","USD/JPY","USD/CHF","AUD/USD","USD/CAD","NZD/USD","EUR/GBP","EUR/JPY","GBP/JPY","EUR/CHF","GBP/CHF","AUD/JPY","CAD/JPY","CHF/JPY","NZD/JPY","AUD/CAD","AUD/CHF","AUD/NZD","CAD/CHF","EUR/AUD","EUR/CAD","EUR/NZD","GBP/AUD","GBP/CAD","GBP/NZD","EUR/USD (OTC)","GBP/USD (OTC)","USD/JPY (OTC)","USD/CHF (OTC)","AUD/USD (OTC)","USD/CAD (OTC)","NZD/USD (OTC)","EUR/GBP (OTC)","EUR/JPY (OTC)","GBP/JPY (OTC)","EUR/CHF (OTC)","GBP/CHF (OTC)","AUD/JPY (OTC)","USD/ARS (OTC)","USD/BRL (OTC)","USD/INR (OTC)","USD/MXN (OTC)","USD/PKR (OTC)","USD/BDT (OTC)","USD/TRY (OTC)"];
+$("pairCount").textContent=pairs.length;
+
+function seed(){
+  candles=[];
+  let p=100;
+  for(let i=0;i<180;i++){ p+=(Math.random()-.49)*.8; candles.push(p); }
+}
+function now(){return new Date().toLocaleTimeString([],{hour12:false});}
+function clamp(v,min,max){return Math.max(min,Math.min(max,v));}
+
+/* PRO-STYLE LOCAL FILTERING:
+   Uses multiple recent windows, volatility, momentum agreement and RSI.
+   It improves consistency of the simulated decision without claiming a
+   real-market win rate. */
+function analyze(){
+  const n=candles.length;
+  const a=candles[n-1];
+  const b=candles[n-4];
+  const c=candles[n-8];
+  const d=candles[n-16];
+  const momentum=a-b;
+  const medium=a-c;
+  const longTrend=a-d;
+
+  let gains=0,losses=0;
+  for(let i=Math.max(1,n-15);i<n;i++){
+    const ch=candles[i]-candles[i-1];
+    if(ch>=0) gains+=ch; else losses-=ch;
+  }
+  const rs=losses===0?100:gains/losses;
+  const rsi=Math.round(100-(100/(1+rs)));
+
+  const volatility=candles.slice(Math.max(0,n-20)).reduce((s,v,i,arr)=>i?s+Math.abs(v-arr[i-1]):s,0)/20;
+  const directional=(momentum*.45)+(medium*.35)+(longTrend*.20);
+  const dir=directional>=0?"UP":"DOWN";
+
+  const trendAgreement=[
+    Math.sign(momentum)===Math.sign(directional),
+    Math.sign(medium)===Math.sign(directional),
+    Math.sign(longTrend)===Math.sign(directional)
+  ].filter(Boolean).length;
+
+  const rsiSupport=(dir==="UP"&&rsi>=45&&rsi<=72)||(dir==="DOWN"&&rsi>=28&&rsi<=55);
+  const trendStrength=Math.abs(directional)/(volatility+.0001);
+  const base=62+trendAgreement*5+clamp(Math.round(trendStrength*3),0,14)+(rsiSupport?5:0);
+  const strength=clamp(base,50,96);
+  const confidence=clamp(Math.round(55+trendAgreement*7+clamp(trendStrength*4,0,18)+(rsiSupport?5:0)),50,96);
+
+  return {
+    direction:dir,strength,confidence,rsi,
+    trend:longTrend>=0?"Bullish":"Bearish",
+    momentum:momentum>=0?"Positive":"Negative",
+    marketState:Math.abs(longTrend)<volatility*2.5?"SIDEWAYS":"TRENDING"
+  };
+}
+
+function setOrb(sig){
+  const orb=$("orb"),arrow=$("arrow"),dir=$("dir"),sub=$("subSignal");
+  orb.className="orb "+(!sig?"ready":"")+(sig&&sig.direction==="DOWN"?" down":"");
+  if(!sig){arrow.textContent="✦";arrow.className="arrow readyColor";dir.textContent="READY";dir.className="dir readyColor";sub.textContent="TAP START TO SCAN";sub.className="subSignal readyColor";return;}
+  const up=sig.direction==="UP";
+  arrow.textContent=up?"↑":"↓";arrow.className="arrow "+(up?"upColor":"downColor");
+  dir.textContent=sig.direction;dir.className="dir "+(up?"upColor":"downColor");
+  sub.textContent=up?"SIMULATED BUY SIGNAL":"SIMULATED SELL SIGNAL";
+  sub.className="subSignal "+(up?"upColor":"downColor");
+}
+
+function renderSuggestion(sig){
+  const box=$("suggestion");box.classList.add("show");
+  const trade=sig.confidence>=78&&sig.marketState==="TRENDING";
+  $("suggestionMain").textContent=trade?"SIMULATED SETUP • "+sig.direction:"NO TRADE • WAIT";
+  $("suggestionMain").style.color=trade?(sig.direction==="UP"?"var(--green)":"var(--red)"):"var(--gold)";
+  $("suggestionSub").textContent=trade?"PRO-style local filters detected a stronger simulated setup. Confidence: "+sig.confidence+"%. This is not a live or guaranteed win rate.":"PRO-style filters did not find enough confirmation for a simulated setup.";
+}
+
+function addHistory(sig){
+  history.unshift({time:now(),pair:$("pair").value,platform:$("platform").value,dir:sig.direction,conf:sig.confidence,str:sig.strength});
+  history=history.slice(0,10);renderHistory();
+}
+function renderHistory(){
+  const h=$("history");
+  if(!history.length){h.innerHTML='<div class="row"><span>Waiting for signal</span><span>—</span><span>—</span><span>—</span></div>';return;}
+  h.innerHTML=history.map(x=>'<div class="row"><span>'+x.time+'<br><small>'+x.pair+'</small></span><span class="'+(x.dir==="UP"?"upTxt":"downTxt")+'">'+x.dir+'</span><span>'+x.conf+'%</span><span>'+x.str+'%</span></div>').join("");
+}
+
+function getAnalysisInterval(){
+  const selected=Number($("expiry").value);
+  return selected<=60?selected:60;
+}
+
+function scan(){
+  const previous=candles[candles.length-1];
+  const drift=last?(last.direction==="UP"?.035:-.035):0;
+  candles.push(previous+drift+(Math.random()-.5)*.55);
+  if(candles.length>200)candles.shift();
+
+  const sig=analyze();
+  last=sig;
+  expiryTimer=Number($("expiry").value);
+  countdown=getAnalysisInterval();
+
+  const id="#PRO"+String(seq++).padStart(4,"0");
+  $("signalId").textContent=id;
+  $("entry").textContent=now();
+  $("pairView").textContent=$("pair").value;
+  $("platformView").textContent=$("platform").value;
+  $("expires").textContent=formatDuration(expiryTimer);
+  $("strength").textContent=sig.strength+"%";
+  $("confidence").textContent=sig.confidence+"%";
+  $("trend").textContent=sig.trend;
+  $("momentum").textContent=sig.momentum;
+  $("rsi").textContent=sig.rsi;
+  $("market").textContent=sig.marketState;
+  $("signalStatus").textContent="ACTIVE";
+  $("scannerStatus").textContent="ONLINE ●";
+  setOrb(sig);renderSuggestion(sig);addHistory(sig);
+  $("scanning").textContent="PRO ANALYSIS COMPLETED";
+}
+
+function formatDuration(seconds){
+  seconds=Math.max(0,Math.floor(seconds));
+  if(seconds<60)return seconds+"s";
+  if(seconds<3600)return Math.floor(seconds/60)+"m "+(seconds%60)+"s";
+  const h=Math.floor(seconds/3600),m=Math.floor((seconds%3600)/60);
+  return h+"h "+m+"m";
+}
+
+function start(){
+  if(running)return;
+  running=true;$("scannerStatus").textContent="ONLINE ●";$("signalStatus").textContent="SCANNING";$("scanning").textContent="ANALYZING MARKET";$("startBot").classList.add("active");
+  scan();clearInterval(interval);interval=setInterval(tick,1000);
+}
+function stop(){
+  running=false;clearInterval(interval);interval=null;$("scannerStatus").textContent="READY ●";$("signalStatus").textContent=last?"PAUSED":"READY";$("scanning").textContent="SCANNER PAUSED";$("startBot").classList.remove("active");
+}
+function tick(){
+  if(!running)return;
+  countdown--;
+  expiryTimer--;
+  const selected=Number($("expiry").value);
+  if(expiryTimer<=0){
+    scan();
+    expiryTimer=selected;
+    countdown=getAnalysisInterval();
+  }
+  $("expires").textContent=formatDuration(expiryTimer);
+  $("scanning").textContent="NEXT ANALYSIS IN "+Math.max(0,countdown)+" SEC";
+}
+function generate(){scan();}
+function clearHistory(){history=[];renderHistory();}
+function tap(el,fn){
+  if(!el)return;
+  el.addEventListener("touchend",e=>{e.preventDefault();const t=Date.now();if(t-touchLock<350)return;touchLock=t;fn();},{passive:false});
+  el.addEventListener("click",e=>{e.preventDefault();const t=Date.now();if(t-touchLock<350)return;touchLock=t;fn();});
+}
+
+$("platform").addEventListener("change",function(){
+  $("platformView").textContent=this.value;$("engineStatus").textContent="PRO";last=null;setOrb(null);$("signalStatus").textContent="READY";$("scanning").textContent=this.value+" • READY";
+});
+$("pair").addEventListener("change",function(){
+  seed();last=null;setOrb(null);$("suggestion").classList.remove("show");$("signalStatus").textContent="READY";$("pairView").textContent=this.value;$("confidence").textContent="--%";$("strength").textContent="--%";$("expires").textContent="--";$("entry").textContent="--:--:--";$("scanning").textContent="PAIR CHANGED • READY";
+});
+$("expiry").addEventListener("change",function(){
+  const seconds=Number(this.value);
+  $("modeStatus").textContent=formatDuration(seconds).toUpperCase();
+  expiryTimer=seconds;
+  countdown=getAnalysisInterval();
+  if(last)$("expires").textContent=formatDuration(seconds);
+  if(running)$("scanning").textContent="NEXT ANALYSIS IN "+countdown+" SEC";
+});
+
+seed();
+tap($("startBot"),start);tap($("stopBot"),stop);tap($("autoBtn"),()=>running?stop():start());
+tap($("suggestBtn"),()=>last?renderSuggestion(last):scan());tap($("generate"),generate);tap($("clear"),clearHistory);tap($("orb"),()=>running?stop():start());
+
+$("pairCount").textContent=pairs.length;
+$("platformView").textContent=$("platform").value;
+$("modeStatus").textContent=formatDuration(Number($("expiry").value)).toUpperCase();
+})();
+</script>
+</body>
+</html>
