@@ -11,191 +11,298 @@ function random(min, max) {
 
 function createMarket() {
     prices = [];
-    let p = 100;
+    let price = 100;
 
-    for (let i = 0; i < 200; i++) {
-        p += random(-0.45, 0.45);
-        prices.push(p);
+    for (let i = 0; i < 250; i++) {
+        price += random(-0.35, 0.35);
+        prices.push(price);
     }
 }
 
 function updateMarket() {
-    if (!prices.length) {
+    if (prices.length === 0) {
         createMarket();
         return;
     }
 
     let last = prices[prices.length - 1];
 
-    // Simulated market movement
-    last += random(-0.45, 0.45);
+    last += random(-0.35, 0.35);
 
     prices.push(last);
 
-    if (prices.length > 200) {
+    if (prices.length > 250) {
         prices.shift();
     }
 }
 
 function EMA(data, period) {
+
     if (data.length < period) {
         return data[data.length - 1];
     }
 
-    const k = 2 / (period + 1);
+    const multiplier = 2 / (period + 1);
     let value = data[0];
 
     for (let i = 1; i < data.length; i++) {
-        value = data[i] * k + value * (1 - k);
+        value =
+            (data[i] * multiplier) +
+            (value * (1 - multiplier));
     }
 
     return value;
 }
 
 function RSI(data, period = 14) {
+
     if (data.length < period + 1) {
         return 50;
     }
 
-    let gain = 0;
-    let loss = 0;
+    let gains = 0;
+    let losses = 0;
 
-    for (let i = data.length - period; i < data.length; i++) {
+    for (
+        let i = data.length - period;
+        i < data.length;
+        i++
+    ) {
+
         const change = data[i] - data[i - 1];
 
         if (change > 0) {
-            gain += change;
+            gains += change;
         } else {
-            loss += Math.abs(change);
+            losses += Math.abs(change);
         }
     }
 
-    if (loss === 0) return 100;
+    if (losses === 0) {
+        return 100;
+    }
 
-    const rs = gain / loss;
+    const rs = gains / losses;
 
     return 100 - (100 / (1 + rs));
 }
 
 function MACD(data) {
-    return EMA(data, 12) - EMA(data, 26);
+
+    const fast = EMA(data, 12);
+    const slow = EMA(data, 26);
+
+    return fast - slow;
+}
+
+function volatility(data, period = 20) {
+
+    if (data.length < period + 1) {
+        return 0;
+    }
+
+    let changes = [];
+
+    for (
+        let i = data.length - period;
+        i < data.length;
+        i++
+    ) {
+        changes.push(
+            Math.abs(data[i] - data[i - 1])
+        );
+    }
+
+    return changes.reduce(
+        (a, b) => a + b,
+        0
+    ) / changes.length;
 }
 
 function analyze() {
 
     updateMarket();
 
-    const current = prices[prices.length - 1];
-
-    const e9 = EMA(prices, 9);
-    const e21 = EMA(prices, 21);
-    const e50 = EMA(prices, 50);
-
-    const rsi = RSI(prices);
-    const macd = MACD(prices);
-
-    const momentum =
-        current - prices[prices.length - 6];
+    const current =
+        prices[prices.length - 1];
 
     const previous =
         prices[prices.length - 2];
 
-    let upScore = 0;
-    let downScore = 0;
+    const e9 =
+        EMA(prices, 9);
 
-    // EMA 9
+    const e21 =
+        EMA(prices, 21);
+
+    const e50 =
+        EMA(prices, 50);
+
+    const e100 =
+        EMA(prices, 100);
+
+    const rsi =
+        RSI(prices, 14);
+
+    const macd =
+        MACD(prices);
+
+    const momentum =
+        current -
+        prices[prices.length - 6];
+
+    const vol =
+        volatility(prices);
+
+    let up = 0;
+    let down = 0;
+
+    /*
+       TREND CONFIRMATION
+    */
+
     if (current > e9) {
-        upScore += 15;
+        up += 10;
     } else {
-        downScore += 15;
+        down += 10;
     }
 
-    // EMA 9 / 21
     if (e9 > e21) {
-        upScore += 15;
+        up += 15;
     } else {
-        downScore += 15;
+        down += 15;
     }
 
-    // EMA 21 / 50
     if (e21 > e50) {
-        upScore += 15;
+        up += 15;
     } else {
-        downScore += 15;
+        down += 15;
     }
 
-    // RSI
-    if (rsi >= 52 && rsi <= 68) {
-        upScore += 15;
+    if (e50 > e100) {
+        up += 10;
+    } else {
+        down += 10;
     }
 
-    if (rsi <= 48 && rsi >= 32) {
-        downScore += 15;
+    /*
+       RSI CONFIRMATION
+    */
+
+    if (rsi >= 52 && rsi <= 67) {
+        up += 15;
     }
 
-    // MACD
+    if (rsi <= 48 && rsi >= 33) {
+        down += 15;
+    }
+
+    /*
+       MACD CONFIRMATION
+    */
+
     if (macd > 0) {
-        upScore += 15;
-    } else {
-        downScore += 15;
+        up += 15;
     }
 
-    // Momentum
+    if (macd < 0) {
+        down += 15;
+    }
+
+    /*
+       MOMENTUM
+    */
+
     if (momentum > 0) {
-        upScore += 15;
+        up += 10;
     }
 
     if (momentum < 0) {
-        downScore += 15;
+        down += 10;
     }
 
-    // Current candle pressure
+    /*
+       CANDLE PRESSURE
+    */
+
     if (current > previous) {
-        upScore += 10;
-    } else if (current < previous) {
-        downScore += 10;
+        up += 10;
     }
 
-    const difference =
-        Math.abs(upScore - downScore);
+    if (current < previous) {
+        down += 10;
+    }
 
-    const strongest =
-        Math.max(upScore, downScore);
+    /*
+       VOLATILITY FILTER
 
-    let confidence =
-        Math.round(Math.min(99, strongest));
+       Extremely weak movement =
+       WAIT instead of forcing a trade.
+    */
 
     let signal = "WAIT";
 
-    // High-selectivity confirmation
+    const difference =
+        Math.abs(up - down);
+
+    let confidence =
+        Math.round(
+            Math.min(
+                99,
+                Math.max(up, down)
+            )
+        );
+
+    /*
+       STRONG CONFIRMATION
+    */
+
     if (
-        upScore > downScore &&
-        difference >= 25 &&
-        confidence >= 75
+        up > down &&
+        difference >= 30 &&
+        confidence >= 75 &&
+        rsi >= 50 &&
+        rsi < 70
     ) {
         signal = "UP";
     }
 
     else if (
-        downScore > upScore &&
-        difference >= 25 &&
-        confidence >= 75
+        down > up &&
+        difference >= 30 &&
+        confidence >= 75 &&
+        rsi <= 50 &&
+        rsi > 30
     ) {
         signal = "DOWN";
     }
 
-    // Trend
+    /*
+       TREND
+    */
+
     let trend = "SIDEWAYS";
 
-    if (e9 > e21 && e21 > e50) {
+    if (
+        e9 > e21 &&
+        e21 > e50 &&
+        e50 > e100
+    ) {
         trend = "UPTREND";
     }
 
-    else if (e9 < e21 && e21 < e50) {
+    else if (
+        e9 < e21 &&
+        e21 < e50 &&
+        e50 < e100
+    ) {
         trend = "DOWNTREND";
     }
 
-    // Momentum
+    /*
+       MOMENTUM TEXT
+    */
+
     let momentumText = "NEUTRAL";
 
     if (momentum > 0) {
@@ -206,11 +313,19 @@ function analyze() {
         momentumText = "BEARISH";
     }
 
+    /*
+       VERY LOW VOLATILITY FILTER
+    */
+
+    if (vol < 0.03) {
+        signal = "WAIT";
+    }
+
     return {
-        signal,
-        confidence,
-        rsi,
-        trend,
+        signal: signal,
+        confidence: confidence,
+        rsi: rsi,
+        trend: trend,
         momentum: momentumText
     };
 }
@@ -225,28 +340,40 @@ function display(result) {
     if (result.signal === "UP") {
 
         orb.classList.add("up");
+
         orb.textContent = "UP";
 
-        signal.textContent = "CALL / UP";
-        signal.className = "signalText green";
+        signal.textContent =
+            "CALL / UP";
+
+        signal.className =
+            "signalText green";
     }
 
     else if (result.signal === "DOWN") {
 
         orb.classList.add("down");
+
         orb.textContent = "DOWN";
 
-        signal.textContent = "PUT / DOWN";
-        signal.className = "signalText red";
+        signal.textContent =
+            "PUT / DOWN";
+
+        signal.className =
+            "signalText red";
     }
 
     else {
 
         orb.classList.add("wait");
+
         orb.textContent = "WAIT";
 
-        signal.textContent = "NO TRADE";
-        signal.className = "signalText yellow";
+        signal.textContent =
+            "NO TRADE";
+
+        signal.className =
+            "signalText yellow";
     }
 
     $("confidence").textContent =
@@ -261,10 +388,17 @@ function display(result) {
     $("momentum").textContent =
         result.momentum;
 
-    $("details").textContent =
-        result.signal === "WAIT"
-        ? "Confirmation is not strong enough. WAIT."
-        : "Multiple confirmations detected.";
+    if (result.signal === "WAIT") {
+
+        $("details").textContent =
+            "Market confirmation is not strong enough.";
+    }
+
+    else {
+
+        $("details").textContent =
+            "Multiple indicators confirmed the direction.";
+    }
 }
 
 function generate() {
@@ -276,10 +410,16 @@ function generate() {
     if (result.signal !== "WAIT") {
 
         history.unshift({
+
             pair: $("pair").value,
+
             signal: result.signal,
-            confidence: result.confidence,
-            time: new Date().toLocaleTimeString()
+
+            confidence:
+                result.confidence,
+
+            time:
+                new Date().toLocaleTimeString()
         });
 
         if (history.length > 50) {
@@ -298,61 +438,91 @@ function renderHistory() {
 
     history.forEach(item => {
 
-        const row = document.createElement("div");
+        const row =
+            document.createElement("div");
 
-        row.className = "historyRow";
+        row.className =
+            "historyRow";
 
         row.innerHTML = `
-            <span>${item.pair}</span>
-            <span class="${item.signal === "UP" ? "green" : "red"}">
+
+            <span>
+                ${item.pair}
+            </span>
+
+            <span class="${
+                item.signal === "UP"
+                ? "green"
+                : "red"
+            }">
                 ${item.signal}
             </span>
-            <span>${item.confidence}%</span>
-            <span>${item.time}</span>
+
+            <span>
+                ${item.confidence}%
+            </span>
+
+            <span>
+                ${item.time}
+            </span>
         `;
 
-        $("history").appendChild(row);
+        $("history")
+            .appendChild(row);
     });
 }
 
 function startAuto() {
 
-    if (autoTimer) return;
+    if (autoTimer) {
+        return;
+    }
 
     generate();
 
     let seconds = 5;
 
     $("countdown").textContent =
-        "Next signal in " + seconds + "s";
+        "Next signal in " +
+        seconds +
+        "s";
 
-    countdownTimer = setInterval(() => {
+    countdownTimer =
+        setInterval(() => {
 
-        seconds--;
+            seconds--;
 
-        if (seconds <= 0) {
-            seconds = 5;
-        }
+            if (seconds <= 0) {
+                seconds = 5;
+            }
 
-        $("countdown").textContent =
-            "Next signal in " + seconds + "s";
+            $("countdown").textContent =
+                "Next signal in " +
+                seconds +
+                "s";
 
-    }, 1000);
+        }, 1000);
 
-    autoTimer = setInterval(() => {
-        generate();
-    }, 5000);
+    autoTimer =
+        setInterval(() => {
+
+            generate();
+
+        }, 5000);
 }
 
 function stopAuto() {
 
     clearInterval(autoTimer);
+
     clearInterval(countdownTimer);
 
     autoTimer = null;
+
     countdownTimer = null;
 
-    $("countdown").textContent = "Stopped";
+    $("countdown").textContent =
+        "Stopped";
 }
 
 $("scan").addEventListener(
