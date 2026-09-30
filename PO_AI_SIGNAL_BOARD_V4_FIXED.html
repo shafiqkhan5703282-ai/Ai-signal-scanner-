@@ -1,0 +1,242 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>PO PO AI SIGNAL BOARD V4</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#040d18;color:#eaf5ff;font:13px Inter,Arial,sans-serif}.app{max-width:1500px;margin:auto;padding:18px}.brand{font-size:23px;font-weight:900;letter-spacing:.4px}.brand span{font-size:11px;background:#12395c;border-radius:5px;padding:3px 6px;color:#58dfff}.sub{color:#718aa1;font-size:11px;margin-top:4px}header{display:flex;justify-content:space-between;align-items:center;padding:5px 3px 18px}.topright{display:flex;gap:20px;align-items:center}.live{color:#79a0b7}.live i,#scannerDot{display:inline-block;width:9px;height:9px;border-radius:50%;background:#687b8c;margin-right:6px}.clock{font-variant-numeric:tabular-nums;color:#a8bfd0}.toolbar{display:grid;grid-template-columns:1fr 1fr 1fr 1.5fr auto auto;gap:9px;padding:13px;background:#081827;border:1px solid #16324b;border-radius:13px}label{font-size:9px;color:#7792a8;text-transform:uppercase}select,input,button{display:block;margin-top:5px;width:100%;height:39px;border-radius:8px;border:1px solid #21445f;background:#07131f;color:#eaf5ff;padding:0 10px}button{background:#087fe8;border:0;font-weight:800;cursor:pointer}.secondary{background:#14273a}.stats{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin:12px 0}.stats div{background:#081725;border:1px solid #153047;border-radius:9px;padding:10px 12px}.stats small{display:block;color:#668199;font-size:9px}.stats b{display:block;margin-top:5px;font-size:17px;color:#58dfff}.green{color:#40eea0!important}.red{color:#ff6677!important}.layout{display:grid;grid-template-columns:230px 1fr;gap:13px}aside{display:flex;flex-direction:column;gap:10px}.sidecard,.card{background:linear-gradient(145deg,#091827,#06111d);border:1px solid #16344e;border-radius:13px}.sidecard{padding:14px}.sidecard h3{font-size:10px;color:#6e8ca5;margin:0 0 10px}.sidecard p{color:#71899d;font-size:11px;line-height:1.5}.scannerstate{color:#58f2a2}.bigtf{font-size:31px;font-weight:900;color:#54ddff}.warning{border-color:#5e4c15}.warning b{color:#f0c74c}.warning p{color:#bba55e}main{display:grid;gap:13px}.board{overflow:hidden}.boardhead{display:flex;justify-content:space-between;align-items:center;padding:14px 16px;border-bottom:1px solid #153047}.boardhead h2{margin:0;font-size:15px}.boardhead span{font-size:10px;color:#718ba0}.legend{display:flex;gap:7px;align-items:center;font-size:9px}.updot,.downdot,.waitdot{width:7px;height:7px;border-radius:50%;display:inline-block}.updot{background:#35e99b}.downdot{background:#ff566a}.waitdot{background:#f3c84d}.tablewrap{overflow:auto;max-height:560px}table{width:100%;border-collapse:collapse;min-width:760px}th{font-size:9px;color:#67839a;text-align:left;padding:10px 12px;background:#071420;position:sticky;top:0}td{padding:10px 12px;border-top:1px solid #10283c;font-size:11px}tr:hover{background:#0a1b2b}.asset{font-weight:800;color:#eaf5ff}.price{font-variant-numeric:tabular-nums}.change.up{color:#3ce9a0}.change.down{color:#ff6374}.badge{padding:5px 9px;border-radius:15px;font-size:9px;font-weight:900;display:inline-block}.badge.call{background:#063d2b;color:#54f0a6}.badge.put{background:#43121b;color:#ff7180}.badge.wait{background:#40370e;color:#f3d05b}.strength{letter-spacing:2px;color:#53eca2}.statuslive{color:#43eda1;font-size:9px}.statuswait{color:#71879a;font-size:9px}.selected{padding-bottom:13px}.selectedhead{display:grid;grid-template-columns:1fr 180px 120px;align-items:center;padding:16px;border-bottom:1px solid #153047}.tinylabel{font-size:9px;color:#67839a}.selected h2{margin:4px 0}.selected .price{font-size:19px;color:#52dfff}.bigSignal{font-size:25px;font-weight:900;text-align:center}.bigSignal.call{color:#4ff0a6}.bigSignal.put{color:#ff6475}.bigSignal.wait{color:#f1c84d}.confidence{text-align:right}.confidence small{display:block;color:#6f899f;font-size:9px}.confidence b{font-size:27px;color:#4deaa1}canvas{display:block;width:100%;height:300px;background:#05101a}.indicators{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;padding:10px}.indicator{background:#071622;border:1px solid #133047;border-radius:8px;padding:9px}.indicator small{display:block;color:#658198;font-size:9px}.indicator b{display:block;margin-top:5px}.bull{color:#46eda1}.bear{color:#ff6577}.neutral{color:#f1cc54}.history{padding-bottom:10px}.history button{width:auto;margin:0;height:30px;font-size:9px}.hist{display:grid;grid-template-columns:150px 120px 90px 90px 1fr;padding:8px 15px;border-top:1px solid #10283c;font-size:10px}.hist b.call{color:#4deba2}.hist b.put{color:#ff6475}.empty{padding:18px;color:#6f899f;font-size:11px}footer{display:flex;justify-content:space-between;padding:14px 3px;color:#577087;font-size:9px}@media(max-width:950px){.toolbar{grid-template-columns:1fr 1fr 1fr}.stats{grid-template-columns:repeat(3,1fr)}.layout{grid-template-columns:1fr}.selectedhead{grid-template-columns:1fr 1fr 100px}}@media(max-width:600px){.toolbar{grid-template-columns:1fr}.stats{grid-template-columns:1fr 1fr}.selectedhead{grid-template-columns:1fr 1fr}.confidence{text-align:left}.indicators{grid-template-columns:1fr 1fr}footer{display:block;line-height:2}}
+
+</style>
+</head>
+<body>
+<div class="app">
+<header>
+  <div>
+    <div class="brand">🤖 PO PO AI SIGNAL BOARD <span>V4</span></div>
+    <div class="sub">Pocket Option asset board • 5s → 1h • signal analysis only</div>
+  </div>
+  <div class="topright">
+    <div class="live"><i id="dot"></i><b id="liveState">OFFLINE</b></div>
+    <div class="clock" id="clock">--:--:--</div>
+  </div>
+</header>
+
+<section class="toolbar">
+  <label>LIVE SOURCE
+    <select id="source">
+      <option value="pocket" selected>Pocket Option Assets</option>
+      <option value="twelve">External FX Feed</option>
+      <option value="demo">Demo Feed</option>
+    </select>
+  </label>
+  <label>TIMEFRAME
+    <select id="tf">
+      <option value="5" selected>5 seconds</option>
+      <option value="10">10 seconds</option><option value="15">15 seconds</option>
+      <option value="30">30 seconds</option><option value="60">1 minute</option>
+      <option value="120">2 minutes</option><option value="300">5 minutes</option>
+      <option value="900">15 minutes</option><option value="1800">30 minutes</option>
+      <option value="3600">1 hour</option>
+    </select>
+  </label>
+  <label>BOARD FILTER
+    <select id="filter"><option value="all">All pairs</option><option value="call">CALL only</option><option value="put">PUT only</option><option value="strong">Strong ≥ 80%</option></select>
+  </label>
+  <label id="keyLabel">EXTERNAL FX API KEY
+    <input id="apiKey" type="password" placeholder="Only required for External FX Feed">
+  </label>
+  <button id="connect">CONNECT LIVE</button>
+  <button id="stop" class="secondary">STOP</button>
+</section>
+
+<div id="notice" class="notice">Pocket Option asset catalog loaded. Connect to view the board.</div>
+<section class="stats">
+  <div><small>PAIRS</small><b id="pairCount">0</b></div>
+  <div><small>ACTIVE SIGNALS</small><b id="signalCount">0</b></div>
+  <div><small>CALL</small><b class="green" id="callCount">0</b></div>
+  <div><small>PUT</small><b class="red" id="putCount">0</b></div>
+  <div><small>AVG CONFIDENCE</small><b id="avgConf">—</b></div>
+  <div><small>DATA FEED</small><b id="feed">OFFLINE</b></div>
+</section>
+
+<div class="layout">
+<aside>
+  <div class="sidecard">
+    <h3>AI SCANNER</h3>
+    <div class="scannerstate"><span id="scannerDot"></span><b id="scannerText">READY</b></div>
+    <p>Scans every selected market independently using EMA 9/21, RSI, MACD, momentum and recent range position.</p>
+  </div>
+  <div class="sidecard">
+    <h3>TIMEFRAME</h3>
+    <div class="bigtf" id="tfBig">5m</div>
+    <p>All board rows use this selected timeframe.</p>
+  </div>
+  <div class="sidecard">
+    <h3>DATA POINTS</h3>
+    <div class="bigtf" id="points">0</div>
+    <p>Local candle/tick samples stored in this browser session.</p>
+  </div>
+  <div class="sidecard warning">
+    <b>IMPORTANT</b>
+    <p>Pocket Option OTC prices are platform-specific. Confidence is a technical-score measure, not a guaranteed win probability. This board does not place or automate trades.</p>
+  </div>
+</aside>
+
+<main>
+  <section class="board card">
+    <div class="boardhead">
+      <div><h2>SIGNAL BOARD</h2><span id="boardStatus">Waiting for live feed</span></div>
+      <div class="legend"><span class="updot"></span>CALL <span class="downdot"></span>PUT <span class="waitdot"></span>WAIT</div>
+    </div>
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th>ASSET</th><th>PRICE</th><th>CHANGE</th><th>TIMEFRAME</th><th>SIGNAL</th><th>CONF.</th><th>STRENGTH</th><th>STATUS</th></tr></thead>
+        <tbody id="board"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="card selected">
+    <div class="selectedhead">
+      <div><span class="tinylabel">SELECTED PAIR</span><h2 id="selPair">BTC/USDT</h2><div class="price" id="selPrice">—</div></div>
+      <div class="bigSignal wait" id="bigSignal">WAIT</div>
+      <div class="confidence"><small>CONFIDENCE</small><b id="selConf">—</b></div>
+    </div>
+    <canvas id="chart"></canvas>
+    <div class="indicators" id="indicators"></div>
+  </section>
+
+  <section class="card history">
+    <div class="boardhead"><div><h2>SIGNAL HISTORY</h2><span>Latest generated board changes</span></div><button id="clear">CLEAR</button></div>
+    <div id="history"></div>
+  </section>
+</main>
+</div>
+<footer><span>AI Pocket Option Signal Board v3.0</span><span>Live market data • No automatic trade execution</span></footer>
+</div>
+<script>
+const cryptoPairs=['Bitcoin OTC','Dogecoin OTC','Avalanche OTC','Litecoin OTC','TRON OTC','Cardano OTC','Bitcoin ETF OTC','Toncoin OTC','Ethereum OTC','Polkadot OTC','Chainlink OTC','BNB OTC','Polygon OTC'];
+const fxPairs=['EUR/USD OTC','AUD/CAD OTC','AUD/CHF OTC','AUD/JPY OTC','AUD/NZD OTC','AUD/USD OTC','CAD/CHF OTC','CAD/JPY OTC','CHF/JPY OTC','EUR/CHF OTC','EUR/GBP OTC','EUR/JPY OTC','EUR/NZD OTC','GBP/AUD OTC','GBP/JPY OTC','GBP/USD OTC','NZD/JPY OTC','NZD/USD OTC','USD/CAD OTC','USD/CHF OTC','USD/JPY OTC','EUR/TRY OTC','USD/INR OTC','USD/PHP OTC','USD/DZD OTC','USD/BDT OTC','BHD/CNY OTC','SAR/CNY OTC','QAR/CNY OTC','OMR/CNY OTC','NGN/USD OTC','ZAR/USD OTC','UAH/USD OTC','EUR/HUF OTC','USD/EGP OTC','KES/USD OTC','USD/COP OTC','EUR/RUB OTC','USD/ARS OTC','USD/MYR OTC','USD/BRL OTC','TND/USD OTC','USD/THB OTC','MAD/USD OTC','USD/CLP OTC','USD/PKR OTC','LBP/USD OTC','CHF/NOK OTC','USD/VND OTC','YER/USD OTC','USD/CNH OTC','NZD/JPY OTC','JOD/CNY OTC','AUD/NZD OTC','USD/RUB OTC','USD/MXN OTC','USD/SGD OTC','USD/IDR OTC','AED/CNY OTC'];
+const regularFxPairs=['EUR/USD','AUD/CAD','AUD/CHF','AUD/JPY','AUD/USD','CAD/CHF','CAD/JPY','CHF/JPY','EUR/CHF','EUR/GBP','EUR/JPY','EUR/NZD','GBP/AUD','GBP/JPY','GBP/USD','NZD/JPY','NZD/USD','USD/CAD','USD/CHF','USD/JPY'];
+const commodityPairs=['Gold OTC','Brent Oil OTC','WTI Crude Oil OTC','Silver OTC','Natural Gas OTC','Platinum spot OTC','Palladium spot OTC'];
+const stockPairs=['Microsoft OTC','FACEBOOK INC OTC','Johnson & Johnson OTC','Advanced Micro Devices OTC','Coinbase Global OTC','Intel OTC','ExxonMobil OTC','VIX OTC','GameStop Corp OTC','Pfizer Inc OTC'];
+const indexPairs=['AUS 200 OTC','E35EUR OTC','100GBP OTC','F40EUR OTC','JPN225 OTC','D30EUR OTC','E50EUR OTC','SP500 OTC','DJI30 OTC','US100 OTC'];
+const $=s=>document.querySelector(s);
+let socket=null,timer=null,source="pocket",selected="EUR/USD OTC",markets={},history=[];
+const tf=()=>+$("tf").value;
+const tfName=()=>{let n=tf();return n<60?n+"s":n===60?"1m":n%3600===0?n/3600+"h":n/60+"m"};
+const allPocketPairs=[...fxPairs,...commodityPairs,...stockPairs,...cryptoPairs,...indexPairs];
+const list=()=>source==="pocket"?allPocketPairs:source==="twelve"?regularFxPairs:cryptoPairs;
+
+function pairCategory(p){
+  if(p.endsWith(" OTC")) {
+    if(commodityPairs.includes(p)) return "COMMODITY OTC";
+    if(stockPairs.includes(p)) return "STOCK OTC";
+    if(crypto_otc.includes(p)) return "CRYPTO OTC";
+    if(indexPairs.includes(p)) return "INDEX OTC";
+    return "FX OTC";
+  }
+  return "FX";
+}
+function initMarkets(){
+  markets={}; list().forEach(p=>markets[p]={price:null,prev:null,change:0,ticks:[],candles:[],signal:"WAIT",conf:null,score:0,ind:{}});
+  if(!markets[selected])selected=list()[0];
+  renderBoard();
+}
+function addTick(pair,price,time=Date.now()){
+  if(!markets[pair])return;
+  let m=markets[pair]; price=+price;if(!Number.isFinite(price))return;
+  m.prev=m.price;m.price=price;m.change=m.prev?((price-m.prev)/m.prev)*100:0;
+  m.ticks.push({p:price,t:time});m.ticks=m.ticks.slice(-5000);
+  buildCandles(m);analyze(m,pair);
+  if(pair===selected)renderSelected();
+  renderBoard();stats();
+}
+function buildCandles(m){
+  const size=tf()*1000,map=new Map();
+  for(const t of m.ticks){let k=Math.floor(t.t/size)*size;if(!map.has(k))map.set(k,{t:k,open:t.p,high:t.p,low:t.p,close:t.p});else{let c=map.get(k);c.high=Math.max(c.high,t.p);c.low=Math.min(c.low,t.p);c.close=t.p}}
+  m.candles=[...map.values()].slice(-120);
+}
+function ema(a,n){if(!a.length)return[];let k=2/(n+1),e=a[0];return a.map((v,i)=>i?(e=v*k+e*(1-k)):e)}
+function rsi(a,n=14){if(a.length<n+1)return 50;let g=0,l=0;for(let i=a.length-n;i<a.length;i++){let d=a[i]-a[i-1];if(d>0)g+=d;else l-=d}return l===0?100:100-100/(1+g/l)}
+function macd(a){if(a.length<26)return{m:0,s:0};let a12=ema(a,12),a26=ema(a,26),m=a12.map((v,i)=>v-a26[i]),s=ema(m.slice(-9),9).at(-1);return{m:m.at(-1),s}}
+function analyze(m,pair){
+ if(m.candles.length<35){m.signal="WAIT";m.conf=null;return}
+ let c=m.candles.map(x=>x.close),last=c.at(-1),e9=ema(c,9).at(-1),e21=ema(c,21).at(-1),R=rsi(c),M=macd(c),hi=Math.max(...c.slice(-20)),lo=Math.min(...c.slice(-20)),range=hi-lo||1,pos=(last-lo)/range,mom=(last-c.at(-6))/c.at(-6),score=0;
+ let ind=[];
+ if(e9>e21){score++;ind.push(["EMA 9/21","BULL","Short EMA above long EMA"])}else{score--;ind.push(["EMA 9/21","BEAR","Short EMA below long EMA"])}
+ if(R>55){score++;ind.push(["RSI","BULL",R.toFixed(1)])}else if(R<45){score--;ind.push(["RSI","BEAR",R.toFixed(1)])}else ind.push(["RSI","NEUTRAL",R.toFixed(1)]);
+ if(M.m>M.s){score++;ind.push(["MACD","BULL","Above signal"])}else{score--;ind.push(["MACD","BEAR","Below signal"])}
+ if(mom>.0005){score++;ind.push(["Momentum","BULL",(mom*100).toFixed(3)+"%"])}else if(mom<-.0005){score--;ind.push(["Momentum","BEAR",(mom*100).toFixed(3)+"%"])}else ind.push(["Momentum","NEUTRAL",(mom*100).toFixed(3)+"%"]);
+ if(pos<.18){score++;ind.push(["Range position","BULL","Near 20-bar low"])}else if(pos>.82){score--;ind.push(["Range position","BEAR","Near 20-bar high"])}else ind.push(["Range position","NEUTRAL",(pos*100).toFixed(0)+"%"]);
+ m.signal=score>=2?"CALL":score<=-2?"PUT":"WAIT";m.conf=Math.round(50+Math.min(45,Math.abs(score)/5*45));m.score=score;m.ind={e9,e21,R,M,mom};m.breakdown=ind;
+ if(m.signal!=="WAIT"&&m.conf>=70){let key=Math.floor(Date.now()/(tf()*1000))+"|"+pair;if(m.lastKey!==key){m.lastKey=key;history.unshift({t:new Date().toLocaleTimeString(),pair,signal:m.signal,conf:m.conf,tf:tfName()});history=history.slice(0,40);renderHistory()}}
+}
+function renderBoard(){
+ let filter=$("filter").value;
+ let rows=list().filter(p=>{let m=markets[p]||{};return filter==="all"||filter==="call"&&m.signal==="CALL"||filter==="put"&&m.signal==="PUT"||filter==="strong"&&(m.conf||0)>=80}).map(p=>{
+ let m=markets[p]||{},sig=m.signal||"WAIT",cls=sig==="CALL"?"call":sig==="PUT"?"put":"wait",st=m.candles?.length>=35?"LIVE":"WARMING";
+ let dots="●".repeat(Math.max(1,Math.min(5,Math.abs(m.score||0))))+"○".repeat(5-Math.min(5,Math.abs(m.score||0)));
+ return `<tr data-pair="${p}"><td class="asset">${p}</td><td class="price">${fmt(m.price)}</td><td class="change ${m.change>=0?"up":"down"}">${m.change>=0?"+":""}${(m.change||0).toFixed(3)}%</td><td>${tfName()}</td><td><span class="badge ${cls}">${sig}</span></td><td>${m.conf?m.conf+"%":"—"}</td><td class="strength">${dots}</td><td class="${st==="LIVE"?"statuslive":"statuswait"}">${st}</td></tr>`}).join("");
+ $("board").innerHTML=rows||"<tr><td colspan='8' class='empty'>No pairs match this filter.</td></tr>";
+ $("board").querySelectorAll("tr[data-pair]").forEach(tr=>tr.onclick=()=>{selected=tr.dataset.pair;renderSelected()});
+}
+function fmt(x){if(x==null)return"—";if(x>=1000)return x.toLocaleString(undefined,{maximumFractionDigits:2});if(x>=1)return x.toFixed(4);return x.toFixed(6)}
+function stats(){
+ let a=list().map(p=>markets[p]).filter(m=>m.candles.length>=35),calls=a.filter(m=>m.signal==="CALL").length,puts=a.filter(m=>m.signal==="PUT").length;
+ $("pairCount").textContent=list().length;$("signalCount").textContent=calls+puts;$("callCount").textContent=calls;$("putCount").textContent=puts;$("avgConf").textContent=a.length?Math.round(a.reduce((s,m)=>s+m.conf,0)/a.length)+"%":"—";$("points").textContent=list().reduce((s,p)=>s+(markets[p]?.ticks.length||0),0).toLocaleString();
+}
+function renderSelected(){
+ let m=markets[selected];if(!m)return;$("selPair").textContent=selected;$("selPrice").textContent=fmt(m.price);$("bigSignal").textContent=m.signal;$("bigSignal").className="bigSignal "+(m.signal==="CALL"?"call":m.signal==="PUT"?"put":"wait");$("selConf").textContent=m.conf?m.conf+"%":"—";
+ $("indicators").innerHTML=(m.breakdown||[["EMA 9/21","—","Waiting"],["RSI","—","Waiting"],["MACD","—","Waiting"],["Momentum","—","Waiting"],["Range","—","Waiting"]]).map(x=>`<div class="indicator"><small>${x[0]}</small><b class="${x[1]==="BULL"?"bull":x[1]==="BEAR"?"bear":"neutral"}">${x[1]}</b><small>${x[2]}</small></div>`).join("");
+ draw(m)
+}
+function draw(m){
+ let c=$("chart"),ctx=c.getContext("2d"),W=c.clientWidth,H=c.clientHeight,d=devicePixelRatio;c.width=W*d;c.height=H*d;ctx.scale(d,d);ctx.clearRect(0,0,W,H);let v=m.candles.slice(-90).map(x=>x.close);if(v.length<2)return;let mi=Math.min(...v),ma=Math.max(...v);ctx.strokeStyle="#163047";for(let i=0;i<5;i++){let y=18+i*(H-36)/4;ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y);ctx.stroke()}ctx.strokeStyle=m.signal==="CALL"?"#37e9a0":m.signal==="PUT"?"#ff6374":"#f0c84d";ctx.lineWidth=2;ctx.beginPath();v.forEach((x,i)=>{let px=6+i*(W-12)/(v.length-1),py=H-18-(x-mi)/(ma-mi||1)*(H-36);i?ctx.lineTo(px,py):ctx.moveTo(px,py)});ctx.stroke()}
+function renderHistory(){$("#history").innerHTML=history.length?history.map(h=>`<div class="hist"><span>${h.t}</span><span>${h.pair}</span><b class="${h.signal==="CALL"?"call":"put"}">${h.signal}</b><span>${h.conf}%</span><span>${h.tf}</span></div>`).join(""):"<div class='empty'>No qualifying signals yet.</div>"}
+function stop(){if(socket){try{socket.close()}catch(e){}socket=null}if(timer){clearInterval(timer);timer=null}$("liveState").textContent="OFFLINE";$("feed").textContent="OFFLINE";$("dot").style.background="#687b8c";$("scannerDot").style.background="#687b8c";$("scannerText").textContent="STOPPED"}
+function connectPocket(){
+  stop(); source="pocket"; initMarkets(); setOnline("POCKET OPTION CATALOG");
+  // Pocket Option's OTC quote stream is not exposed here as a public WebSocket.
+  // We therefore keep OTC rows in catalog/warming mode until a legitimate quote source is connected.
+  $("scannerText").textContent="READY";
+  $("feed").textContent="POCKET ASSET CATALOG";
+  $("notice").textContent="OTC quotes are platform-specific. This board does not scrape or automate Pocket Option.";
+}
+function connectTwelve(){
+  stop();source="twelve";let key=$("apiKey").value.trim();if(!key){alert("Enter your Twelve Data API key first.");return}
+  initMarkets();
+  socket=new WebSocket("wss://ws.twelvedata.com/v1/quotes/price?apikey="+encodeURIComponent(key));
+  socket.onopen=()=>{socket.send(JSON.stringify({action:"subscribe",params:{symbols:regularFxPairs.join(",")}}));setOnline("TWELVE DATA LIVE");$("notice").textContent="External FX feed: signals may differ from Pocket Option OTC quotes."};
+  socket.onmessage=e=>{let d=JSON.parse(e.data);if(d.event==="price"&&d.symbol&&d.price!=null)addTick(d.symbol,+d.price,d.timestamp?d.timestamp*1000:Date.now())};
+  socket.onerror=()=>{$("feed").textContent="FEED ERROR"};
+}
+function demo(){
+  stop();source="demo";initMarkets();setOnline("DEMO");$("notice").textContent="Demo prices only — not Pocket Option quotes.";
+  let prices={};list().forEach((p,i)=>prices[p]=100+i*1.7);
+  timer=setInterval(()=>list().forEach((p,i)=>{
+    let m=markets[p],base=prices[p]||100,noise=(Math.random()-.5)*base*(p.includes("JPY")?0.0008:0.0015);
+    let next=Math.max(0.00001,base+noise);prices[p]=next;addTick(p,next,Date.now());
+  }),1000);
+}
+
+function setOnline(label){$("liveState").textContent="LIVE";$("feed").textContent=label;$("dot").style.background="#37e9a0";$("scannerDot").style.background="#37e9a0";$("scannerText").textContent="SCANNING"}
+$("connect").addEventListener("click",()=>{try{
+  let s=$("source").value;
+  if(s==="pocket") connectPocket();
+  else if(s==="twelve") connectTwelve();
+  else demo();
+}catch(e){console.error(e);$("notice").textContent="Error: "+e.message;}});
+$("stop").addEventListener("click",()=>stop());
+$("stop").onclick=stop;
+$("source").onchange=()=>{source=$("source").value;initMarkets()};
+$("tf").onchange=()=>{initMarkets();renderSelected()};
+$("filter").onchange=renderBoard;
+window.addEventListener("resize",()=>{if(markets[selected])draw(markets[selected])});
+setInterval(()=>{$("clock").textContent=new Date().toLocaleTimeString();},1000);
+initMarkets();renderSelected();renderHistory();stats();
+
+</script>
+</body>
+</html>
