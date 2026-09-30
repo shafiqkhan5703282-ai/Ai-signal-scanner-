@@ -1,706 +1,373 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>AI Signal Scanner</title>
+let prices = [];
+let autoTimer = null;
+let countdownTimer = null;
+let history = [];
 
-<style>
-*{box-sizing:border-box}
-body{
-margin:0;
-font-family:Arial,sans-serif;
-background:#07111f;
-color:white;
-}
-.container{
-max-width:650px;
-margin:auto;
-padding:15px;
-}
-.card{
-background:#0d1b2a;
-border:1px solid #203a55;
-border-radius:18px;
-padding:18px;
-margin-bottom:15px;
-}
-h1{
-text-align:center;
-margin:5px 0;
-font-size:25px;
-}
-.subtitle{
-text-align:center;
-color:#8da2b8;
-font-size:13px;
-margin-bottom:15px;
-}
-select,button{
-width:100%;
-padding:13px;
-margin-top:8px;
-border-radius:10px;
-border:1px solid #294763;
-background:#102337;
-color:white;
-font-size:15px;
-}
-button{
-font-weight:bold;
-cursor:pointer;
-}
-.scan{
-background:#14395b;
-}
-.stop{
-background:#40202a;
-}
-.orb{
-width:155px;
-height:155px;
-border-radius:50%;
-margin:25px auto;
-display:flex;
-align-items:center;
-justify-content:center;
-font-size:28px;
-font-weight:bold;
-border:4px solid #465d73;
-background:#102337;
-}
-.up{
-border-color:#16d98b;
-box-shadow:0 0 35px rgba(22,217,139,.35);
-}
-.down{
-border-color:#ff5068;
-box-shadow:0 0 35px rgba(255,80,104,.35);
-}
-.wait{
-border-color:#e6b93f;
-}
-.signalText{
-text-align:center;
-font-size:23px;
-font-weight:bold;
-}
-.info{
-display:grid;
-grid-template-columns:1fr 1fr;
-gap:8px;
-}
-.box{
-background:#081522;
-padding:12px;
-border-radius:10px;
-text-align:center;
-}
-.box small{
-display:block;
-color:#8399af;
-margin-bottom:5px;
-}
-.history{
-max-height:300px;
-overflow:auto;
-}
-.historyRow{
-display:grid;
-grid-template-columns:1.2fr .8fr .8fr 1fr;
-gap:5px;
-padding:10px 2px;
-border-bottom:1px solid #1d3349;
-font-size:12px;
-}
-.green{color:#16d98b}
-.red{color:#ff5068}
-.yellow{color:#e6b93f}
-.status{
-text-align:center;
-color:#8399af;
-margin-top:10px;
-}
-@media(max-width:500px){
-.container{padding:10px}
-}
-</style>
-</head>
+const $ = id => document.getElementById(id);
 
-<body>
-
-<div class="container">
-
-<div class="card">
-
-<h1>AI Signal Scanner</h1>
-
-<div class="subtitle">
-Smart Multi-Confirmation Signal Generator
-</div>
-
-<label>Platform</label>
-
-<select id="platform">
-<option>Pocket Option</option>
-<option>Quotex</option>
-</select>
-
-<label>Trading Pair</label>
-
-<select id="pair">
-<option>EUR/USD</option>
-<option>GBP/USD</option>
-<option>USD/JPY</option>
-<option>USD/CHF</option>
-<option>AUD/USD</option>
-<option>USD/CAD</option>
-<option>NZD/USD</option>
-<option>EUR/GBP</option>
-<option>EUR/JPY</option>
-<option>GBP/JPY</option>
-<option>EUR/CHF</option>
-<option>GBP/CHF</option>
-<option>AUD/JPY</option>
-<option>CAD/JPY</option>
-<option>CHF/JPY</option>
-<option>NZD/JPY</option>
-<option>AUD/CAD</option>
-<option>AUD/CHF</option>
-<option>AUD/NZD</option>
-<option>EUR/AUD</option>
-<option>EUR/CAD</option>
-<option>EUR/NZD</option>
-<option>GBP/AUD</option>
-<option>GBP/CAD</option>
-<option>GBP/NZD</option>
-<option>EUR/USD (OTC)</option>
-<option>GBP/USD (OTC)</option>
-<option>USD/JPY (OTC)</option>
-<option>USD/CHF (OTC)</option>
-<option>AUD/USD (OTC)</option>
-<option>USD/CAD (OTC)</option>
-<option>NZD/USD (OTC)</option>
-<option>EUR/GBP (OTC)</option>
-<option>EUR/JPY (OTC)</option>
-<option>GBP/JPY (OTC)</option>
-<option>USD/PKR (OTC)</option>
-<option>USD/INR (OTC)</option>
-<option>USD/BRL (OTC)</option>
-<option>USD/MXN (OTC)</option>
-</select>
-
-<label>Expiry</label>
-
-<select id="expiry">
-<option value="3">3 Seconds</option>
-<option value="5">5 Seconds</option>
-<option value="10">10 Seconds</option>
-<option value="15">15 Seconds</option>
-<option value="30">30 Seconds</option>
-<option value="60">1 Minute</option>
-<option value="120">2 Minutes</option>
-<option value="300" selected>5 Minutes</option>
-<option value="900">15 Minutes</option>
-<option value="1800">30 Minutes</option>
-<option value="3600">1 Hour</option>
-</select>
-
-<button class="scan" id="scan">GENERATE SIGNAL</button>
-<button id="auto">AUTO SCAN</button>
-<button class="stop" id="stop">STOP</button>
-
-</div>
-
-
-<div class="card">
-
-<div id="orb" class="orb wait">
-WAIT
-</div>
-
-<div id="signal" class="signalText yellow">
-WAITING
-</div>
-
-<div id="details" class="status">
-Press Generate Signal
-</div>
-
-<div id="countdown" class="status">
-Ready
-</div>
-
-</div>
-
-
-<div class="card">
-
-<div class="info">
-
-<div class="box">
-<small>Confidence</small>
-<b id="confidence">--</b>
-</div>
-
-<div class="box">
-<small>RSI</small>
-<b id="rsi">--</b>
-</div>
-
-<div class="box">
-<small>Trend</small>
-<b id="trend">--</b>
-</div>
-
-<div class="box">
-<small>Momentum</small>
-<b id="momentum">--</b>
-</div>
-
-</div>
-
-</div>
-
-
-<div class="card">
-
-<h3>Signal History</h3>
-
-<div class="historyRow">
-<b>Pair</b>
-<b>Signal</b>
-<b>Conf.</b>
-<b>Time</b>
-</div>
-
-<div id="history" class="history"></div>
-
-</div>
-
-</div>
-
-
-<script>
-
-let prices=[];
-let autoTimer=null;
-let countdownTimer=null;
-let history=[];
-
-const $=id=>document.getElementById(id);
-
-function random(min,max){
-return Math.random()*(max-min)+min;
+function random(min, max) {
+    return Math.random() * (max - min) + min;
 }
 
-function createMarket(){
+function createMarket() {
+    prices = [];
+    let p = 100;
 
-prices=[];
-
-let p=100;
-
-for(let i=0;i<120;i++){
-
-p+=random(-0.7,0.7);
-
-prices.push(p);
-
+    for (let i = 0; i < 200; i++) {
+        p += random(-0.45, 0.45);
+        prices.push(p);
+    }
 }
 
+function updateMarket() {
+    if (!prices.length) {
+        createMarket();
+        return;
+    }
+
+    let last = prices[prices.length - 1];
+
+    // Simulated market movement
+    last += random(-0.45, 0.45);
+
+    prices.push(last);
+
+    if (prices.length > 200) {
+        prices.shift();
+    }
 }
 
-function updateMarket(){
+function EMA(data, period) {
+    if (data.length < period) {
+        return data[data.length - 1];
+    }
 
-if(prices.length===0){
-createMarket();
-return;
+    const k = 2 / (period + 1);
+    let value = data[0];
+
+    for (let i = 1; i < data.length; i++) {
+        value = data[i] * k + value * (1 - k);
+    }
+
+    return value;
 }
 
-let last=prices[prices.length-1];
+function RSI(data, period = 14) {
+    if (data.length < period + 1) {
+        return 50;
+    }
 
-last+=random(-0.7,0.7);
+    let gain = 0;
+    let loss = 0;
 
-prices.push(last);
+    for (let i = data.length - period; i < data.length; i++) {
+        const change = data[i] - data[i - 1];
 
-if(prices.length>120){
-prices.shift();
+        if (change > 0) {
+            gain += change;
+        } else {
+            loss += Math.abs(change);
+        }
+    }
+
+    if (loss === 0) return 100;
+
+    const rs = gain / loss;
+
+    return 100 - (100 / (1 + rs));
 }
 
+function MACD(data) {
+    return EMA(data, 12) - EMA(data, 26);
 }
 
-function EMA(data,period){
+function analyze() {
 
-if(data.length<period){
-return data[data.length-1];
+    updateMarket();
+
+    const current = prices[prices.length - 1];
+
+    const e9 = EMA(prices, 9);
+    const e21 = EMA(prices, 21);
+    const e50 = EMA(prices, 50);
+
+    const rsi = RSI(prices);
+    const macd = MACD(prices);
+
+    const momentum =
+        current - prices[prices.length - 6];
+
+    const previous =
+        prices[prices.length - 2];
+
+    let upScore = 0;
+    let downScore = 0;
+
+    // EMA 9
+    if (current > e9) {
+        upScore += 15;
+    } else {
+        downScore += 15;
+    }
+
+    // EMA 9 / 21
+    if (e9 > e21) {
+        upScore += 15;
+    } else {
+        downScore += 15;
+    }
+
+    // EMA 21 / 50
+    if (e21 > e50) {
+        upScore += 15;
+    } else {
+        downScore += 15;
+    }
+
+    // RSI
+    if (rsi >= 52 && rsi <= 68) {
+        upScore += 15;
+    }
+
+    if (rsi <= 48 && rsi >= 32) {
+        downScore += 15;
+    }
+
+    // MACD
+    if (macd > 0) {
+        upScore += 15;
+    } else {
+        downScore += 15;
+    }
+
+    // Momentum
+    if (momentum > 0) {
+        upScore += 15;
+    }
+
+    if (momentum < 0) {
+        downScore += 15;
+    }
+
+    // Current candle pressure
+    if (current > previous) {
+        upScore += 10;
+    } else if (current < previous) {
+        downScore += 10;
+    }
+
+    const difference =
+        Math.abs(upScore - downScore);
+
+    const strongest =
+        Math.max(upScore, downScore);
+
+    let confidence =
+        Math.round(Math.min(99, strongest));
+
+    let signal = "WAIT";
+
+    // High-selectivity confirmation
+    if (
+        upScore > downScore &&
+        difference >= 25 &&
+        confidence >= 75
+    ) {
+        signal = "UP";
+    }
+
+    else if (
+        downScore > upScore &&
+        difference >= 25 &&
+        confidence >= 75
+    ) {
+        signal = "DOWN";
+    }
+
+    // Trend
+    let trend = "SIDEWAYS";
+
+    if (e9 > e21 && e21 > e50) {
+        trend = "UPTREND";
+    }
+
+    else if (e9 < e21 && e21 < e50) {
+        trend = "DOWNTREND";
+    }
+
+    // Momentum
+    let momentumText = "NEUTRAL";
+
+    if (momentum > 0) {
+        momentumText = "BULLISH";
+    }
+
+    else if (momentum < 0) {
+        momentumText = "BEARISH";
+    }
+
+    return {
+        signal,
+        confidence,
+        rsi,
+        trend,
+        momentum: momentumText
+    };
 }
 
-let k=2/(period+1);
+function display(result) {
 
-let value=data[0];
+    const orb = $("orb");
+    const signal = $("signal");
 
-for(let i=1;i<data.length;i++){
+    orb.className = "orb";
 
-value=data[i]*k+value*(1-k);
+    if (result.signal === "UP") {
 
+        orb.classList.add("up");
+        orb.textContent = "UP";
+
+        signal.textContent = "CALL / UP";
+        signal.className = "signalText green";
+    }
+
+    else if (result.signal === "DOWN") {
+
+        orb.classList.add("down");
+        orb.textContent = "DOWN";
+
+        signal.textContent = "PUT / DOWN";
+        signal.className = "signalText red";
+    }
+
+    else {
+
+        orb.classList.add("wait");
+        orb.textContent = "WAIT";
+
+        signal.textContent = "NO TRADE";
+        signal.className = "signalText yellow";
+    }
+
+    $("confidence").textContent =
+        result.confidence + "%";
+
+    $("rsi").textContent =
+        result.rsi.toFixed(1);
+
+    $("trend").textContent =
+        result.trend;
+
+    $("momentum").textContent =
+        result.momentum;
+
+    $("details").textContent =
+        result.signal === "WAIT"
+        ? "Confirmation is not strong enough. WAIT."
+        : "Multiple confirmations detected.";
 }
 
-return value;
+function generate() {
+
+    const result = analyze();
+
+    display(result);
+
+    if (result.signal !== "WAIT") {
+
+        history.unshift({
+            pair: $("pair").value,
+            signal: result.signal,
+            confidence: result.confidence,
+            time: new Date().toLocaleTimeString()
+        });
+
+        if (history.length > 50) {
+            history.pop();
+        }
+
+        renderHistory();
+    }
+
+    return result;
 }
 
+function renderHistory() {
 
-function RSI(data,period=14){
+    $("history").innerHTML = "";
 
-if(data.length<period+1){
-return 50;
+    history.forEach(item => {
+
+        const row = document.createElement("div");
+
+        row.className = "historyRow";
+
+        row.innerHTML = `
+            <span>${item.pair}</span>
+            <span class="${item.signal === "UP" ? "green" : "red"}">
+                ${item.signal}
+            </span>
+            <span>${item.confidence}%</span>
+            <span>${item.time}</span>
+        `;
+
+        $("history").appendChild(row);
+    });
 }
 
-let gain=0;
-let loss=0;
+function startAuto() {
 
-for(let i=data.length-period;i<data.length;i++){
+    if (autoTimer) return;
 
-let change=data[i]-data[i-1];
+    generate();
 
-if(change>0){
-gain+=change;
-}else{
-loss+=Math.abs(change);
+    let seconds = 5;
+
+    $("countdown").textContent =
+        "Next signal in " + seconds + "s";
+
+    countdownTimer = setInterval(() => {
+
+        seconds--;
+
+        if (seconds <= 0) {
+            seconds = 5;
+        }
+
+        $("countdown").textContent =
+            "Next signal in " + seconds + "s";
+
+    }, 1000);
+
+    autoTimer = setInterval(() => {
+        generate();
+    }, 5000);
 }
 
+function stopAuto() {
+
+    clearInterval(autoTimer);
+    clearInterval(countdownTimer);
+
+    autoTimer = null;
+    countdownTimer = null;
+
+    $("countdown").textContent = "Stopped";
 }
 
-if(loss===0){
-return 100;
-}
-
-let rs=gain/loss;
-
-return 100-(100/(1+rs));
-
-}
-
-
-function MACD(data){
-
-return EMA(data,12)-EMA(data,26);
-
-}
-
-
-function analyze(){
-
-updateMarket();
-
-let current=prices[prices.length-1];
-
-let e9=EMA(prices,9);
-let e21=EMA(prices,21);
-let e50=EMA(prices,50);
-
-let rsi=RSI(prices);
-
-let macd=MACD(prices);
-
-let momentum=
-current-prices[prices.length-6];
-
-let up=0;
-let down=0;
-
-
-/* EMA trend */
-
-if(current>e9){
-up+=15;
-}else{
-down+=15;
-}
-
-if(e9>e21){
-up+=15;
-}else{
-down+=15;
-}
-
-if(e21>e50){
-up+=10;
-}else{
-down+=10;
-}
-
-
-/* RSI confirmation */
-
-if(rsi>=52 && rsi<=68){
-up+=15;
-}
-
-if(rsi<=48 && rsi>=32){
-down+=15;
-}
-
-
-/* MACD */
-
-if(macd>0){
-up+=15;
-}else{
-down+=15;
-}
-
-
-/* Momentum */
-
-if(momentum>0){
-up+=15;
-}
-
-if(momentum<0){
-down+=15;
-}
-
-
-/* Candle pressure */
-
-let previous=prices[prices.length-2];
-
-if(current>previous){
-up+=10;
-}else{
-down+=10;
-}
-
-
-/* Strong confirmation only */
-
-let difference=Math.abs(up-down);
-
-let confidence=Math.round(
-Math.min(99,Math.max(up,down))
+$("scan").addEventListener(
+    "click",
+    generate
 );
 
-let signal="WAIT";
-
-if(up>down && difference>=20 && confidence>=75){
-
-signal="UP";
-
-}
-
-else if(down>up && difference>=20 && confidence>=75){
-
-signal="DOWN";
-
-}
-
-
-/* Trend */
-
-let trend="SIDEWAYS";
-
-if(e9>e21 && e21>e50){
-trend="UPTREND";
-}
-
-else if(e9<e21 && e21<e50){
-trend="DOWNTREND";
-}
-
-
-let momentumText="NEUTRAL";
-
-if(momentum>0){
-momentumText="BULLISH";
-}
-
-else if(momentum<0){
-momentumText="BEARISH";
-}
-
-
-return{
-signal,
-confidence,
-rsi,
-trend,
-momentum:momentumText
-};
-
-}
-
-
-function display(result){
-
-const orb=$("orb");
-const signal=$("signal");
-
-orb.className="orb";
-
-if(result.signal==="UP"){
-
-orb.classList.add("up");
-orb.textContent="UP";
-
-signal.textContent="CALL / UP";
-signal.className="signalText green";
-
-}
-
-else if(result.signal==="DOWN"){
-
-orb.classList.add("down");
-orb.textContent="DOWN";
-
-signal.textContent="PUT / DOWN";
-signal.className="signalText red";
-
-}
-
-else{
-
-orb.classList.add("wait");
-orb.textContent="WAIT";
-
-signal.textContent="NO TRADE";
-signal.className="signalText yellow";
-
-}
-
-$("confidence").textContent=result.confidence+"%";
-
-$("rsi").textContent=result.rsi.toFixed(1);
-
-$("trend").textContent=result.trend;
-
-$("momentum").textContent=result.momentum;
-
-$("details").textContent=
-result.signal==="WAIT"
-?"Market conditions are not strong enough."
-:"Multiple indicators confirmed the direction.";
-
-}
-
-
-function generate(){
-
-let result=analyze();
-
-display(result);
-
-if(result.signal!=="WAIT"){
-
-history.unshift({
-
-pair:$("pair").value,
-signal:result.signal,
-confidence:result.confidence,
-time:new Date().toLocaleTimeString()
-
-});
-
-if(history.length>50){
-history.pop();
-}
-
-renderHistory();
-
-}
-
-return result;
-
-}
-
-
-function renderHistory(){
-
-$("history").innerHTML="";
-
-history.forEach(item=>{
-
-let row=document.createElement("div");
-
-row.className="historyRow";
-
-row.innerHTML=`
-
-<span>${item.pair}</span>
-
-<span class="${item.signal==="UP"?"green":"red"}">
-${item.signal}
-</span>
-
-<span>${item.confidence}%</span>
-
-<span>${item.time}</span>
-
-`;
-
-$("history").appendChild(row);
-
-});
-
-}
-
-
-function startAuto(){
-
-if(autoTimer){
-return;
-}
-
-generate();
-
-let seconds=5;
-
-$("countdown").textContent=
-"Next signal in "+seconds+"s";
-
-countdownTimer=setInterval(()=>{
-
-seconds--;
-
-if(seconds<=0){
-seconds=5;
-}
-
-$("countdown").textContent=
-"Next signal in "+seconds+"s";
-
-},1000);
-
-autoTimer=setInterval(()=>{
-
-generate();
-
-},5000);
-
-}
-
-
-function stopAuto(){
-
-clearInterval(autoTimer);
-clearInterval(countdownTimer);
-
-autoTimer=null;
-countdownTimer=null;
-
-$("countdown").textContent="Stopped";
-
-}
-
-
-$("scan").addEventListener("click",generate);
-
-$("auto").addEventListener("click",startAuto);
-
-$("stop").addEventListener("click",stopAuto);
+$("auto").addEventListener(
+    "click",
+    startAuto
+);
+
+$("stop").addEventListener(
+    "click",
+    stopAuto
+);
 
 createMarket();
-
-</script>
-
-</body>
-</html>
