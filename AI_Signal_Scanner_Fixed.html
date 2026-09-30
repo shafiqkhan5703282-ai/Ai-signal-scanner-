@@ -3,330 +3,1437 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#07111f">
-<title>AI Signal Scanner</title>
+<meta name="theme-color" content="#050812">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>AI Signal Scanner PRO</title>
+
 <style>
-:root{--bg:#050914;--card:#0b1424;--card2:#101d31;--line:#19304b;--text:#f5f8ff;--muted:#8294ad;--cyan:#22d3ee;--green:#22e58a;--red:#ff5577;--yellow:#ffd166}
-*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 50% -10%,#14345a 0,#081221 42%,#050914 75%);font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display",Inter,Arial,sans-serif;color:var(--text);min-height:100vh}
-.app{max-width:520px;margin:auto;padding:18px 14px 30px}.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}.brand{font-weight:800;font-size:22px}.brand span{color:var(--cyan)}.online{font-size:12px;color:var(--green);background:#09251e;border:1px solid #174d3e;padding:7px 10px;border-radius:999px}
-.card{background:linear-gradient(145deg,rgba(17,31,51,.96),rgba(7,15,28,.96));border:1px solid var(--line);border-radius:22px;box-shadow:0 14px 45px rgba(0,0,0,.3);padding:16px;margin-bottom:12px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.label{font-size:10px;letter-spacing:1.2px;color:var(--muted);text-transform:uppercase;margin-bottom:6px}.select,.button{width:100%;border:1px solid #23405e;background:#0a1628;color:var(--text);border-radius:12px;padding:12px;font-size:14px}.button{cursor:pointer;font-weight:800;touch-action:manipulation;-webkit-tap-highlight-color:transparent;user-select:none}.button.primary{background:linear-gradient(90deg,#087ea5,#0aa9bd);border:0}.button.stop{background:#29111a;border-color:#5b2434;color:#ff9ab0}.scan{text-align:center;padding:12px 8px 16px}.ring{width:170px;height:170px;border-radius:50%;margin:4px auto 14px;display:grid;place-items:center;border:2px solid #0f6f99;box-shadow:0 0 0 10px rgba(34,211,238,.035),0 0 45px rgba(34,211,238,.12);position:relative}.ring:before,.ring:after{content:"";position:absolute;border:1px solid #145273;border-radius:50%}.ring:before{inset:16px}.ring:after{inset:32px}.core{z-index:2}.core .dir{font-size:35px;font-weight:900}.core .small{font-size:10px;color:var(--muted);letter-spacing:1px}.timer{font-size:32px;font-weight:900;margin:4px 0}.status{font-size:12px;color:var(--muted)}.signal{display:none;text-align:center;border-radius:18px;padding:18px;margin-top:10px}.signal.up{display:block;background:linear-gradient(145deg,#073328,#071d20);border:1px solid #1b8d70}.signal.down{display:block;background:linear-gradient(145deg,#3a101e,#1d0b15);border:1px solid #9a2c49}.signal .big{font-size:40px;font-weight:950}.signal .sub{font-size:11px;letter-spacing:1px;color:#a9bacf}.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px}.stat{background:#091526;border:1px solid #18304b;border-radius:12px;padding:10px;text-align:center}.stat b{display:block;font-size:17px}.stat span{font-size:9px;color:var(--muted);text-transform:uppercase}.bar{height:7px;background:#102137;border-radius:99px;overflow:hidden;margin-top:7px}.fill{height:100%;width:0;background:linear-gradient(90deg,#16c6e8,#22e58a);transition:width .5s}.history{display:flex;flex-direction:column;gap:7px}.row{display:grid;grid-template-columns:1.1fr .7fr .7fr .7fr;gap:6px;align-items:center;background:#081323;border:1px solid #142942;border-radius:10px;padding:9px;font-size:11px}.upTxt{color:var(--green);font-weight:800}.downTxt{color:var(--red);font-weight:800}.win{color:var(--green)}.loss{color:var(--red)}.note{font-size:10px;line-height:1.45;color:#71849d;margin-top:10px}.footer{text-align:center;color:#566a84;font-size:10px;padding:8px}.tabs{display:flex;gap:7px}.tab{flex:1}.active{outline:2px solid rgba(34,211,238,.35)}@media(max-width:360px){.app{padding:12px 10px}.ring{width:145px;height:145px}}
+:root{
+  --bg:#050812;
+  --panel:#0b1220;
+  --panel2:#0e1829;
+  --line:#1b2a40;
+  --text:#f5f8ff;
+  --muted:#7f91a9;
+  --cyan:#20d9ff;
+  --blue:#438cff;
+  --green:#24e59a;
+  --red:#ff5577;
+  --yellow:#ffd166;
+  --shadow:0 20px 60px rgba(0,0,0,.42);
+}
+
+*{
+  box-sizing:border-box;
+  -webkit-tap-highlight-color:transparent;
+}
+
+html,body{
+  margin:0;
+  min-height:100%;
+  background:#050812;
+}
+
+body{
+  color:var(--text);
+  font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text",Inter,Arial,sans-serif;
+  overflow-x:hidden;
+}
+
+body:before{
+  content:"";
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  background:
+    radial-gradient(circle at 50% -15%,rgba(32,217,255,.18),transparent 35%),
+    radial-gradient(circle at 0% 45%,rgba(67,140,255,.07),transparent 30%),
+    radial-gradient(circle at 100% 70%,rgba(36,229,154,.05),transparent 28%);
+}
+
+.app{
+  position:relative;
+  width:min(100%,560px);
+  margin:auto;
+  padding:
+    max(14px,env(safe-area-inset-top))
+    14px
+    calc(32px + env(safe-area-inset-bottom));
+}
+
+/* HEADER */
+
+.header{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:10px 2px 18px;
+}
+
+.brand{
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+
+.logo{
+  width:42px;
+  height:42px;
+  border-radius:14px;
+  display:grid;
+  place-items:center;
+  background:linear-gradient(145deg,#123c62,#071a2c);
+  border:1px solid #1d6287;
+  box-shadow:0 0 28px rgba(32,217,255,.12);
+  font-size:20px;
+}
+
+.brandText{
+  font-size:18px;
+  font-weight:900;
+  letter-spacing:-.4px;
+}
+
+.brandText span{
+  color:var(--cyan);
+}
+
+.version{
+  display:block;
+  margin-top:2px;
+  color:var(--muted);
+  font-size:9px;
+  letter-spacing:1.5px;
+  text-transform:uppercase;
+}
+
+.live{
+  display:flex;
+  align-items:center;
+  gap:7px;
+  padding:8px 11px;
+  border-radius:99px;
+  background:rgba(36,229,154,.07);
+  border:1px solid rgba(36,229,154,.22);
+  color:#74f0ba;
+  font-size:10px;
+  font-weight:800;
+}
+
+.liveDot{
+  width:7px;
+  height:7px;
+  border-radius:50%;
+  background:var(--green);
+  box-shadow:0 0 10px var(--green);
+  animation:pulse 1.4s infinite;
+}
+
+/* CARDS */
+
+.card{
+  position:relative;
+  background:
+    linear-gradient(145deg,rgba(15,27,46,.97),rgba(7,13,24,.98));
+  border:1px solid var(--line);
+  border-radius:23px;
+  padding:15px;
+  margin-bottom:12px;
+  box-shadow:var(--shadow);
+  overflow:hidden;
+}
+
+.card:after{
+  content:"";
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  background:linear-gradient(120deg,rgba(255,255,255,.025),transparent 35%);
+}
+
+.sectionTitle{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  margin-bottom:12px;
+}
+
+.sectionTitle strong{
+  font-size:12px;
+  letter-spacing:1.2px;
+  text-transform:uppercase;
+}
+
+.sectionTitle span{
+  font-size:9px;
+  color:var(--muted);
+}
+
+/* SELECTORS */
+
+.grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+}
+
+.label{
+  color:var(--muted);
+  font-size:9px;
+  font-weight:800;
+  letter-spacing:1.3px;
+  text-transform:uppercase;
+  margin-bottom:6px;
+}
+
+.select{
+  width:100%;
+  height:46px;
+  appearance:none;
+  color:var(--text);
+  background:#081222;
+  border:1px solid #20334c;
+  border-radius:13px;
+  padding:0 12px;
+  font-size:13px;
+  font-weight:700;
+  outline:none;
+}
+
+.select:focus{
+  border-color:#287caa;
+  box-shadow:0 0 0 3px rgba(32,217,255,.07);
+}
+
+/* BUTTONS */
+
+.controls{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:9px;
+  margin-top:11px;
+}
+
+.button{
+  min-height:46px;
+  border:1px solid #243a55;
+  border-radius:13px;
+  background:#091526;
+  color:var(--text);
+  font-size:12px;
+  font-weight:900;
+  letter-spacing:.3px;
+  cursor:pointer;
+  touch-action:manipulation;
+  transition:.18s ease;
+}
+
+.button:active{
+  transform:scale(.97);
+}
+
+.button.primary{
+  border:0;
+  background:linear-gradient(135deg,#087ca5,#10b7cf);
+  box-shadow:0 8px 25px rgba(16,183,207,.18);
+}
+
+.button.stop{
+  background:linear-gradient(135deg,#471526,#29101a);
+  border-color:#72233b;
+  color:#ff9bb1;
+}
+
+.button.active{
+  box-shadow:0 0 0 2px rgba(32,217,255,.16),0 0 25px rgba(32,217,255,.08);
+}
+
+/* SCANNER */
+
+.scanner{
+  text-align:center;
+  padding:19px 12px 17px;
+}
+
+.scannerTop{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  margin-bottom:4px;
+}
+
+.scannerTop .mini{
+  color:var(--muted);
+  font-size:9px;
+  text-transform:uppercase;
+  letter-spacing:1.1px;
+}
+
+.scanningBadge{
+  color:var(--cyan);
+  font-size:9px;
+  font-weight:900;
+  letter-spacing:1px;
+}
+
+.ring{
+  position:relative;
+  width:210px;
+  height:210px;
+  margin:7px auto 16px;
+  border-radius:50%;
+  display:grid;
+  place-items:center;
+  background:
+    radial-gradient(circle,#0d1d31 0 38%,transparent 39%),
+    conic-gradient(
+      rgba(32,217,255,.9),
+      rgba(32,217,255,.08) 25%,
+      rgba(67,140,255,.55) 48%,
+      rgba(36,229,154,.5) 70%,
+      rgba(32,217,255,.9)
+    );
+  box-shadow:
+    0 0 0 1px rgba(32,217,255,.16),
+    0 0 45px rgba(32,217,255,.11);
+  animation:scannerGlow 3s ease-in-out infinite;
+}
+
+.ring:before{
+  content:"";
+  position:absolute;
+  inset:7px;
+  border-radius:50%;
+  background:#07111f;
+}
+
+.ring:after{
+  content:"";
+  position:absolute;
+  inset:21px;
+  border:1px solid rgba(32,217,255,.18);
+  border-radius:50%;
+}
+
+.orbit{
+  position:absolute;
+  inset:0;
+  border-radius:50%;
+  animation:spin 7s linear infinite;
+}
+
+.orbit:before{
+  content:"";
+  position:absolute;
+  top:8px;
+  left:50%;
+  width:7px;
+  height:7px;
+  margin-left:-3.5px;
+  border-radius:50%;
+  background:var(--cyan);
+  box-shadow:0 0 15px var(--cyan);
+}
+
+.core{
+  position:relative;
+  z-index:5;
+}
+
+.direction{
+  font-size:50px;
+  line-height:1;
+  font-weight:950;
+  letter-spacing:-3px;
+}
+
+.coreText{
+  margin-top:7px;
+  font-size:10px;
+  font-weight:900;
+  letter-spacing:2px;
+  color:var(--muted);
+}
+
+.timer{
+  font-size:37px;
+  line-height:1;
+  font-weight:950;
+  letter-spacing:-1px;
+  margin-bottom:7px;
+}
+
+.status{
+  min-height:17px;
+  color:var(--muted);
+  font-size:10px;
+}
+
+/* SIGNAL */
+
+.signal{
+  display:none;
+  margin-top:15px;
+  padding:15px;
+  border-radius:18px;
+  text-align:left;
+}
+
+.signal.up{
+  display:block;
+  background:linear-gradient(145deg,rgba(6,54,40,.9),rgba(5,27,27,.95));
+  border:1px solid rgba(36,229,154,.35);
+}
+
+.signal.down{
+  display:block;
+  background:linear-gradient(145deg,rgba(65,13,30,.9),rgba(27,8,18,.95));
+  border:1px solid rgba(255,85,119,.38);
+}
+
+.signalHeader{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+}
+
+.signalDirection{
+  font-size:35px;
+  font-weight:950;
+}
+
+.signalType{
+  color:var(--muted);
+  font-size:9px;
+  letter-spacing:1.2px;
+  margin-top:2px;
+}
+
+.signalBadge{
+  padding:6px 9px;
+  border-radius:8px;
+  background:rgba(255,255,255,.06);
+  font-size:9px;
+  font-weight:900;
+}
+
+.stats{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:8px;
+  margin-top:13px;
+}
+
+.stat{
+  background:rgba(5,14,26,.7);
+  border:1px solid #172c45;
+  border-radius:12px;
+  padding:11px 7px;
+  text-align:center;
+}
+
+.stat b{
+  display:block;
+  font-size:16px;
+  font-weight:900;
+}
+
+.stat span{
+  display:block;
+  margin-top:4px;
+  color:var(--muted);
+  font-size:8px;
+  font-weight:800;
+  letter-spacing:.8px;
+  text-transform:uppercase;
+}
+
+.score{
+  margin-top:13px;
+}
+
+.scoreHead{
+  display:flex;
+  justify-content:space-between;
+  color:var(--muted);
+  font-size:9px;
+  font-weight:800;
+  text-transform:uppercase;
+  letter-spacing:1px;
+}
+
+.bar{
+  height:8px;
+  margin-top:7px;
+  overflow:hidden;
+  border-radius:99px;
+  background:#101e31;
+}
+
+.fill{
+  width:0;
+  height:100%;
+  border-radius:99px;
+  background:linear-gradient(90deg,var(--cyan),var(--green));
+  transition:width .6s ease;
+}
+
+/* ANALYSIS */
+
+.analysisGrid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:8px;
+}
+
+.analysisBox{
+  padding:12px 6px;
+  background:#081321;
+  border:1px solid #172a43;
+  border-radius:13px;
+  text-align:center;
+}
+
+.analysisBox b{
+  display:block;
+  font-size:11px;
+  font-weight:900;
+  min-height:15px;
+}
+
+.analysisBox span{
+  display:block;
+  margin-top:5px;
+  color:var(--muted);
+  font-size:8px;
+  font-weight:800;
+  text-transform:uppercase;
+  letter-spacing:.5px;
+}
+
+/* HISTORY */
+
+.history{
+  display:flex;
+  flex-direction:column;
+  gap:7px;
+}
+
+.historyHead,
+.historyRow{
+  display:grid;
+  grid-template-columns:1.05fr .8fr .65fr .55fr;
+  gap:5px;
+  align-items:center;
+}
+
+.historyHead{
+  padding:0 8px 5px;
+  color:#5f7189;
+  font-size:8px;
+  font-weight:900;
+  text-transform:uppercase;
+  letter-spacing:.7px;
+}
+
+.historyRow{
+  padding:10px 8px;
+  background:#081321;
+  border:1px solid #152940;
+  border-radius:11px;
+  font-size:9px;
+}
+
+.upTxt{
+  color:var(--green);
+  font-weight:900;
+}
+
+.downTxt{
+  color:var(--red);
+  font-weight:900;
+}
+
+.clear{
+  min-height:32px;
+  padding:0 10px;
+  font-size:9px;
+}
+
+/* INFO */
+
+.info{
+  color:#73859d;
+  font-size:9px;
+  line-height:1.55;
+}
+
+.info strong{
+  color:#a7b6c9;
+}
+
+/* FOOTER */
+
+.footer{
+  padding:7px 0 0;
+  text-align:center;
+  color:#4e6179;
+  font-size:8px;
+  letter-spacing:.4px;
+}
+
+/* ANIMATIONS */
+
+@keyframes pulse{
+  0%,100%{opacity:1;transform:scale(1)}
+  50%{opacity:.45;transform:scale(.75)}
+}
+
+@keyframes spin{
+  to{transform:rotate(360deg)}
+}
+
+@keyframes scannerGlow{
+  0%,100%{box-shadow:0 0 0 1px rgba(32,217,255,.16),0 0 40px rgba(32,217,255,.08)}
+  50%{box-shadow:0 0 0 1px rgba(32,217,255,.28),0 0 60px rgba(32,217,255,.16)}
+}
+
+.signalFlash{
+  animation:signalFlash .55s ease;
+}
+
+@keyframes signalFlash{
+  0%{transform:scale(.97);opacity:.4}
+  100%{transform:scale(1);opacity:1}
+}
+
+@media(max-width:370px){
+  .app{padding-left:10px;padding-right:10px}
+  .ring{width:180px;height:180px}
+  .direction{font-size:43px}
+  .analysisBox{padding-left:3px;padding-right:3px}
+}
+
+@media(min-width:700px){
+  .app{padding-top:28px}
+}
 </style>
 </head>
-<body>
-<div class="app">
-  <div class="top">
-    <div class="brand">AI <span>Signal Scanner</span></div>
-    <div class="online" id="online">● ONLINE</div>
-  </div>
 
-  <div class="card">
+<body>
+
+<div class="app">
+
+  <!-- HEADER -->
+  <header class="header">
+    <div class="brand">
+      <div class="logo">◈</div>
+      <div>
+        <div class="brandText">AI <span>Signal Scanner</span></div>
+        <span class="version">PRO INTERFACE • V1</span>
+      </div>
+    </div>
+
+    <div class="live">
+      <i class="liveDot"></i>
+      ONLINE
+    </div>
+  </header>
+
+  <!-- MARKET SETTINGS -->
+  <section class="card">
+
+    <div class="sectionTitle">
+      <strong>Market Setup</strong>
+      <span id="marketStatus">READY</span>
+    </div>
+
     <div class="grid">
-      <div><div class="label">Pair</div>
+
+      <div>
+        <div class="label">Trading Pair</div>
         <select class="select" id="pair">
-          <option>EUR/AUD (OTC)</option><option>EUR/USD (OTC)</option><option>GBP/USD (OTC)</option><option>USD/JPY (OTC)</option><option>GBP/JPY (OTC)</option>
+          <option>EUR/AUD (OTC)</option>
+          <option>EUR/USD (OTC)</option>
+          <option>GBP/USD (OTC)</option>
+          <option>USD/JPY (OTC)</option>
+          <option>GBP/JPY (OTC)</option>
+          <option>AUD/USD (OTC)</option>
+          <option>USD/CAD (OTC)</option>
         </select>
       </div>
-      <div><div class="label">Expiry</div>
-        <select class="select" id="expiry"><option value="30">30 seconds</option><option value="60">1 minute</option><option value="300">5 minutes</option></select>
-      </div>
-    </div>
-    <div style="height:10px"></div>
-    <div class="tabs">
-      <button class="button tab active" id="autoBtn">AUTO SCAN</button>
-      <button class="button tab" id="onceBtn">SCAN NOW</button>
-    </div>
-  </div>
 
-  <div class="card scan">
-    <div class="label">Market scanner</div>
-    <div class="ring">
+      <div>
+        <div class="label">Expiry</div>
+        <select class="select" id="expiry">
+          <option value="30">30 Seconds</option>
+          <option value="60">1 Minute</option>
+          <option value="300">5 Minutes</option>
+        </select>
+      </div>
+
+    </div>
+
+    <div class="controls">
+      <button class="button primary" id="autoBtn">▶ AUTO SCAN</button>
+      <button class="button" id="onceBtn">⚡ SCAN NOW</button>
+    </div>
+
+  </section>
+
+
+  <!-- MAIN SCANNER -->
+  <section class="card scanner">
+
+    <div class="scannerTop">
+      <span class="mini">AI Market Scanner</span>
+      <span class="scanningBadge" id="scanBadge">STANDBY</span>
+    </div>
+
+    <div class="ring" id="ring">
+
+      <div class="orbit"></div>
+
       <div class="core">
-        <div class="dir" id="dir">—</div>
-        <div class="small" id="coreText">WAITING</div>
+        <div class="direction" id="dir">—</div>
+        <div class="coreText" id="coreText">WAITING</div>
       </div>
+
     </div>
+
     <div class="timer" id="timer">00:30</div>
-    <div class="status" id="status">Ready to analyze market conditions</div>
+
+    <div class="status" id="status">
+      Ready to analyze demo market conditions
+    </div>
+
+
+    <!-- SIGNAL RESULT -->
+
     <div class="signal" id="signal">
-      <div class="big" id="signalDir">UP</div>
-      <div class="sub" id="signalSub">AI-STYLE BUY SIGNAL</div>
+
+      <div class="signalHeader">
+
+        <div>
+          <div class="signalDirection" id="signalDir">UP</div>
+          <div class="signalType" id="signalSub">
+            AI-STYLE BUY SIGNAL
+          </div>
+        </div>
+
+        <div class="signalBadge" id="signalBadge">
+          SIGNAL
+        </div>
+
+      </div>
+
+
       <div class="stats">
-        <div class="stat"><b id="confidence">--%</b><span>Confidence</span></div>
-        <div class="stat"><b id="strength">--%</b><span>Strength</span></div>
-        <div class="stat"><b id="expires">--</b><span>Expiry</span></div>
+
+        <div class="stat">
+          <b id="confidence">--%</b>
+          <span>Confidence</span>
+        </div>
+
+        <div class="stat">
+          <b id="strength">--%</b>
+          <span>Strength</span>
+        </div>
+
+        <div class="stat">
+          <b id="expires">--</b>
+          <span>Expiry</span>
+        </div>
+
       </div>
-      <div style="text-align:left;margin-top:12px">
-        <div class="label">Signal score</div><div class="bar"><div class="fill" id="fill"></div></div>
+
+
+      <div class="score">
+
+        <div class="scoreHead">
+          <span>Signal Score</span>
+          <span id="scoreText">--%</span>
+        </div>
+
+        <div class="bar">
+          <div class="fill" id="fill"></div>
+        </div>
+
       </div>
+
     </div>
+
+  </section>
+
+
+  <!-- ANALYSIS -->
+  <section class="card">
+
+    <div class="sectionTitle">
+      <strong>AI Analysis</strong>
+      <span id="analysisState">WAITING</span>
+    </div>
+
+    <div class="analysisGrid">
+
+      <div class="analysisBox">
+        <b id="trend">—</b>
+        <span>Trend</span>
+      </div>
+
+      <div class="analysisBox">
+        <b id="momentum">—</b>
+        <span>Momentum</span>
+      </div>
+
+      <div class="analysisBox">
+        <b id="rsi">—</b>
+        <span>RSI</span>
+      </div>
+
+      <div class="analysisBox">
+        <b id="candle">—</b>
+        <span>Price Action</span>
+      </div>
+
+      <div class="analysisBox">
+        <b id="vol">—</b>
+        <span>Volatility</span>
+      </div>
+
+      <div class="analysisBox">
+        <b id="quality">—</b>
+        <span>Setup</span>
+      </div>
+
+    </div>
+
+  </section>
+
+
+  <!-- HISTORY -->
+  <section class="card">
+
+    <div class="sectionTitle">
+      <strong>Signal History</strong>
+      <button class="button clear" id="clear">CLEAR</button>
+    </div>
+
+    <div class="historyHead">
+      <span>Time</span>
+      <span>Pair</span>
+      <span>Signal</span>
+      <span>Score</span>
+    </div>
+
+    <div class="history" id="history">
+      <div class="info">No signals generated yet.</div>
+    </div>
+
+  </section>
+
+
+  <!-- INFORMATION -->
+  <section class="card">
+
+    <div class="sectionTitle">
+      <strong>Scanner Information</strong>
+      <span>DEMO</span>
+    </div>
+
+    <div class="info">
+      <strong>Prototype scanner:</strong>
+      This interface uses locally generated demo candles for testing the
+      scanner experience. It does not connect to a Quotex account,
+      does not place trades, and does not guarantee profitable signals.
+      Real-time analysis would require a permitted matching market-data feed.
+    </div>
+
+  </section>
+
+  <div class="footer">
+    AI Signal Scanner PRO • Designed for iPhone Safari • Add to Home Screen
   </div>
 
-  <div class="card">
-    <div class="label">Analysis</div>
-    <div class="grid">
-      <div class="stat"><b id="trend">—</b><span>Trend</span></div>
-      <div class="stat"><b id="momentum">—</b><span>Momentum</span></div>
-      <div class="stat"><b id="rsi">—</b><span>RSI</span></div>
-      <div class="stat"><b id="candle">—</b><span>Price action</span></div>
-      <div class="stat"><b id="vol">—</b><span>Volatility</span></div>
-      <div class="stat"><b id="quality">—</b><span>Setup</span></div>
-    </div>
-  </div>
-
-  <div class="card">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
-      <div class="label" style="margin:0">Signal history</div>
-      <button class="button" style="width:auto;padding:7px 10px;font-size:11px" id="clear">Clear</button>
-    </div>
-    <div class="history" id="history"><div class="note">No signals yet.</div></div>
-  </div>
-
-  <div class="card">
-    <div class="label">Important</div>
-    <div class="note">
-      This is a working <b>prototype/demo scanner</b>. It does not connect to your Quotex account, does not place trades, and does not claim guaranteed accuracy. The demo market engine generates test candles locally so the interface can run automatically on iPhone. For real Quotex OTC signals, the scanner would need a permitted, matching real-time price feed.
-    </div>
-  </div>
-  <div class="footer">Designed for iPhone Safari • Add to Home Screen for app-like use</div>
 </div>
 
+
 <script>
-(function () {
-  'use strict';
+(function(){
 
-  function init() {
-    const $ = id => document.getElementById(id);
+"use strict";
 
-    let running = false;
-    let countdown = 30;
-    let interval = null;
-    let candles = [];
-    let history = [];
-    let lastSignal = null;
-    let signalCountdown = 0;
+function init(){
 
-    function seed() {
-      candles = [];
-      let p = 100;
-      for (let i = 0; i < 80; i++) {
-        p += (Math.random() - 0.49) * 1.2;
-        candles.push(p);
-      }
+  const $ = id => document.getElementById(id);
+
+  let running = false;
+  let countdown = 30;
+  let interval = null;
+  let candles = [];
+  let history = [];
+  let lastSignal = null;
+  let signalCountdown = 0;
+
+
+  /* -----------------------------
+     DEMO MARKET ENGINE
+  ----------------------------- */
+
+  function seed(){
+
+    candles = [];
+
+    let price = 100;
+
+    for(let i=0;i<100;i++){
+
+      price += (Math.random() - .49) * 1.15;
+
+      candles.push(price);
+
     }
 
-    function fmt(s) {
-      return String(Math.max(0, s)).padStart(2, '0');
+  }
+
+
+  function fmt(value){
+
+    return String(Math.max(0,value)).padStart(2,"0");
+
+  }
+
+
+  function calculateRSI(arr,n=14){
+
+    if(arr.length<n+1) return 50;
+
+    let gain=0;
+    let loss=0;
+
+    for(let i=arr.length-n;i<arr.length;i++){
+
+      const difference=arr[i]-arr[i-1];
+
+      if(difference>0)
+        gain+=difference;
+      else
+        loss-=difference;
+
     }
 
-    function rsi(arr, n = 14) {
-      if (arr.length < n + 1) return 50;
-      let g = 0, l = 0;
-      for (let i = arr.length - n; i < arr.length; i++) {
-        const d = arr[i] - arr[i - 1];
-        if (d > 0) g += d;
-        else l -= d;
-      }
-      if (l === 0) return 100;
-      return 100 - (100 / (1 + g / l));
+    if(loss===0) return 100;
+
+    return 100-(100/(1+(gain/loss)));
+
+  }
+
+
+  /* -----------------------------
+     ANALYSIS
+  ----------------------------- */
+
+  function analyze(){
+
+    const last=candles[candles.length-1];
+
+    const shortArr=candles.slice(-8);
+    const longArr=candles.slice(-21,-8);
+
+    const shortMove=
+      shortArr[shortArr.length-1]-shortArr[0];
+
+    const longMove=
+      longArr[longArr.length-1]-longArr[0];
+
+    const rsiValue=calculateRSI(candles);
+
+    const momentum=
+      shortMove>0
+      ? "BULLISH"
+      : shortMove<0
+      ? "BEARISH"
+      : "FLAT";
+
+    const trendScore=(shortMove*1.35)+longMove;
+
+    const trend=
+      trendScore>0
+      ? "UPTREND"
+      : trendScore<0
+      ? "DOWNTREND"
+      : "SIDEWAYS";
+
+    const previous=
+      candles[candles.length-2];
+
+    const body=last-previous;
+
+    const directionScore=
+      shortMove+
+      longMove*.35+
+      (rsiValue-50)*.03+
+      body*.7;
+
+    const direction=
+      directionScore>=0
+      ? "UP"
+      : "DOWN";
+
+    let confidence=
+      58+
+      Math.min(20,Math.abs(shortMove)*8)+
+      Math.min(10,Math.abs(rsiValue-50)*.35);
+
+    if(
+      (direction==="UP" && trend==="UPTREND") ||
+      (direction==="DOWN" && trend==="DOWNTREND")
+    ){
+      confidence+=5;
     }
 
-    function analyze() {
-      const last = candles[candles.length - 1];
-      const a = candles.slice(-8);
-      const b = candles.slice(-21, -8);
-      const short = a[a.length - 1] - a[0];
-      const long = b[b.length - 1] - b[0];
-      const rr = rsi(candles);
-      const momentum = short > 0 ? 'BULLISH' : short < 0 ? 'BEARISH' : 'FLAT';
-      const trend = (short * 1.3 + long) > 0 ? 'UPTREND' :
-                    (short * 1.3 + long) < 0 ? 'DOWNTREND' : 'SIDEWAYS';
-      const body = last - candles[candles.length - 2];
-      const direction =
-        (short + long * .35 + (rr - 50) * .03 + body * .7) >= 0 ? 'UP' : 'DOWN';
+    confidence+=Math.random()*8-4;
 
-      const base = 58 +
-        Math.min(20, Math.abs(short) * 8) +
-        Math.min(10, Math.abs(rr - 50) * .35);
+    confidence=Math.round(
+      Math.min(94,Math.max(51,confidence))
+    );
 
-      const confidence = Math.round(Math.min(
-        94,
-        Math.max(
-          51,
-          base +
-          (trend.startsWith(direction === 'UP' ? 'UP' : 'DOWN') ? 5 : 0) +
-          (Math.random() * 8 - 4)
-        )
-      ));
+    const strength=Math.max(
+      50,
+      confidence-2+Math.round(Math.random()*5)
+    );
 
-      $('trend').textContent = trend;
-      $('momentum').textContent = momentum;
-      $('rsi').textContent = rr.toFixed(0);
-      $('candle').textContent = body >= 0 ? 'BULL' : 'BEAR';
-      $('vol').textContent = (Math.abs(short) * 10 + Math.random() * 20).toFixed(0) + '%';
-      $('quality').textContent =
-        confidence >= 75 ? 'HIGH' : confidence >= 65 ? 'MED' : 'LOW';
+    const volatility=
+      Math.min(
+        99,
+        Math.abs(shortMove)*10+Math.random()*20
+      );
 
-      return {
-        direction,
-        confidence,
-        strength: Math.max(50, confidence - 2 + Math.round(Math.random() * 5))
-      };
-    }
+    $("trend").textContent=trend;
+    $("momentum").textContent=momentum;
+    $("rsi").textContent=rsiValue.toFixed(0);
+    $("candle").textContent=body>=0?"BULL":"BEAR";
+    $("vol").textContent=volatility.toFixed(0)+"%";
 
-    function addHistory(sig) {
-      history.unshift({
-        time: new Date().toLocaleTimeString([], {
-          hour: '2-digit', minute: '2-digit', second: '2-digit'
-        }),
-        pair: $('pair').value.split(' ')[0],
-        dir: sig.direction,
-        conf: sig.confidence
-      });
-      history = history.slice(0, 12);
-      renderHistory();
-    }
+    $("quality").textContent=
+      confidence>=75
+      ?"HIGH"
+      :confidence>=65
+      ?"MEDIUM"
+      :"LOW";
 
-    function renderHistory() {
-      const h = $('history');
-      h.innerHTML = '';
+    $("analysisState").textContent="ANALYZED";
 
-      history.forEach(x => {
-        h.innerHTML +=
-          '<div class="row">' +
-          '<span>' + x.time + '</span>' +
-          '<span>' + x.pair + '</span>' +
-          '<span class="' + (x.dir === 'UP' ? 'upTxt' : 'downTxt') + '">' +
-          x.dir + '</span>' +
-          '<span>' + x.conf + '%</span>' +
-          '</div>';
-      });
+    return {
+      direction,
+      confidence,
+      strength
+    };
 
-      if (!history.length) {
-        h.innerHTML = '<div class="note">No signals yet.</div>';
-      }
-    }
+  }
 
-    function scan() {
-      const drift = lastSignal
-        ? (lastSignal.direction === 'UP' ? .05 : -.05)
-        : 0;
 
-      const next =
-        candles[candles.length - 1] +
-        drift +
-        (Math.random() - .5) * 1.1;
+  /* -----------------------------
+     SIGNAL
+  ----------------------------- */
 
-      candles.push(next);
-      if (candles.length > 140) candles.shift();
+  function scan(){
 
-      const sig = analyze();
-      lastSignal = sig;
-      signalCountdown = Number($('expiry').value);
+    const drift=
+      lastSignal
+      ? lastSignal.direction==="UP"
+        ? .05
+        : -.05
+      : 0;
 
-      $('dir').textContent = sig.direction === 'UP' ? '↑' : '↓';
-      $('coreText').textContent =
-        sig.direction === 'UP' ? 'STRONG BUY' : 'STRONG SELL';
+    const next=
+      candles[candles.length-1]+
+      drift+
+      (Math.random()-.5)*1.1;
 
-      $('signal').className =
-        'signal ' + (sig.direction === 'UP' ? 'up' : 'down');
+    candles.push(next);
 
-      $('signalDir').textContent = sig.direction;
-      $('signalSub').textContent =
-        sig.direction === 'UP'
-          ? 'AI-STYLE BUY SIGNAL'
-          : 'AI-STYLE SELL SIGNAL';
+    if(candles.length>140)
+      candles.shift();
 
-      $('confidence').textContent = sig.confidence + '%';
-      $('strength').textContent = sig.strength + '%';
-      $('fill').style.width = sig.confidence + '%';
-      $('expires').textContent = signalCountdown + 's';
-      $('status').textContent =
-        'Signal generated • monitor the Quotex chart manually';
+    const signal=analyze();
 
-      addHistory(sig);
-    }
+    lastSignal=signal;
 
-    function tick() {
-      countdown--;
+    signalCountdown=
+      Number($("expiry").value);
 
-      if (countdown <= 0) {
-        scan();
-        countdown = 30;
-      }
+    const isUp=signal.direction==="UP";
 
-      $('timer').textContent = '00:' + fmt(countdown);
 
-      if (signalCountdown > 0) {
-        signalCountdown--;
-        $('expires').textContent = signalCountdown + 's';
-      }
-    }
+    $("dir").textContent=isUp?"↑":"↓";
 
-    function start() {
-      if (running) return;
+    $("coreText").textContent=
+      isUp
+      ?"BUY SIGNAL"
+      :"SELL SIGNAL";
 
-      running = true;
-      $('autoBtn').classList.add('active');
-      $('autoBtn').textContent = 'STOP AUTO';
-      $('status').textContent = 'Auto scan running • next scan in ' + countdown + 's';
+    $("signal").className=
+      "signal "+(isUp?"up":"down");
 
-      if (interval) clearInterval(interval);
-      interval = setInterval(tick, 1000);
-    }
+    $("signal").classList.remove("signalFlash");
 
-    function stop() {
-      running = false;
+    void $("signal").offsetWidth;
 
-      if (interval) {
-        clearInterval(interval);
-        interval = null;
-      }
+    $("signal").classList.add("signalFlash");
 
-      $('autoBtn').classList.remove('active');
-      $('autoBtn').textContent = 'AUTO SCAN';
-      $('status').textContent = 'Auto scan stopped • ready to scan';
-    }
 
-    // Use both click and touch-friendly pointer events.
-    $('autoBtn').addEventListener('click', function () {
-      running ? stop() : start();
+    $("signalDir").textContent=
+      isUp?"UP":"DOWN";
+
+    $("signalSub").textContent=
+      isUp
+      ?"AI-STYLE BUY SIGNAL"
+      :"AI-STYLE SELL SIGNAL";
+
+    $("signalBadge").textContent=
+      signal.confidence>=75
+      ?"HIGH CONFIDENCE"
+      :"SIGNAL";
+
+
+    $("confidence").textContent=
+      signal.confidence+"%";
+
+    $("strength").textContent=
+      signal.strength+"%";
+
+    $("expires").textContent=
+      signalCountdown+"s";
+
+    $("scoreText").textContent=
+      signal.confidence+"%";
+
+    $("fill").style.width=
+      signal.confidence+"%";
+
+
+    $("status").textContent=
+      "Signal generated • monitor the chart manually";
+
+    $("scanBadge").textContent=
+      isUp?"BUY":"SELL";
+
+    $("marketStatus").textContent="ACTIVE";
+
+    addHistory(signal);
+
+  }
+
+
+  /* -----------------------------
+     HISTORY
+  ----------------------------- */
+
+  function addHistory(signal){
+
+    history.unshift({
+
+      time:new Date().toLocaleTimeString([],{
+        hour:"2-digit",
+        minute:"2-digit",
+        second:"2-digit"
+      }),
+
+      pair:$("pair").value.split(" ")[0],
+
+      direction:signal.direction,
+
+      confidence:signal.confidence
+
     });
 
-    $('onceBtn').addEventListener('click', function () {
-      scan();
-      countdown = 30;
-      $('timer').textContent = '00:30';
-    });
+    history=history.slice(0,12);
 
-    $('clear').addEventListener('click', function () {
-      history = [];
-      renderHistory();
-      $('status').textContent = 'Signal history cleared';
-    });
-
-    $('pair').addEventListener('change', function () {
-      seed();
-      lastSignal = null;
-      $('status').textContent = 'Pair changed • ready to scan';
-    });
-
-    $('expiry').addEventListener('change', function () {
-      signalCountdown = Number($('expiry').value);
-      $('expires').textContent = signalCountdown + 's';
-    });
-
-    seed();
     renderHistory();
-    $('timer').textContent = '00:30';
-    $('status').textContent = 'Ready to analyze demo market conditions';
+
   }
 
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', init);
-  } else {
-    init();
+
+  function renderHistory(){
+
+    const box=$("history");
+
+    box.innerHTML="";
+
+    if(!history.length){
+
+      box.innerHTML=
+        '<div class="info">No signals generated yet.</div>';
+
+      return;
+
+    }
+
+
+    history.forEach(item=>{
+
+      const row=document.createElement("div");
+
+      row.className="historyRow";
+
+      row.innerHTML=
+        "<span>"+item.time+"</span>"+
+        "<span>"+item.pair+"</span>"+
+        '<span class="'+
+        (item.direction==="UP"
+          ?"upTxt"
+          :"downTxt")+
+        '">'+
+        (item.direction==="UP"?"↑ UP":"↓ DOWN")+
+        "</span>"+
+        "<span>"+item.confidence+"%</span>";
+
+      box.appendChild(row);
+
+    });
+
   }
+
+
+  /* -----------------------------
+     TIMER
+  ----------------------------- */
+
+  function tick(){
+
+    countdown--;
+
+    if(countdown<=0){
+
+      if(running){
+
+        scan();
+
+      }
+
+      countdown=30;
+
+    }
+
+
+    $("timer").textContent=
+      "00:"+fmt(countdown);
+
+
+    if(signalCountdown>0){
+
+      signalCountdown--;
+
+      $("expires").textContent=
+        signalCountdown+"s";
+
+    }
+
+
+    if(running){
+
+      $("status").textContent=
+        "Auto scanning • next scan in "+
+        countdown+
+        "s";
+
+    }
+
+  }
+
+
+  /* -----------------------------
+     START / STOP
+  ----------------------------- */
+
+  function start(){
+
+    if(running) return;
+
+    running=true;
+
+    $("autoBtn").classList.add("stop");
+    $("autoBtn").classList.add("active");
+
+    $("autoBtn").textContent=
+      "■ STOP AUTO";
+
+    $("scanBadge").textContent=
+      "SCANNING";
+
+    $("marketStatus").textContent=
+      "SCANNING";
+
+    $("status").textContent=
+      "Auto scan running • next scan in "+
+      countdown+
+      "s";
+
+    if(interval)
+      clearInterval(interval);
+
+    interval=
+      setInterval(tick,1000);
+
+  }
+
+
+  function stop(){
+
+    running=false;
+
+    if(interval){
+
+      clearInterval(interval);
+      interval=null;
+
+    }
+
+    $("autoBtn").classList.remove("stop");
+    $("autoBtn").classList.remove("active");
+
+    $("autoBtn").textContent=
+      "▶ AUTO SCAN";
+
+    $("scanBadge").textContent=
+      "STANDBY";
+
+    $("marketStatus").textContent=
+      "READY";
+
+    $("status").textContent=
+      "Auto scan stopped • ready to scan";
+
+  }
+
+
+  /* -----------------------------
+     BUTTONS
+  ----------------------------- */
+
+  $("autoBtn").addEventListener(
+    "click",
+    function(){
+
+      if(running)
+        stop();
+      else
+        start();
+
+    }
+  );
+
+
+  $("onceBtn").addEventListener(
+    "click",
+    function(){
+
+      scan();
+
+      countdown=30;
+
+      $("timer").textContent=
+        "00:30";
+
+    }
+  );
+
+
+  $("clear").addEventListener(
+    "click",
+    function(){
+
+      history=[];
+
+      renderHistory();
+
+      $("status").textContent=
+        "Signal history cleared";
+
+    }
+  );
+
+
+  $("pair").addEventListener(
+    "change",
+    function(){
+
+      seed();
+
+      lastSignal=null;
+
+      $("signal").className="signal";
+
+      $("dir").textContent="—";
+
+      $("coreText").textContent=
+        "WAITING";
+
+      $("scanBadge").textContent=
+        "STANDBY";
+
+      $("marketStatus").textContent=
+        "READY";
+
+      $("analysisState").textContent=
+        "WAITING";
+
+      $("status").textContent=
+        "Pair changed • ready to scan";
+
+    }
+  );
+
+
+  $("expiry").addEventListener(
+    "change",
+    function(){
+
+      signalCountdown=
+        Number($("expiry").value);
+
+      $("expires").textContent=
+        signalCountdown+"s";
+
+    }
+  );
+
+
+  /* -----------------------------
+     INITIALIZE
+  ----------------------------- */
+
+  seed();
+
+  renderHistory();
+
+  $("timer").textContent="00:30";
+
+  $("status").textContent=
+    "Ready to analyze demo market conditions";
+
+}
+
+
+/* DOM READY */
+
+if(document.readyState==="loading"){
+
+  document.addEventListener(
+    "DOMContentLoaded",
+    init
+  );
+
+}else{
+
+  init();
+
+}
+
 })();
 </script>
+
 </body>
 </html>
