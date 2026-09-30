@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>NOVA AI</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#05060a;color:#fff;font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display",Arial,sans-serif}
+button{border:0;font:inherit;cursor:pointer;-webkit-appearance:none}
+.app{max-width:900px;min-height:100vh;margin:auto;background:#080a10;padding-bottom:105px}
+.header{padding:16px 18px 8px;position:sticky;top:0;z-index:10;background:#080a10}
+.top{height:42px;display:flex;align-items:center;justify-content:space-between}
+.close{background:none;color:#fff;font-size:18px}
+.brand{text-align:center}.brand b{font-size:21px}.brand small{display:block;color:#9298a8;font-size:13px}
+.more{background:#151822;color:#fff;border-radius:50%;width:40px;height:40px;font-size:20px}
+.head{display:flex;align-items:center;margin-top:18px}.back{background:none;color:#fff;font-size:38px;width:50px}.title{flex:1;text-align:center;font-size:27px;font-weight:650}
+.page{display:none}.page.active{display:block}
+.hero{margin:8px 14px 18px;padding:28px 20px;border-radius:34px;background:linear-gradient(145deg,#39247c,#17132e);border:1px solid #533ba0}
+.center{text-align:center}.label{font-size:22px;font-weight:650}.amount{font-size:70px;font-weight:750;letter-spacing:-3px;margin:12px 0}.unit{font-size:17px;letter-spacing:0;vertical-align:top;margin-left:5px}
+.buttons{display:flex;gap:12px;margin-top:22px}.btn{height:62px;flex:1;border-radius:32px;font-size:19px;font-weight:650}.primary{background:#875cff;color:#fff}.secondary{background:#39344b;color:#ddd}.danger{background:#39151e;color:#ff6377}.off{opacity:.35}
+.content{padding:0 18px}.box{background:#10131b;border-radius:25px;padding:18px;border:1px solid #1d2130;margin-bottom:15px}
+canvas{display:block;width:100%;height:230px}
+.row{display:flex;justify-content:space-between;align-items:center;margin:18px 3px}.withdrawBox{margin-top:12px}.withdrawBox label{display:block;color:#aeb4c2;font-size:16px;margin:0 0 8px}.feeLine{display:flex;justify-content:space-between;gap:14px;color:#d9dce5;font-size:16px;margin:12px 2px}.feeLine b{color:#6F8CFF;text-align:right}.withdrawBox .input{margin-bottom:10px}.status{font-size:17px}.dot{display:inline-block;width:11px;height:11px;border-radius:50%;background:#777;margin-right:8px}.dot.on{background:#6F8CFF;box-shadow:0 0 12px #6F8CFF}.price{font-weight:700;color:#ad98ff;font-size:20px}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.card{background:#111426;border-radius:20px;padding:18px 14px;min-height:125px}.card h3{margin:0 0 10px}.big{font-size:23px;color:#a88cff;font-weight:700}.muted{color:#8d94a7;font-size:14px}
+.list{display:grid;gap:12px}.list button,.list details{background:#111426;color:#fff;border-radius:20px;padding:21px;text-align:left;font-size:18px}.list summary{cursor:pointer}.list p{color:#9298a8;line-height:1.5;font-size:15px}
+.tabs{display:flex;gap:9px;margin:15px 0}.tab{flex:1;padding:14px 5px;border-radius:25px;background:#111426;color:#aaa}.tab.active{background:#2c205e;color:#bdaeff}
+.nav{position:fixed;z-index:30;bottom:12px;left:50%;transform:translateX(-50%);width:min(850px,calc(100% - 24px));height:76px;border-radius:40px;background:#10191a;display:flex;align-items:center;justify-content:space-around;border:1px solid #1d2929;box-shadow:0 10px 50px #000}.nav button{width:58px;height:58px;border-radius:50%;background:none;color:#eee;font-size:28px}.nav button.active{background:#875cff}
+.modal{display:none;position:fixed;z-index:50;inset:0;background:rgba(0,0,0,.75);align-items:flex-end}.modal.show{display:flex}.sheet{width:100%;max-width:650px;margin:auto;background:#111426;border-radius:28px 28px 0 0;padding:25px 20px 30px}.sheet h2{margin:0 0 8px}.sheet p{color:#999fb0}.input{width:100%;height:56px;background:#080a10;border:1px solid #292e3c;color:#fff;border-radius:15px;padding:0 15px;margin:10px 0 15px;font-size:17px}.sheet .btn{width:100%;display:block}.cancel{width:100%;height:52px;border-radius:15px;background:#272c38;color:#fff;margin-top:10px}
+.toast{position:fixed;z-index:100;left:50%;bottom:105px;transform:translate(-50%,20px);opacity:0;background:#fff;color:#080a10;padding:13px 18px;border-radius:15px;font-weight:650;transition:.2s;pointer-events:none}.toast.show{opacity:1;transform:translate(-50%,0)}
+@media(max-width:600px){.grid{grid-template-columns:1fr 1fr}.card:last-child{grid-column:1/-1}.amount{font-size:64px}}
+
+/* Alternate visual theme — layout/functionality intentionally unchanged */
+body{background:#070817!important;color:#F4F5FF!important}
+.app{background:linear-gradient(180deg,#0A0B1B 0%,#080914 100%)!important}
+.header{background:rgba(10,11,27,.92)!important}
+.hero{background:linear-gradient(145deg,#171A3B 0%,#24205A 48%,#12152F 100%)!important;
+      border:1px solid rgba(124,92,255,.35)!important;
+      box-shadow:0 18px 60px rgba(71,52,180,.22)!important}
+.btn.primary{background:linear-gradient(135deg,#7C5CFF,#4C7DFF)!important;color:#fff!important}
+.btn.secondary{background:#202543!important;color:#B9C4FF!important}
+.btn.danger{background:#32172A!important;color:#FF8FB7!important}
+.card,.box,.list button,.list details,.sheet{background:#111426!important;border:1px solid rgba(124,92,255,.13)!important}
+.nav{background:rgba(13,15,32,.96)!important;border-color:rgba(124,92,255,.16)!important}
+.nav button.active{background:linear-gradient(135deg,#7C5CFF,#4C7DFF)!important;color:#fff!important}
+.input{background:#0C0F20!important;color:#fff!important;border-color:#2A2E50!important}
+.toast{background:#181B36!important;color:#fff!important;border:1px solid rgba(124,92,255,.35)!important}
+.price,.big,.amount{color:#7C5CFF!important}
+.dot{background:#7C5CFF!important;box-shadow:0 0 16px rgba(124,92,255,.7)!important}
+
+.qr{display:block;width:230px;height:230px;margin:18px auto;border-radius:12px;background:#0C0F20;padding:10px}.addressBox{background:#0C0F20;border:1px solid #2A2E50;border-radius:15px;padding:16px;font-size:15px;line-height:1.45;word-break:break-all;margin:10px 0 14px;color:#fff}.sheet .btn{margin-top:8px}
+</style>
+</head>
+<body>
+<div class="app">
+<header class="header">
+ <div class="top">
+  <button class="close" id="closeBtn">Close</button>
+  <div class="brand"><b>NOVA AI</b><small>mini app • DEMO</small></div>
+  <button class="more" id="moreBtn">•••</button>
+ </div>
+ <div class="head"><button class="back" id="backBtn">‹</button><div class="title" id="title">NOVA AI</div><div style="width:50px"></div></div>
+</header>
+
+<section class="page active" id="home">
+ <div class="hero center">
+  <div class="label">Total balance</div>
+  <div class="amount" id="balance">0.00<span class="unit">USDT</span></div>
+  <div class="muted">Received by referrals: <b id="ref">0.00</b> USDT</div>
+  <div class="buttons"><button class="btn primary" id="topup1">＋ Top up</button><button class="btn secondary off" id="withdraw1">↑ Withdraw</button></div>
+ </div>
+ <div class="content">
+  <div class="box"><canvas id="chart"></canvas></div>
+  <div class="row"><div class="status"><span class="dot" id="dot"></span>Bot status: <b id="status">Inactive</b></div><div class="price" id="price">$85,372.42</div></div>
+  <div class="buttons"><button class="btn primary" id="start">🚀 Start</button><button class="btn danger off" id="stop">✕ Stop</button></div>
+  <div class="grid" style="margin-top:18px">
+   <div class="card"><h3>Today</h3><div class="big" id="profit">+0.00%</div><p class="muted">Performance</p></div>
+   <div class="card"><h3>Deals</h3><div class="big" id="deals">0</div><p class="muted">Total deals</p></div>
+   <div class="card"><h3>Success</h3><div class="big">91.1%</div><p class="muted">Demo statistics</p></div>
+  </div>
+ </div>
+</section>
+
+<section class="page" id="wallet">
+ <div class="hero center"><div class="label">Current balance</div><div class="amount" id="balance2">0.00<span class="unit">USDT</span></div>
+ <div class="buttons"><button class="btn primary" id="topup2">＋ Top up</button><button class="btn secondary off" id="withdraw2">↑ Withdraw</button></div></div>
+ <div class="content"><div class="grid">
+  <div class="card"><h3>Deposit</h3><div class="big" id="deposit">0.00</div><p class="muted">USDT</p></div>
+  <div class="card"><h3>Withdraw</h3><div class="big" id="withdrawn">0.00</div><p class="muted">USDT</p></div>
+  <div class="card"><h3>Referral</h3><div class="big" id="ref2">0.00</div><p class="muted">USDT</p></div>
+ </div></div>
+</section>
+
+<section class="page" id="trading">
+ <div class="content"><div class="row"><div class="status"><span class="dot" id="dot2"></span>Bot status: <b id="status2">Inactive</b></div><div class="price" id="price2">$85,372.42</div></div>
+ <div class="buttons"><button class="btn primary" id="start2">🚀 Start</button><button class="btn danger off" id="stop2">✕ Stop</button></div>
+ <div class="box" style="margin-top:18px"><canvas id="chart2"></canvas></div>
+ <h2 style="text-align:center">Trading bot statistics</h2>
+ <div class="tabs"><button class="tab active">24h</button><button class="tab">7d</button><button class="tab">1m</button><button class="tab">3m</button></div>
+ <div class="box"><div class="row"><span>🚀 Total deals</span><b id="td">45</b></div><div class="row"><span>✓ Successful</span><b id="succ">41</b></div><div class="row"><span>↘ Failed</span><b>4</b></div><div class="row"><span>Profit</span><b id="ps">+8.22%</b></div></div>
+ </div>
+</section>
+
+<section class="page" id="support"><div class="content"><div class="list">
+ <button id="chatBtn">💬 Support Chat <span style="float:right">›</span></button>
+ <details><summary>? FAQ</summary><p>This is a front-end demo. Buttons and local wallet functions work in the browser. No real trades are placed.</p></details>
+ <details><summary>How does Start work?</summary><p>Start activates a simulated trading bot and updates the chart, price and statistics.</p></details>
+</div></div></section>
+
+<section class="page" id="settings"><div class="content"><div class="list">
+ <button id="pushBtn">🔔 Push notifications <span id="pushState" style="float:right">●</span></button>
+ <button id="vibBtn">📳 Vibration <span id="vibState" style="float:right">○</span></button>
+ <button id="chat2">💬 Support Chat <span style="float:right">›</span></button>
+ <button id="faqBtn">? FAQ <span style="float:right">›</span></button>
+ <button id="refBtn">🔗 Referral link <span style="float:right">›</span></button>
+ <button id="seedBtn">🔐 Seed code <span style="float:right">›</span></button>
+</div></div></section>
+
+<nav class="nav">
+ <button class="active" data-page="home">⌂</button><button data-page="wallet">▣</button><button data-page="trading">⌁</button><button data-page="support">▢</button>
+</nav>
+</div>
+
+<div class="modal" id="modal"><div class="sheet" id="sheet"></div></div>
+<div class="toast" id="toast"></div>
+
+<script>
+(function(){
+'use strict';
+var balance=0,deposit=0,withdrawn=0,bot=false,price=85372.42,profit=0,deals=0,timer=null;
+var pages={home:'NOVA AI',wallet:'Wallet',trading:'Trading',support:'Support',settings:'Settings'};
+var ADDRESS='TBo2HtcHofviJb5TLKPjRBmWEf9YXCZKSp';var QR='iVBORw0KGgoAAAANSUhEUgAAAQgAAAEICAIAAAAslP2oAAAE/UlEQVR4nO3dwY1kNRRAUQaxbGlSaAIiF0IhFwIiFRasRrp/YckP+0+fs0RNVXXRV5b+w/a3j++fvwA/+vX0B4AbCQOCMCAIA4IwIAgDgjAgCAOCMCAIA4IwIAgDgjAgCAOCMCD8tvov/PnHPxOfY7u//v49//nq5396nduc+r3e/vfwxIoBQRgQhAFBGBCEAUEYEIQBYXmO8eTU8/63PL+fft/V15/+/G/5e3hixYAgDAjCgCAMCMKAIAwIwoCwbY7xZNdz5enn4tP7ClbnD6uf56t9z9Of04oBQRgQhAFBGBCEAUEYEIQBYXyOcZvpecX0vohd3nJe1ilWDAjCgCAMCMKAIAwIwoAgDAhfbo6xy6lznKbPlTLf+I8VA4IwIAgDgjAgCAOCMCAIA8L4HOMtz8VvmwPsOofqtt/rLX8PVgwIwoAgDAjCgCAMCMKAIAwI2+YYp85HmjY9T3jLz696+9+DFQOCMCAIA4IwIAgDgjAgCAPCt4/vn6c/w//qtvsopvdRrHrLfolpVgwIwoAgDAjCgCAMCMKAIAwIy3OMt5ynNO3tc4av9j2vvo4VA4IwIAgDgjAgCAOCMCAIA8J193zfdj7SLqf2OZyan7z9fCorBgRhQBAGBGFAEAYEYUAQBoRj50qtPp9++7lMb5+rTO/DWX3fVfZjwAbCgCAMCMKAIAwIwoAgDAjbzpV6cuocpF2vMz1/uG3ucdt+mFP7WKwYEIQBQRgQhAFBGBCEAUEYEMbnGKf8rPsEpudIt82pdrEfAzYQBgRhQBAGBGFAEAYEYUAYv+f71PlRp57HP7ltX8fPOn9wzzcMEgYEYUAQBgRhQBAGBGFA2HbP9/S9ztPnF+1636eff8t9FE9um1dMs2JAEAYEYUAQBgRhQBAGBGFAWJ5j3Hbf9m33OUzPQ27bZ3Lq/pPpOY8VA4IwIAgDgjAgCAOCMCAIA8LyuVKrpu+ROHVfxG3zmV1uu5f9FCsGBGFAEAYEYUAQBgRhQBAGhOX9GNPPp1dfZ9fz/lP7Maa9/fs59X1aMSAIA4IwIAgDgjAgCAOCMCBsO1dq188/ue08pVVv2Zdy6jyuJ+75hosIA4IwIAgDgjAgCAOCMCBsu+d71am5xKn9JKfOpzr1PU/PH6bnJ1YMCMKAIAwIwoAgDAjCgCAMCNvOlZo2vZ9h1/u+Zd6y+r6nXmeVe75hkDAgCAOCMCAIA4IwIAgDwvi5UrfZNR84Na84dV/4qfPBTs1DrBgQhAFBGBCEAUEYEIQBQRgQXrMfY9Vt85bpfSCrpu//nv7+p8/vsmJAEAYEYUAQBgRhQBAGBGFA2HY/xqm5wan7rXeZ3o9x2z3cu15/+r+XFQOCMCAIA4IwIAgDgjAgCAPC+D3fp+61ePKWc5ymz326bR6y+r7T8xMrBgRhQBAGBGFAEAYEYUAQBoTxOcZtdv3//U8/P/3c/dT7PrntXnPnSsEgYUAQBgRhQBAGBGFAEAaELzfHeHJqvrFq136P6fedvjd9+ve1YkAQBgRhQBAGBGFAEAYEYUAYn2Pcdt/2LtPnPu163ydvv89kmhUDgjAgCAOCMCAIA4IwIAgDwrY5xqn7E1a9/Z6H2+4dn97Hsso93zBIGBCEAUEYEIQBQRgQhAHh28f3z9OfAa5jxYAgDAjCgCAMCMKAIAwIwoAgDAjCgCAMCMKAIAwIwoAgDAjCgPAvvHT8jopM850AAAAASUVORK5CYII=';
+function $(id){return document.getElementById(id)}
+function toast(msg){var t=$('toast');if(!t)return;t.textContent=msg;t.classList.add('show');clearTimeout(window.__toast);window.__toast=setTimeout(function(){t.classList.remove('show')},2200)}
+function page(p){document.querySelectorAll('.page').forEach(function(x){x.classList.remove('active')});var el=$(p);if(el)el.classList.add('active');var title=$('title');if(title)title.textContent=pages[p]||'NOVA AI';document.querySelectorAll('.nav button').forEach(function(x){x.classList.toggle('active',x.getAttribute('data-page')===p)});window.scrollTo(0,0)}
+function sync(){
+ var a=$('balance'),b=$('balance2');
+ if(a)a.innerHTML=balance.toFixed(2)+'<span class="unit">USDT</span>';
+ if(b)b.innerHTML=balance.toFixed(2)+'<span class="unit">USDT</span>';
+ if($('deposit'))$('deposit').textContent=deposit.toFixed(2);
+ if($('withdrawn'))$('withdrawn').textContent=withdrawn.toFixed(2);
+ if($('ref'))$('ref').textContent='0.00'; if($('ref2'))$('ref2').textContent='0.00';
+ ['withdraw1','withdraw2'].forEach(function(id){var e=$(id);if(e)e.classList.toggle('off',balance<=0)});
+}
+function closeModal(){var m=$('modal');if(m)m.classList.remove('show');if($('sheet'))$('sheet').innerHTML=''}
+function openModal(type){
+ var s=$('sheet'),m=$('modal'); if(!s||!m)return;
+ var h='';
+ if(type==='top')h='<h2>Deposit USDT</h2><p>Network: <b>TRC20</b></p><img class="qr" src="data:image/png;base64,'+QR+'" alt="TRC20 deposit QR"><div class="addressBox">'+ADDRESS+'</div><button class="btn primary" data-action="copy-address">▣ Copy Address</button><input class="input" id="depositAmount" type="number" min="1" step="0.01" placeholder="USDT amount received"><button class="btn primary" data-action="paid">✓ Paid</button><button class="cancel" data-action="cancel">Close</button>';
+ if(type==='withdraw')h='<h2>Withdraw</h2><p>USDT TRC20 withdrawal. Commission: <b>3 USDT + 15% of amount</b>.</p><input class="input" id="withdrawAddress" placeholder="TRC20 wallet address"><button class="cancel" data-action="paste" style="margin-top:0">Paste address</button><input class="input" id="withdrawAmount" type="number" min="10" step="0.01" placeholder="USDT amount"><div class="feeLine"><span>Current balance</span><b>'+balance.toFixed(2)+' USDT</b></div><div class="feeLine"><span>Commission</span><b>3 USDT + 15%</b></div><p class="muted">Minimum withdrawal: 10 USDT. Total deducted = amount + commission.</p><button class="btn primary" data-action="withdraw">Continue</button><button class="cancel" data-action="cancel">Cancel</button>';
+ if(type==='chat')h='<h2>Support Chat</h2><p>Send a message to support.</p><input class="input" id="message" placeholder="Your message"><button class="btn primary" data-action="send">Send</button><button class="cancel" data-action="cancel">Cancel</button>';
+ if(type==='ref')h='<h2>Referral link</h2><input class="input" value="https://nova-ai.example/ref/demo123" readonly><button class="btn primary" data-action="copy-ref">Copy link</button><button class="cancel" data-action="cancel">Close</button>';
+ if(type==='seed')h='<h2>Seed code</h2><p>Never enter a real wallet seed phrase into an untrusted website. This demo does not use a real seed.</p><button class="cancel" data-action="cancel">Close</button>';
+ s.innerHTML=h;m.classList.add('show');
+}
+function copyText(text){
+ if(navigator.clipboard&&window.isSecureContext){navigator.clipboard.writeText(text).then(function(){toast('Copied')}).catch(function(){fallbackCopy(text)})}
+ else fallbackCopy(text)
+}
+function fallbackCopy(text){var ta=document.createElement('textarea');ta.value=text;ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.select();try{document.execCommand('copy');toast('Copied')}catch(e){toast('Copy unavailable — press and hold to copy')}document.body.removeChild(ta)}
+function validTRC20(a){return /^T[1-9A-HJ-NP-Za-km-z]{33}$/.test(a)}
+function setBot(){
+ ['status','status2'].forEach(function(id){if($(id))$(id).textContent=bot?'Active':'Inactive'});
+ ['dot','dot2'].forEach(function(id){if($(id))$(id).classList.toggle('on',bot)});
+ ['start','start2'].forEach(function(id){if($(id))$(id).classList.toggle('off',bot)});
+ ['stop','stop2'].forEach(function(id){if($(id))$(id).classList.toggle('off',!bot)});
+}
+function startBot(){if(bot)return;bot=true;setBot();toast('Bot started — demo mode');timer=setInterval(function(){price+=(Math.random()-.45)*220;profit+=Math.random()*.16;deals++;var p='$'+price.toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2});if($('price'))$('price').textContent=p;if($('price2'))$('price2').textContent=p;if($('profit'))$('profit').textContent='+'+profit.toFixed(2)+'%';if($('deals'))$('deals').textContent=deals;if($('td'))$('td').textContent=45+deals;if($('succ'))$('succ').textContent=41+deals;if($('ps'))$('ps').textContent='+'+(8.22+profit).toFixed(2)+'%';draw('chart');draw('chart2')},2000)}
+function stopBot(){bot=false;clearInterval(timer);timer=null;setBot();toast('Bot stopped')}
+function draw(id){var c=$(id);if(!c)return;var r=c.getBoundingClientRect(),d=window.devicePixelRatio||1,w=Math.max(280,r.width),h=230;c.width=w*d;c.height=h*d;var x=c.getContext('2d');x.setTransform(d,0,0,d,0,0);x.clearRect(0,0,w,h);x.strokeStyle='#252a39';x.lineWidth=1;for(var i=0;i<6;i++){var y=15+i*38;x.beginPath();x.moveTo(12,y);x.lineTo(w-12,y);x.stroke()}var pts=[],y=h-35;for(i=0;i<38;i++){y-=Math.random()*6+1;if(i%8===0)y+=7;pts.push([12+i*(w-24)/37,y])}var mn=Math.min.apply(null,pts.map(function(p){return p[1]})),mx=Math.max.apply(null,pts.map(function(p){return p[1]}));x.beginPath();pts.forEach(function(p,j){var yy=h-25-(p[1]-mn)/(mx-mn+1)*(h-55);if(j)x.lineTo(p[0],yy);else x.moveTo(p[0],yy)});x.strokeStyle='#a080ff';x.lineWidth=4;x.lineJoin='round';x.stroke()}
+
+document.addEventListener('click',function(e){
+ var nav=e.target.closest('.nav button'); if(nav){page(nav.getAttribute('data-page'));return}
+ var el=e.target.closest('[id],[data-action]'); if(!el)return; var id=el.id, action=el.getAttribute('data-action');
+ if(id==='backBtn'){page('home');return} if(id==='closeBtn'){toast('NOVA AI demo');return} if(id==='moreBtn'){page('settings');return}
+ if(id==='topup1'||id==='topup2'){openModal('top');return} if(id==='withdraw1'||id==='withdraw2'){if(balance>0)openModal('withdraw');else toast('Top up first');return}
+ if(id==='start'||id==='start2'){startBot();return} if(id==='stop'||id==='stop2'){stopBot();return}
+ if(id==='chatBtn'||id==='chat2'){openModal('chat');return} if(id==='refBtn'){openModal('ref');return} if(id==='seedBtn'){openModal('seed');return}
+ if(id==='faqBtn'){toast('FAQ is shown above');return} if(id==='pushBtn'){var q=$('pushState');q.textContent=q.textContent==='●'?'○':'●';toast('Notification setting changed');return} if(id==='vibBtn'){var v=$('vibState');v.textContent=v.textContent==='●'?'○':'●';toast('Vibration setting changed');return}
+ if(el.classList.contains('tab')){document.querySelectorAll('.tab').forEach(function(t){t.classList.remove('active')});el.classList.add('active');toast('Statistics period changed');return}
+ if(action==='cancel'){closeModal();return}
+ if(action==='copy-address'){copyText(ADDRESS);return}
+ if(action==='copy-ref'){copyText('https://nova-ai.example/ref/demo123');return}
+ if(action==='paste'){var inp=$('withdrawAddress');if(!inp)return;if(navigator.clipboard&&navigator.clipboard.readText){navigator.clipboard.readText().then(function(t){if(t)inp.value=t;toast(t?'Address pasted':'Clipboard is empty')}).catch(function(){toast('Paste blocked — use iPhone Paste from the keyboard')})}else toast('Use iPhone Paste from the keyboard');return}
+ if(action==='paid'){var da=parseFloat($('depositAmount')&&$('depositAmount').value);if(!da||da<=0){toast('Enter deposit amount');return}balance+=da;deposit+=da;sync();closeModal();toast('Deposit added to demo balance');return}
+ if(action==='withdraw'){var wa=parseFloat($('withdrawAmount')&&$('withdrawAmount').value),addr=(($('withdrawAddress')&&$('withdrawAddress').value)||'').trim();if(!validTRC20(addr)){toast('Enter a valid TRC20 address');return}if(!wa||wa<10){toast('Minimum withdrawal is 10 USDT');return}var fee=3+wa*.15,total=wa+fee;if(total>balance){toast('Insufficient balance for amount + fee');return}balance-=total;withdrawn+=wa;sync();closeModal();toast('Withdrawal recorded — fee 3 USDT + 15%');return}
+ if(action==='send'){var msg=(($('message')&&$('message').value)||'').trim();if(!msg){toast('Write a message first');return}closeModal();toast('Message sent');return}
+});
+var modal=$('modal');if(modal)modal.addEventListener('click',function(e){if(e.target===modal)closeModal()});
+window.addEventListener('resize',function(){draw('chart');draw('chart2')});
+sync();setBot();draw('chart');draw('chart2');
+})();
+</script>
+</body>
+</html>
