@@ -1,65 +1,41 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#050812">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<title>AI Signal Scanner PRO</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#05070d">
+<title>AI Signal Bot PRO</title>
 
 <style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+
 :root{
-  --bg:#050812;
-  --panel:#0b1220;
-  --panel2:#0e1829;
-  --line:#1b2a40;
-  --text:#f5f8ff;
-  --muted:#7f91a9;
-  --cyan:#20d9ff;
-  --blue:#438cff;
-  --green:#24e59a;
-  --red:#ff5577;
-  --yellow:#ffd166;
-  --shadow:0 20px 60px rgba(0,0,0,.42);
-}
-
-*{
-  box-sizing:border-box;
-  -webkit-tap-highlight-color:transparent;
-}
-
-html,body{
-  margin:0;
-  min-height:100%;
-  background:#050812;
+  --bg:#05070d;
+  --panel:#0b0f18;
+  --panel2:#101722;
+  --line:#1d2635;
+  --text:#f5f7fb;
+  --muted:#7d899b;
+  --cyan:#00d9ff;
+  --green:#00e58a;
+  --red:#ff4268;
+  --gold:#ffc857;
 }
 
 body{
-  color:var(--text);
-  font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text",Inter,Arial,sans-serif;
-  overflow-x:hidden;
-}
-
-body:before{
-  content:"";
-  position:fixed;
-  inset:0;
-  pointer-events:none;
+  margin:0;
   background:
-    radial-gradient(circle at 50% -15%,rgba(32,217,255,.18),transparent 35%),
-    radial-gradient(circle at 0% 45%,rgba(67,140,255,.07),transparent 30%),
-    radial-gradient(circle at 100% 70%,rgba(36,229,154,.05),transparent 28%);
+    radial-gradient(circle at 50% -15%,#162846 0,transparent 36%),
+    linear-gradient(180deg,#05070d,#080b12 60%,#05070d);
+  color:var(--text);
+  font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display",Arial,sans-serif;
+  min-height:100vh;
 }
 
 .app{
-  position:relative;
-  width:min(100%,560px);
+  width:min(100%,520px);
   margin:auto;
-  padding:
-    max(14px,env(safe-area-inset-top))
-    14px
-    calc(32px + env(safe-area-inset-bottom));
+  padding:14px 12px 92px;
 }
 
 /* HEADER */
@@ -68,448 +44,358 @@ body:before{
   display:flex;
   align-items:center;
   justify-content:space-between;
-  padding:10px 2px 18px;
+  margin-bottom:12px;
 }
 
-.brand{
+.logoArea{
   display:flex;
   align-items:center;
   gap:10px;
 }
 
 .logo{
-  width:42px;
-  height:42px;
-  border-radius:14px;
+  width:43px;
+  height:43px;
+  border-radius:13px;
   display:grid;
   place-items:center;
-  background:linear-gradient(145deg,#123c62,#071a2c);
-  border:1px solid #1d6287;
-  box-shadow:0 0 28px rgba(32,217,255,.12);
+  background:linear-gradient(145deg,#123c54,#07121e);
+  border:1px solid #17647d;
+  color:var(--cyan);
   font-size:20px;
+  font-weight:900;
+  box-shadow:0 0 25px rgba(0,217,255,.12);
 }
 
-.brandText{
+.title{
   font-size:18px;
   font-weight:900;
-  letter-spacing:-.4px;
 }
 
-.brandText span{
-  color:var(--cyan);
-}
+.title span{color:var(--cyan)}
 
-.version{
-  display:block;
+.subtitle{
   margin-top:2px;
   color:var(--muted);
-  font-size:9px;
+  font-size:8px;
   letter-spacing:1.5px;
-  text-transform:uppercase;
 }
 
-.live{
+.online{
   display:flex;
   align-items:center;
-  gap:7px;
-  padding:8px 11px;
-  border-radius:99px;
-  background:rgba(36,229,154,.07);
-  border:1px solid rgba(36,229,154,.22);
-  color:#74f0ba;
-  font-size:10px;
+  gap:6px;
+  border:1px solid #164b3a;
+  background:#071b16;
+  color:#58eeb1;
+  padding:7px 9px;
+  border-radius:20px;
+  font-size:9px;
   font-weight:800;
 }
 
-.liveDot{
-  width:7px;
-  height:7px;
+.dot{
+  width:6px;
+  height:6px;
   border-radius:50%;
   background:var(--green);
-  box-shadow:0 0 10px var(--green);
-  animation:pulse 1.4s infinite;
+  box-shadow:0 0 9px var(--green);
 }
 
-/* CARDS */
+/* MAIN SIGNAL */
 
-.card{
-  position:relative;
+.signalPanel{
   background:
-    linear-gradient(145deg,rgba(15,27,46,.97),rgba(7,13,24,.98));
-  border:1px solid var(--line);
-  border-radius:23px;
+    linear-gradient(145deg,rgba(16,25,40,.98),rgba(7,11,19,.98));
+  border:1px solid #202d40;
+  border-radius:25px;
   padding:15px;
-  margin-bottom:12px;
-  box-shadow:var(--shadow);
+  box-shadow:0 22px 70px rgba(0,0,0,.45);
+  margin-bottom:10px;
+}
+
+.marketLine{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+
+.pairName{
+  font-size:15px;
+  font-weight:900;
+}
+
+.marketType{
+  display:inline-block;
+  margin-left:5px;
+  padding:4px 6px;
+  border-radius:6px;
+  background:#182235;
+  color:#91a0b5;
+  font-size:7px;
+  letter-spacing:.7px;
+}
+
+.marketState{
+  font-size:8px;
+  color:var(--green);
+  font-weight:800;
+}
+
+.signalBox{
+  position:relative;
+  text-align:center;
+  margin:16px 0;
+  padding:20px 10px;
+  border-radius:21px;
+  background:
+    radial-gradient(circle at 50% 50%,rgba(0,217,255,.10),transparent 55%),
+    #080e18;
+  border:1px solid #18273a;
   overflow:hidden;
 }
 
-.card:after{
+.signalBox:before{
   content:"";
   position:absolute;
-  inset:0;
-  pointer-events:none;
-  background:linear-gradient(120deg,rgba(255,255,255,.025),transparent 35%);
+  left:50%;
+  top:50%;
+  width:210px;
+  height:210px;
+  transform:translate(-50%,-50%);
+  border:1px solid rgba(0,217,255,.08);
+  border-radius:50%;
 }
 
-.sectionTitle{
+.signalLabel{
+  color:var(--muted);
+  font-size:8px;
+  letter-spacing:2px;
+  font-weight:800;
+}
+
+.signalDirection{
+  position:relative;
+  font-size:54px;
+  line-height:1;
+  margin:9px 0 3px;
+  font-weight:950;
+}
+
+.signalName{
+  font-size:21px;
+  font-weight:950;
+  letter-spacing:1px;
+}
+
+.buy{color:var(--green)}
+.sell{color:var(--red)}
+
+.signalDescription{
+  margin-top:5px;
+  color:var(--muted);
+  font-size:9px;
+}
+
+/* CONFIDENCE */
+
+.confidence{
+  margin-top:15px;
+}
+
+.confHeader{
+  display:flex;
+  justify-content:space-between;
+  font-size:9px;
+  color:var(--muted);
+}
+
+.confHeader b{
+  color:var(--text);
+}
+
+.progress{
+  height:9px;
+  background:#111b29;
+  border-radius:99px;
+  margin-top:6px;
+  overflow:hidden;
+}
+
+.progressFill{
+  height:100%;
+  width:0%;
+  border-radius:99px;
+  background:linear-gradient(90deg,var(--cyan),var(--green));
+  transition:width .6s;
+}
+
+/* QUICK STATS */
+
+.quickStats{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:7px;
+}
+
+.quick{
+  background:#080e17;
+  border:1px solid #172538;
+  border-radius:12px;
+  padding:10px 5px;
+  text-align:center;
+}
+
+.quick b{
+  display:block;
+  font-size:15px;
+}
+
+.quick span{
+  display:block;
+  margin-top:4px;
+  color:var(--muted);
+  font-size:7px;
+  text-transform:uppercase;
+}
+
+/* SETTINGS */
+
+.card{
+  background:rgba(11,16,26,.97);
+  border:1px solid var(--line);
+  border-radius:20px;
+  padding:13px;
+  margin-bottom:10px;
+}
+
+.section{
   display:flex;
   align-items:center;
   justify-content:space-between;
-  margin-bottom:12px;
+  margin-bottom:10px;
 }
 
-.sectionTitle strong{
-  font-size:12px;
-  letter-spacing:1.2px;
+.section b{
+  font-size:10px;
   text-transform:uppercase;
+  letter-spacing:1px;
 }
 
-.sectionTitle span{
-  font-size:9px;
+.section span{
   color:var(--muted);
+  font-size:8px;
 }
 
-/* SELECTORS */
-
-.grid{
+.controls{
   display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:10px;
+  grid-template-columns:1.2fr .8fr;
+  gap:8px;
 }
 
-.label{
-  color:var(--muted);
-  font-size:9px;
-  font-weight:800;
-  letter-spacing:1.3px;
-  text-transform:uppercase;
-  margin-bottom:6px;
-}
-
-.select{
+select{
   width:100%;
-  height:46px;
-  appearance:none;
-  color:var(--text);
-  background:#081222;
-  border:1px solid #20334c;
-  border-radius:13px;
-  padding:0 12px;
-  font-size:13px;
-  font-weight:700;
+  height:43px;
+  border:1px solid #223149;
+  border-radius:11px;
+  background:#080e18;
+  color:white;
+  padding:0 10px;
   outline:none;
+  font-size:11px;
+  font-weight:700;
 }
 
-.select:focus{
-  border-color:#287caa;
-  box-shadow:0 0 0 3px rgba(32,217,255,.07);
+.controlLabel{
+  color:var(--muted);
+  font-size:8px;
+  text-transform:uppercase;
+  margin-bottom:5px;
+  letter-spacing:.8px;
 }
 
 /* BUTTONS */
 
-.controls{
+.buttons{
   display:grid;
   grid-template-columns:1fr 1fr;
-  gap:9px;
-  margin-top:11px;
+  gap:8px;
+  margin-top:9px;
 }
 
-.button{
-  min-height:46px;
-  border:1px solid #243a55;
-  border-radius:13px;
-  background:#091526;
-  color:var(--text);
-  font-size:12px;
+button{
+  height:44px;
+  border-radius:11px;
+  border:1px solid #26364c;
+  background:#0a111d;
+  color:white;
   font-weight:900;
-  letter-spacing:.3px;
+  font-size:10px;
   cursor:pointer;
-  touch-action:manipulation;
-  transition:.18s ease;
 }
 
-.button:active{
+button:active{
   transform:scale(.97);
 }
 
-.button.primary{
+.primary{
+  background:linear-gradient(135deg,#0087a7,#00c6d9);
   border:0;
-  background:linear-gradient(135deg,#087ca5,#10b7cf);
-  box-shadow:0 8px 25px rgba(16,183,207,.18);
 }
 
-.button.stop{
-  background:linear-gradient(135deg,#471526,#29101a);
-  border-color:#72233b;
-  color:#ff9bb1;
-}
-
-.button.active{
-  box-shadow:0 0 0 2px rgba(32,217,255,.16),0 0 25px rgba(32,217,255,.08);
-}
-
-/* SCANNER */
-
-.scanner{
-  text-align:center;
-  padding:19px 12px 17px;
-}
-
-.scannerTop{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  margin-bottom:4px;
-}
-
-.scannerTop .mini{
-  color:var(--muted);
-  font-size:9px;
-  text-transform:uppercase;
-  letter-spacing:1.1px;
-}
-
-.scanningBadge{
-  color:var(--cyan);
-  font-size:9px;
-  font-weight:900;
-  letter-spacing:1px;
-}
-
-.ring{
-  position:relative;
-  width:210px;
-  height:210px;
-  margin:7px auto 16px;
-  border-radius:50%;
-  display:grid;
-  place-items:center;
-  background:
-    radial-gradient(circle,#0d1d31 0 38%,transparent 39%),
-    conic-gradient(
-      rgba(32,217,255,.9),
-      rgba(32,217,255,.08) 25%,
-      rgba(67,140,255,.55) 48%,
-      rgba(36,229,154,.5) 70%,
-      rgba(32,217,255,.9)
-    );
-  box-shadow:
-    0 0 0 1px rgba(32,217,255,.16),
-    0 0 45px rgba(32,217,255,.11);
-  animation:scannerGlow 3s ease-in-out infinite;
-}
-
-.ring:before{
-  content:"";
-  position:absolute;
-  inset:7px;
-  border-radius:50%;
-  background:#07111f;
-}
-
-.ring:after{
-  content:"";
-  position:absolute;
-  inset:21px;
-  border:1px solid rgba(32,217,255,.18);
-  border-radius:50%;
-}
-
-.orbit{
-  position:absolute;
-  inset:0;
-  border-radius:50%;
-  animation:spin 7s linear infinite;
-}
-
-.orbit:before{
-  content:"";
-  position:absolute;
-  top:8px;
-  left:50%;
-  width:7px;
-  height:7px;
-  margin-left:-3.5px;
-  border-radius:50%;
-  background:var(--cyan);
-  box-shadow:0 0 15px var(--cyan);
-}
-
-.core{
-  position:relative;
-  z-index:5;
-}
-
-.direction{
-  font-size:50px;
-  line-height:1;
-  font-weight:950;
-  letter-spacing:-3px;
-}
-
-.coreText{
-  margin-top:7px;
-  font-size:10px;
-  font-weight:900;
-  letter-spacing:2px;
-  color:var(--muted);
-}
-
-.timer{
-  font-size:37px;
-  line-height:1;
-  font-weight:950;
-  letter-spacing:-1px;
-  margin-bottom:7px;
-}
-
-.status{
-  min-height:17px;
-  color:var(--muted);
-  font-size:10px;
-}
-
-/* SIGNAL */
-
-.signal{
-  display:none;
-  margin-top:15px;
-  padding:15px;
-  border-radius:18px;
-  text-align:left;
-}
-
-.signal.up{
-  display:block;
-  background:linear-gradient(145deg,rgba(6,54,40,.9),rgba(5,27,27,.95));
-  border:1px solid rgba(36,229,154,.35);
-}
-
-.signal.down{
-  display:block;
-  background:linear-gradient(145deg,rgba(65,13,30,.9),rgba(27,8,18,.95));
-  border:1px solid rgba(255,85,119,.38);
-}
-
-.signalHeader{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-}
-
-.signalDirection{
-  font-size:35px;
-  font-weight:950;
-}
-
-.signalType{
-  color:var(--muted);
-  font-size:9px;
-  letter-spacing:1.2px;
-  margin-top:2px;
-}
-
-.signalBadge{
-  padding:6px 9px;
-  border-radius:8px;
-  background:rgba(255,255,255,.06);
-  font-size:9px;
-  font-weight:900;
-}
-
-.stats{
-  display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:8px;
-  margin-top:13px;
-}
-
-.stat{
-  background:rgba(5,14,26,.7);
-  border:1px solid #172c45;
-  border-radius:12px;
-  padding:11px 7px;
-  text-align:center;
-}
-
-.stat b{
-  display:block;
-  font-size:16px;
-  font-weight:900;
-}
-
-.stat span{
-  display:block;
-  margin-top:4px;
-  color:var(--muted);
-  font-size:8px;
-  font-weight:800;
-  letter-spacing:.8px;
-  text-transform:uppercase;
-}
-
-.score{
-  margin-top:13px;
-}
-
-.scoreHead{
-  display:flex;
-  justify-content:space-between;
-  color:var(--muted);
-  font-size:9px;
-  font-weight:800;
-  text-transform:uppercase;
-  letter-spacing:1px;
-}
-
-.bar{
-  height:8px;
-  margin-top:7px;
-  overflow:hidden;
-  border-radius:99px;
-  background:#101e31;
-}
-
-.fill{
-  width:0;
-  height:100%;
-  border-radius:99px;
-  background:linear-gradient(90deg,var(--cyan),var(--green));
-  transition:width .6s ease;
+.stop{
+  background:#35111c;
+  color:#ff9ab0;
+  border-color:#6a2439;
 }
 
 /* ANALYSIS */
 
-.analysisGrid{
+.analysis{
   display:grid;
   grid-template-columns:repeat(3,1fr);
-  gap:8px;
+  gap:7px;
 }
 
-.analysisBox{
-  padding:12px 6px;
-  background:#081321;
-  border:1px solid #172a43;
-  border-radius:13px;
+.analysisItem{
+  background:#080e17;
+  border:1px solid #172538;
+  border-radius:11px;
   text-align:center;
+  padding:10px 3px;
 }
 
-.analysisBox b{
+.analysisItem b{
   display:block;
-  font-size:11px;
-  font-weight:900;
-  min-height:15px;
+  font-size:10px;
 }
 
-.analysisBox span{
+.analysisItem span{
   display:block;
-  margin-top:5px;
+  color:var(--muted);
+  font-size:7px;
+  margin-top:4px;
+  text-transform:uppercase;
+}
+
+/* COUNTDOWN */
+
+.countdown{
+  text-align:center;
+  margin-top:12px;
+}
+
+.countdown small{
+  display:block;
   color:var(--muted);
   font-size:8px;
-  font-weight:800;
-  text-transform:uppercase;
-  letter-spacing:.5px;
+  letter-spacing:1px;
+}
+
+.time{
+  margin-top:4px;
+  font-size:27px;
+  font-weight:950;
 }
 
 /* HISTORY */
@@ -517,106 +403,87 @@ body:before{
 .history{
   display:flex;
   flex-direction:column;
-  gap:7px;
+  gap:6px;
 }
 
-.historyHead,
 .historyRow{
   display:grid;
-  grid-template-columns:1.05fr .8fr .65fr .55fr;
-  gap:5px;
+  grid-template-columns:1fr .7fr .7fr .5fr;
   align-items:center;
-}
-
-.historyHead{
-  padding:0 8px 5px;
-  color:#5f7189;
+  padding:9px;
+  border-radius:9px;
+  background:#080e17;
+  border:1px solid #172538;
   font-size:8px;
-  font-weight:900;
-  text-transform:uppercase;
-  letter-spacing:.7px;
 }
 
-.historyRow{
-  padding:10px 8px;
-  background:#081321;
-  border:1px solid #152940;
-  border-radius:11px;
-  font-size:9px;
-}
-
-.upTxt{
-  color:var(--green);
-  font-weight:900;
-}
-
-.downTxt{
-  color:var(--red);
-  font-weight:900;
-}
-
-.clear{
-  min-height:32px;
-  padding:0 10px;
-  font-size:9px;
-}
+.green{color:var(--green);font-weight:900}
+.red{color:var(--red);font-weight:900}
 
 /* INFO */
 
-.info{
-  color:#73859d;
-  font-size:9px;
+.note{
+  color:#738197;
+  font-size:8px;
   line-height:1.55;
 }
 
-.info strong{
-  color:#a7b6c9;
+/* BOTTOM NAV */
+
+.bottomNav{
+  position:fixed;
+  z-index:20;
+  left:50%;
+  bottom:0;
+  transform:translateX(-50%);
+  width:min(100%,520px);
+  padding:8px 12px calc(8px + env(safe-area-inset-bottom));
+  background:rgba(5,8,14,.94);
+  backdrop-filter:blur(18px);
+  border-top:1px solid #172235;
 }
 
-/* FOOTER */
+.nav{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:5px;
+}
 
-.footer{
-  padding:7px 0 0;
-  text-align:center;
-  color:#4e6179;
+.nav button{
+  height:43px;
+  background:transparent;
+  border:0;
+  color:#69788c;
   font-size:8px;
-  letter-spacing:.4px;
 }
 
-/* ANIMATIONS */
-
-@keyframes pulse{
-  0%,100%{opacity:1;transform:scale(1)}
-  50%{opacity:.45;transform:scale(.75)}
+.nav button.active{
+  color:var(--cyan);
+  background:#0c1724;
+  border-radius:10px;
 }
 
-@keyframes spin{
-  to{transform:rotate(360deg)}
+.navIcon{
+  display:block;
+  font-size:15px;
+  margin-bottom:2px;
 }
 
-@keyframes scannerGlow{
-  0%,100%{box-shadow:0 0 0 1px rgba(32,217,255,.16),0 0 40px rgba(32,217,255,.08)}
-  50%{box-shadow:0 0 0 1px rgba(32,217,255,.28),0 0 60px rgba(32,217,255,.16)}
+/* ANIMATION */
+
+.flash{
+  animation:flash .45s ease;
 }
 
-.signalFlash{
-  animation:signalFlash .55s ease;
-}
-
-@keyframes signalFlash{
-  0%{transform:scale(.97);opacity:.4}
+@keyframes flash{
+  0%{transform:scale(.97);opacity:.5}
   100%{transform:scale(1);opacity:1}
 }
 
-@media(max-width:370px){
-  .app{padding-left:10px;padding-right:10px}
-  .ring{width:180px;height:180px}
-  .direction{font-size:43px}
-  .analysisBox{padding-left:3px;padding-right:3px}
-}
-
-@media(min-width:700px){
-  .app{padding-top:28px}
+@media(max-width:360px){
+  .app{padding-left:9px;padding-right:9px}
+  .signalDirection{font-size:46px}
+  .signalName{font-size:18px}
 }
 </style>
 </head>
@@ -626,34 +493,125 @@ body:before{
 <div class="app">
 
   <!-- HEADER -->
-  <header class="header">
-    <div class="brand">
-      <div class="logo">◈</div>
+
+  <div class="header">
+
+    <div class="logoArea">
+
+      <div class="logo">AI</div>
+
       <div>
-        <div class="brandText">AI <span>Signal Scanner</span></div>
-        <span class="version">PRO INTERFACE • V1</span>
+        <div class="title">Signal <span>Bot</span></div>
+        <div class="subtitle">SMART MARKET ANALYSIS</div>
       </div>
+
     </div>
 
-    <div class="live">
-      <i class="liveDot"></i>
+    <div class="online">
+      <i class="dot"></i>
       ONLINE
     </div>
-  </header>
 
-  <!-- MARKET SETTINGS -->
-  <section class="card">
+  </div>
 
-    <div class="sectionTitle">
-      <strong>Market Setup</strong>
-      <span id="marketStatus">READY</span>
-    </div>
 
-    <div class="grid">
+  <!-- MAIN SIGNAL -->
+
+  <div class="signalPanel">
+
+    <div class="marketLine">
 
       <div>
-        <div class="label">Trading Pair</div>
-        <select class="select" id="pair">
+        <span class="pairName" id="topPair">EUR/AUD</span>
+        <span class="marketType">OTC</span>
+      </div>
+
+      <span class="marketState" id="marketState">
+        ● READY
+      </span>
+
+    </div>
+
+
+    <div class="signalBox" id="signalBox">
+
+      <div class="signalLabel">CURRENT SIGNAL</div>
+
+      <div class="signalDirection" id="direction">—</div>
+
+      <div class="signalName" id="signalName">
+        WAITING
+      </div>
+
+      <div class="signalDescription" id="signalDescription">
+        Press SCAN NOW to analyze the market
+      </div>
+
+      <div class="confidence">
+
+        <div class="confHeader">
+          <span>AI CONFIDENCE</span>
+          <b id="confidence">--%</b>
+        </div>
+
+        <div class="progress">
+          <div class="progressFill" id="confidenceBar"></div>
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <div class="quickStats">
+
+      <div class="quick">
+        <b id="strength">--%</b>
+        <span>Strength</span>
+      </div>
+
+      <div class="quick">
+        <b id="expiryDisplay">30s</b>
+        <span>Expiry</span>
+      </div>
+
+      <div class="quick">
+        <b id="setup">--</b>
+        <span>Setup</span>
+      </div>
+
+    </div>
+
+
+    <div class="countdown">
+
+      <small>NEXT SCAN</small>
+
+      <div class="time" id="timer">
+        00:30
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- MARKET CONTROL -->
+
+  <div class="card">
+
+    <div class="section">
+      <b>Market Control</b>
+      <span id="controlState">READY</span>
+    </div>
+
+    <div class="controls">
+
+      <div>
+        <div class="controlLabel">Trading Pair</div>
+
+        <select id="pair">
+
           <option>EUR/AUD (OTC)</option>
           <option>EUR/USD (OTC)</option>
           <option>GBP/USD (OTC)</option>
@@ -661,199 +619,162 @@ body:before{
           <option>GBP/JPY (OTC)</option>
           <option>AUD/USD (OTC)</option>
           <option>USD/CAD (OTC)</option>
+
         </select>
+
       </div>
 
       <div>
-        <div class="label">Expiry</div>
-        <select class="select" id="expiry">
-          <option value="30">30 Seconds</option>
-          <option value="60">1 Minute</option>
-          <option value="300">5 Minutes</option>
+        <div class="controlLabel">Expiry</div>
+
+        <select id="expiry">
+
+          <option value="30">30 SEC</option>
+          <option value="60">1 MIN</option>
+          <option value="300">5 MIN</option>
+
         </select>
-      </div>
-
-    </div>
-
-    <div class="controls">
-      <button class="button primary" id="autoBtn">▶ AUTO SCAN</button>
-      <button class="button" id="onceBtn">⚡ SCAN NOW</button>
-    </div>
-
-  </section>
-
-
-  <!-- MAIN SCANNER -->
-  <section class="card scanner">
-
-    <div class="scannerTop">
-      <span class="mini">AI Market Scanner</span>
-      <span class="scanningBadge" id="scanBadge">STANDBY</span>
-    </div>
-
-    <div class="ring" id="ring">
-
-      <div class="orbit"></div>
-
-      <div class="core">
-        <div class="direction" id="dir">—</div>
-        <div class="coreText" id="coreText">WAITING</div>
-      </div>
-
-    </div>
-
-    <div class="timer" id="timer">00:30</div>
-
-    <div class="status" id="status">
-      Ready to analyze demo market conditions
-    </div>
-
-
-    <!-- SIGNAL RESULT -->
-
-    <div class="signal" id="signal">
-
-      <div class="signalHeader">
-
-        <div>
-          <div class="signalDirection" id="signalDir">UP</div>
-          <div class="signalType" id="signalSub">
-            AI-STYLE BUY SIGNAL
-          </div>
-        </div>
-
-        <div class="signalBadge" id="signalBadge">
-          SIGNAL
-        </div>
-
-      </div>
-
-
-      <div class="stats">
-
-        <div class="stat">
-          <b id="confidence">--%</b>
-          <span>Confidence</span>
-        </div>
-
-        <div class="stat">
-          <b id="strength">--%</b>
-          <span>Strength</span>
-        </div>
-
-        <div class="stat">
-          <b id="expires">--</b>
-          <span>Expiry</span>
-        </div>
-
-      </div>
-
-
-      <div class="score">
-
-        <div class="scoreHead">
-          <span>Signal Score</span>
-          <span id="scoreText">--%</span>
-        </div>
-
-        <div class="bar">
-          <div class="fill" id="fill"></div>
-        </div>
 
       </div>
 
     </div>
 
-  </section>
+
+    <div class="buttons">
+
+      <button class="primary" id="scan">
+        ⚡ SCAN NOW
+      </button>
+
+      <button id="auto">
+        ▶ AUTO SCAN
+      </button>
+
+    </div>
+
+  </div>
 
 
   <!-- ANALYSIS -->
-  <section class="card">
 
-    <div class="sectionTitle">
-      <strong>AI Analysis</strong>
-      <span id="analysisState">WAITING</span>
+  <div class="card">
+
+    <div class="section">
+      <b>Technical Analysis</b>
+      <span id="analysisStatus">WAITING</span>
     </div>
 
-    <div class="analysisGrid">
+    <div class="analysis">
 
-      <div class="analysisBox">
+      <div class="analysisItem">
         <b id="trend">—</b>
         <span>Trend</span>
       </div>
 
-      <div class="analysisBox">
+      <div class="analysisItem">
         <b id="momentum">—</b>
         <span>Momentum</span>
       </div>
 
-      <div class="analysisBox">
+      <div class="analysisItem">
         <b id="rsi">—</b>
         <span>RSI</span>
       </div>
 
-      <div class="analysisBox">
-        <b id="candle">—</b>
-        <span>Price Action</span>
+      <div class="analysisItem">
+        <b id="price">—</b>
+        <span>Price</span>
       </div>
 
-      <div class="analysisBox">
-        <b id="vol">—</b>
+      <div class="analysisItem">
+        <b id="volatility">—</b>
         <span>Volatility</span>
       </div>
 
-      <div class="analysisBox">
+      <div class="analysisItem">
         <b id="quality">—</b>
-        <span>Setup</span>
+        <span>Quality</span>
       </div>
 
     </div>
 
-  </section>
+  </div>
 
 
   <!-- HISTORY -->
-  <section class="card">
 
-    <div class="sectionTitle">
-      <strong>Signal History</strong>
-      <button class="button clear" id="clear">CLEAR</button>
-    </div>
+  <div class="card">
 
-    <div class="historyHead">
-      <span>Time</span>
-      <span>Pair</span>
-      <span>Signal</span>
-      <span>Score</span>
+    <div class="section">
+
+      <b>Signal History</b>
+
+      <button
+        id="clear"
+        style="height:29px;padding:0 9px;font-size:8px">
+        CLEAR
+      </button>
+
     </div>
 
     <div class="history" id="history">
-      <div class="info">No signals generated yet.</div>
+
+      <div class="note">
+        No signals generated yet.
+      </div>
+
     </div>
 
-  </section>
+  </div>
 
 
   <!-- INFORMATION -->
-  <section class="card">
 
-    <div class="sectionTitle">
-      <strong>Scanner Information</strong>
+  <div class="card">
+
+    <div class="section">
+      <b>Scanner Status</b>
       <span>DEMO</span>
     </div>
 
-    <div class="info">
-      <strong>Prototype scanner:</strong>
-      This interface uses locally generated demo candles for testing the
-      scanner experience. It does not connect to a Quotex account,
-      does not place trades, and does not guarantee profitable signals.
-      Real-time analysis would require a permitted matching market-data feed.
+    <div class="note">
+      This is a local demonstration scanner. It generates simulated
+      market data for interface testing. It does not connect to
+      Quotex or Pocket Option, does not place trades, and does not
+      guarantee profitable signals.
     </div>
 
-  </section>
+  </div>
 
-  <div class="footer">
-    AI Signal Scanner PRO • Designed for iPhone Safari • Add to Home Screen
+</div>
+
+
+<!-- BOTTOM NAV -->
+
+<div class="bottomNav">
+
+  <div class="nav">
+
+    <button class="active">
+      <span class="navIcon">⌂</span>
+      HOME
+    </button>
+
+    <button id="navSignal">
+      <span class="navIcon">⚡</span>
+      SIGNALS
+    </button>
+
+    <button id="navAnalysis">
+      <span class="navIcon">◈</span>
+      ANALYSIS
+    </button>
+
+    <button id="navSettings">
+      <span class="navIcon">⚙</span>
+      SETTINGS
+    </button>
+
   </div>
 
 </div>
@@ -864,575 +785,548 @@ body:before{
 
 "use strict";
 
-function init(){
+const $=id=>document.getElementById(id);
 
-  const $ = id => document.getElementById(id);
-
-  let running = false;
-  let countdown = 30;
-  let interval = null;
-  let candles = [];
-  let history = [];
-  let lastSignal = null;
-  let signalCountdown = 0;
+let candles=[];
+let history=[];
+let running=false;
+let timer=30;
+let interval=null;
+let lastDirection=null;
+let signalExpiry=30;
 
 
-  /* -----------------------------
-     DEMO MARKET ENGINE
-  ----------------------------- */
+/* ---------------------------
+   DEMO MARKET DATA
+--------------------------- */
 
-  function seed(){
+function seed(){
 
-    candles = [];
+  candles=[];
 
-    let price = 100;
+  let price=100;
 
-    for(let i=0;i<100;i++){
+  for(let i=0;i<100;i++){
 
-      price += (Math.random() - .49) * 1.15;
+    price+=(Math.random()-.49)*1.1;
 
-      candles.push(price);
-
-    }
+    candles.push(price);
 
   }
 
-
-  function fmt(value){
-
-    return String(Math.max(0,value)).padStart(2,"0");
-
-  }
+}
 
 
-  function calculateRSI(arr,n=14){
+function rsi(data,n=14){
 
-    if(arr.length<n+1) return 50;
+  if(data.length<n+1)
+    return 50;
 
-    let gain=0;
-    let loss=0;
+  let gains=0;
+  let losses=0;
 
-    for(let i=arr.length-n;i<arr.length;i++){
+  for(
+    let i=data.length-n;
+    i<data.length;
+    i++
+  ){
 
-      const difference=arr[i]-arr[i-1];
+    const d=data[i]-data[i-1];
 
-      if(difference>0)
-        gain+=difference;
-      else
-        loss-=difference;
-
-    }
-
-    if(loss===0) return 100;
-
-    return 100-(100/(1+(gain/loss)));
+    if(d>0) gains+=d;
+    else losses-=d;
 
   }
 
+  if(losses===0)
+    return 100;
 
-  /* -----------------------------
-     ANALYSIS
-  ----------------------------- */
+  return 100-(100/(1+gains/losses));
 
-  function analyze(){
+}
 
-    const last=candles[candles.length-1];
 
-    const shortArr=candles.slice(-8);
-    const longArr=candles.slice(-21,-8);
+/* ---------------------------
+   ANALYZE
+--------------------------- */
 
-    const shortMove=
-      shortArr[shortArr.length-1]-shortArr[0];
+function analyze(){
 
-    const longMove=
-      longArr[longArr.length-1]-longArr[0];
+  const short=candles.slice(-8);
+  const previous=candles.slice(-21,-8);
 
-    const rsiValue=calculateRSI(candles);
+  const shortMove=
+    short[short.length-1]-short[0];
 
-    const momentum=
-      shortMove>0
-      ? "BULLISH"
-      : shortMove<0
-      ? "BEARISH"
-      : "FLAT";
+  const longMove=
+    previous[previous.length-1]-previous[0];
 
-    const trendScore=(shortMove*1.35)+longMove;
+  const r=rsi(candles);
 
-    const trend=
-      trendScore>0
-      ? "UPTREND"
-      : trendScore<0
-      ? "DOWNTREND"
-      : "SIDEWAYS";
+  const trendScore=
+    shortMove*1.3+longMove;
 
-    const previous=
-      candles[candles.length-2];
+  const trend=
+    trendScore>0
+    ?"UPTREND"
+    :trendScore<0
+    ?"DOWNTREND"
+    :"SIDEWAYS";
 
-    const body=last-previous;
+  const momentum=
+    shortMove>0
+    ?"BULLISH"
+    :shortMove<0
+    ?"BEARISH"
+    :"FLAT";
 
-    const directionScore=
-      shortMove+
-      longMove*.35+
-      (rsiValue-50)*.03+
-      body*.7;
+  const body=
+    candles[candles.length-1]-
+    candles[candles.length-2];
 
-    const direction=
-      directionScore>=0
-      ? "UP"
-      : "DOWN";
+  const score=
+    shortMove+
+    longMove*.35+
+    (r-50)*.03+
+    body*.7;
 
-    let confidence=
-      58+
-      Math.min(20,Math.abs(shortMove)*8)+
-      Math.min(10,Math.abs(rsiValue-50)*.35);
+  const direction=
+    score>=0
+    ?"UP"
+    :"DOWN";
 
-    if(
-      (direction==="UP" && trend==="UPTREND") ||
-      (direction==="DOWN" && trend==="DOWNTREND")
-    ){
-      confidence+=5;
-    }
+  let confidence=
+    58+
+    Math.min(20,Math.abs(shortMove)*8)+
+    Math.min(10,Math.abs(r-50)*.35)+
+    Math.random()*8-4;
 
-    confidence+=Math.random()*8-4;
+  if(
+    (direction==="UP"&&trend==="UPTREND")||
+    (direction==="DOWN"&&trend==="DOWNTREND")
+  ){
+    confidence+=5;
+  }
 
-    confidence=Math.round(
-      Math.min(94,Math.max(51,confidence))
-    );
+  confidence=Math.round(
+    Math.max(51,Math.min(94,confidence))
+  );
 
-    const strength=Math.max(
-      50,
-      confidence-2+Math.round(Math.random()*5)
-    );
+  const strength=Math.max(
+    50,
+    confidence-2+Math.round(Math.random()*5)
+  );
 
-    const volatility=
-      Math.min(
-        99,
-        Math.abs(shortMove)*10+Math.random()*20
-      );
+  const volatility=Math.min(
+    99,
+    Math.abs(shortMove)*10+Math.random()*20
+  );
 
-    $("trend").textContent=trend;
-    $("momentum").textContent=momentum;
-    $("rsi").textContent=rsiValue.toFixed(0);
-    $("candle").textContent=body>=0?"BULL":"BEAR";
-    $("vol").textContent=volatility.toFixed(0)+"%";
+  return{
+    direction,
+    confidence,
+    strength,
+    trend,
+    momentum,
+    rsi:r,
+    body,
+    volatility
+  };
 
-    $("quality").textContent=
-      confidence>=75
-      ?"HIGH"
-      :confidence>=65
-      ?"MEDIUM"
-      :"LOW";
+}
 
-    $("analysisState").textContent="ANALYZED";
 
-    return {
-      direction,
-      confidence,
-      strength
-    };
+/* ---------------------------
+   SCAN
+--------------------------- */
+
+function scanMarket(){
+
+  const drift=
+    lastDirection==="UP"
+    ? .05
+    :lastDirection==="DOWN"
+    ?-.05
+    :0;
+
+  const next=
+    candles[candles.length-1]+
+    drift+
+    (Math.random()-.5)*1.1;
+
+  candles.push(next);
+
+  if(candles.length>150)
+    candles.shift();
+
+  const s=analyze();
+
+  lastDirection=s.direction;
+
+  signalExpiry=
+    Number($("expiry").value);
+
+  renderSignal(s);
+
+  addHistory(s);
+
+}
+
+
+/* ---------------------------
+   RENDER SIGNAL
+--------------------------- */
+
+function renderSignal(s){
+
+  const up=s.direction==="UP";
+
+  $("direction").textContent=
+    up?"↑":"↓";
+
+  $("direction").className=
+    "signalDirection "+(up?"buy":"sell");
+
+  $("signalName").textContent=
+    up?"CALL / BUY":"PUT / SELL";
+
+  $("signalName").className=
+    "signalName "+(up?"buy":"sell");
+
+  $("signalDescription").textContent=
+    up
+    ?"Bullish market conditions detected"
+    :"Bearish market conditions detected";
+
+  $("confidence").textContent=
+    s.confidence+"%";
+
+  $("strength").textContent=
+    s.strength+"%";
+
+  $("setup").textContent=
+    s.confidence>=75
+    ?"HIGH"
+    :s.confidence>=65
+    ?"MED"
+    :"LOW";
+
+  $("confidenceBar").style.width=
+    s.confidence+"%";
+
+  $("marketState").textContent=
+    up?"● CALL":"● PUT";
+
+  $("marketState").style.color=
+    up
+    ?"var(--green)"
+    :"var(--red)";
+
+  $("analysisStatus").textContent=
+    "UPDATED";
+
+  $("trend").textContent=s.trend;
+  $("momentum").textContent=s.momentum;
+  $("rsi").textContent=Math.round(s.rsi);
+  $("price").textContent=
+    s.body>=0?"BULL":"BEAR";
+  $("volatility").textContent=
+    Math.round(s.volatility)+"%";
+
+  $("quality").textContent=
+    s.confidence>=75
+    ?"HIGH"
+    :s.confidence>=65
+    ?"MED"
+    :"LOW";
+
+  $("signalBox").classList.remove("flash");
+
+  void $("signalBox").offsetWidth;
+
+  $("signalBox").classList.add("flash");
+
+}
+
+
+/* ---------------------------
+   HISTORY
+--------------------------- */
+
+function addHistory(s){
+
+  history.unshift({
+
+    time:new Date().toLocaleTimeString([],{
+      hour:"2-digit",
+      minute:"2-digit",
+      second:"2-digit"
+    }),
+
+    pair:$("pair").value.split(" ")[0],
+
+    direction:s.direction,
+
+    confidence:s.confidence
+
+  });
+
+  history=history.slice(0,15);
+
+  renderHistory();
+
+}
+
+
+function renderHistory(){
+
+  const box=$("history");
+
+  box.innerHTML="";
+
+  if(!history.length){
+
+    box.innerHTML=
+      '<div class="note">No signals generated yet.</div>';
+
+    return;
 
   }
 
+  history.forEach(item=>{
 
-  /* -----------------------------
-     SIGNAL
-  ----------------------------- */
+    const row=document.createElement("div");
 
-  function scan(){
+    row.className="historyRow";
 
-    const drift=
-      lastSignal
-      ? lastSignal.direction==="UP"
-        ? .05
-        : -.05
-      : 0;
+    row.innerHTML=
+      "<span>"+item.time+"</span>"+
+      "<span>"+item.pair+"</span>"+
+      '<span class="'+
+      (item.direction==="UP"?"green":"red")+
+      '">'+
+      (item.direction==="UP"?"CALL":"PUT")+
+      "</span>"+
+      "<span>"+item.confidence+"%</span>";
 
-    const next=
-      candles[candles.length-1]+
-      drift+
-      (Math.random()-.5)*1.1;
+    box.appendChild(row);
 
-    candles.push(next);
+  });
 
-    if(candles.length>140)
-      candles.shift();
-
-    const signal=analyze();
-
-    lastSignal=signal;
-
-    signalCountdown=
-      Number($("expiry").value);
-
-    const isUp=signal.direction==="UP";
+}
 
 
-    $("dir").textContent=isUp?"↑":"↓";
+/* ---------------------------
+   TIMER
+--------------------------- */
 
-    $("coreText").textContent=
-      isUp
-      ?"BUY SIGNAL"
-      :"SELL SIGNAL";
+function tick(){
 
-    $("signal").className=
-      "signal "+(isUp?"up":"down");
+  timer--;
 
-    $("signal").classList.remove("signalFlash");
+  if(timer<=0){
 
-    void $("signal").offsetWidth;
+    if(running)
+      scanMarket();
 
-    $("signal").classList.add("signalFlash");
-
-
-    $("signalDir").textContent=
-      isUp?"UP":"DOWN";
-
-    $("signalSub").textContent=
-      isUp
-      ?"AI-STYLE BUY SIGNAL"
-      :"AI-STYLE SELL SIGNAL";
-
-    $("signalBadge").textContent=
-      signal.confidence>=75
-      ?"HIGH CONFIDENCE"
-      :"SIGNAL";
-
-
-    $("confidence").textContent=
-      signal.confidence+"%";
-
-    $("strength").textContent=
-      signal.strength+"%";
-
-    $("expires").textContent=
-      signalCountdown+"s";
-
-    $("scoreText").textContent=
-      signal.confidence+"%";
-
-    $("fill").style.width=
-      signal.confidence+"%";
-
-
-    $("status").textContent=
-      "Signal generated • monitor the chart manually";
-
-    $("scanBadge").textContent=
-      isUp?"BUY":"SELL";
-
-    $("marketStatus").textContent="ACTIVE";
-
-    addHistory(signal);
+    timer=30;
 
   }
 
+  $("timer").textContent=
+    "00:"+String(timer).padStart(2,"0");
 
-  /* -----------------------------
-     HISTORY
-  ----------------------------- */
+}
 
-  function addHistory(signal){
 
-    history.unshift({
+/* ---------------------------
+   AUTO
+--------------------------- */
 
-      time:new Date().toLocaleTimeString([],{
-        hour:"2-digit",
-        minute:"2-digit",
-        second:"2-digit"
-      }),
+function startAuto(){
 
-      pair:$("pair").value.split(" ")[0],
+  if(running)
+    return;
 
-      direction:signal.direction,
+  running=true;
 
-      confidence:signal.confidence
+  $("auto").textContent=
+    "■ STOP AUTO";
 
-    });
+  $("auto").classList.add("stop");
 
-    history=history.slice(0,12);
+  $("controlState").textContent=
+    "RUNNING";
+
+  if(interval)
+    clearInterval(interval);
+
+  interval=
+    setInterval(tick,1000);
+
+}
+
+
+function stopAuto(){
+
+  running=false;
+
+  if(interval){
+
+    clearInterval(interval);
+    interval=null;
+
+  }
+
+  $("auto").textContent=
+    "▶ AUTO SCAN";
+
+  $("auto").classList.remove("stop");
+
+  $("controlState").textContent=
+    "READY";
+
+}
+
+
+/* ---------------------------
+   EVENTS
+--------------------------- */
+
+$("scan").addEventListener(
+  "click",
+  function(){
+
+    scanMarket();
+
+    timer=30;
+
+    $("timer").textContent="00:30";
+
+  }
+);
+
+
+$("auto").addEventListener(
+  "click",
+  function(){
+
+    running
+    ?stopAuto()
+    :startAuto();
+
+  }
+);
+
+
+$("pair").addEventListener(
+  "change",
+  function(){
+
+    seed();
+
+    $("topPair").textContent=
+      this.value.split(" ")[0];
+
+    $("marketState").textContent=
+      "● READY";
+
+  }
+);
+
+
+$("expiry").addEventListener(
+  "change",
+  function(){
+
+    const value=Number(this.value);
+
+    $("expiryDisplay").textContent=
+      value<60
+      ?value+"s"
+      :value/60+"m";
+
+  }
+);
+
+
+$("clear").addEventListener(
+  "click",
+  function(){
+
+    history=[];
 
     renderHistory();
 
   }
+);
 
 
-  function renderHistory(){
+/* Bottom navigation */
 
-    const box=$("history");
+$("navSignal").addEventListener(
+  "click",
+  function(){
 
-    box.innerHTML="";
-
-    if(!history.length){
-
-      box.innerHTML=
-        '<div class="info">No signals generated yet.</div>';
-
-      return;
-
-    }
-
-
-    history.forEach(item=>{
-
-      const row=document.createElement("div");
-
-      row.className="historyRow";
-
-      row.innerHTML=
-        "<span>"+item.time+"</span>"+
-        "<span>"+item.pair+"</span>"+
-        '<span class="'+
-        (item.direction==="UP"
-          ?"upTxt"
-          :"downTxt")+
-        '">'+
-        (item.direction==="UP"?"↑ UP":"↓ DOWN")+
-        "</span>"+
-        "<span>"+item.confidence+"%</span>";
-
-      box.appendChild(row);
-
-    });
+    document
+      .querySelector(".signalPanel")
+      .scrollIntoView({
+        behavior:"smooth"
+      });
 
   }
+);
 
 
-  /* -----------------------------
-     TIMER
-  ----------------------------- */
+$("navAnalysis").addEventListener(
+  "click",
+  function(){
 
-  function tick(){
-
-    countdown--;
-
-    if(countdown<=0){
-
-      if(running){
-
-        scan();
-
-      }
-
-      countdown=30;
-
-    }
-
-
-    $("timer").textContent=
-      "00:"+fmt(countdown);
-
-
-    if(signalCountdown>0){
-
-      signalCountdown--;
-
-      $("expires").textContent=
-        signalCountdown+"s";
-
-    }
-
-
-    if(running){
-
-      $("status").textContent=
-        "Auto scanning • next scan in "+
-        countdown+
-        "s";
-
-    }
+    document
+      .querySelectorAll(".card")[2]
+      .scrollIntoView({
+        behavior:"smooth"
+      });
 
   }
+);
 
 
-  /* -----------------------------
-     START / STOP
-  ----------------------------- */
+$("navSettings").addEventListener(
+  "click",
+  function(){
 
-  function start(){
-
-    if(running) return;
-
-    running=true;
-
-    $("autoBtn").classList.add("stop");
-    $("autoBtn").classList.add("active");
-
-    $("autoBtn").textContent=
-      "■ STOP AUTO";
-
-    $("scanBadge").textContent=
-      "SCANNING";
-
-    $("marketStatus").textContent=
-      "SCANNING";
-
-    $("status").textContent=
-      "Auto scan running • next scan in "+
-      countdown+
-      "s";
-
-    if(interval)
-      clearInterval(interval);
-
-    interval=
-      setInterval(tick,1000);
+    document
+      .querySelectorAll(".card")[1]
+      .scrollIntoView({
+        behavior:"smooth"
+      });
 
   }
+);
 
 
-  function stop(){
+/* ---------------------------
+   START
+--------------------------- */
 
-    running=false;
+seed();
 
-    if(interval){
+$("topPair").textContent=
+  $("pair").value.split(" ")[0];
 
-      clearInterval(interval);
-      interval=null;
+setInterval(function(){
 
-    }
+  if(!running)
+    return;
 
-    $("autoBtn").classList.remove("stop");
-    $("autoBtn").classList.remove("active");
+  $("controlState").textContent=
+    "SCANNING";
 
-    $("autoBtn").textContent=
-      "▶ AUTO SCAN";
-
-    $("scanBadge").textContent=
-      "STANDBY";
-
-    $("marketStatus").textContent=
-      "READY";
-
-    $("status").textContent=
-      "Auto scan stopped • ready to scan";
-
-  }
-
-
-  /* -----------------------------
-     BUTTONS
-  ----------------------------- */
-
-  $("autoBtn").addEventListener(
-    "click",
-    function(){
-
-      if(running)
-        stop();
-      else
-        start();
-
-    }
-  );
-
-
-  $("onceBtn").addEventListener(
-    "click",
-    function(){
-
-      scan();
-
-      countdown=30;
-
-      $("timer").textContent=
-        "00:30";
-
-    }
-  );
-
-
-  $("clear").addEventListener(
-    "click",
-    function(){
-
-      history=[];
-
-      renderHistory();
-
-      $("status").textContent=
-        "Signal history cleared";
-
-    }
-  );
-
-
-  $("pair").addEventListener(
-    "change",
-    function(){
-
-      seed();
-
-      lastSignal=null;
-
-      $("signal").className="signal";
-
-      $("dir").textContent="—";
-
-      $("coreText").textContent=
-        "WAITING";
-
-      $("scanBadge").textContent=
-        "STANDBY";
-
-      $("marketStatus").textContent=
-        "READY";
-
-      $("analysisState").textContent=
-        "WAITING";
-
-      $("status").textContent=
-        "Pair changed • ready to scan";
-
-    }
-  );
-
-
-  $("expiry").addEventListener(
-    "change",
-    function(){
-
-      signalCountdown=
-        Number($("expiry").value);
-
-      $("expires").textContent=
-        signalCountdown+"s";
-
-    }
-  );
-
-
-  /* -----------------------------
-     INITIALIZE
-  ----------------------------- */
-
-  seed();
-
-  renderHistory();
-
-  $("timer").textContent="00:30";
-
-  $("status").textContent=
-    "Ready to analyze demo market conditions";
-
-}
-
-
-/* DOM READY */
-
-if(document.readyState==="loading"){
-
-  document.addEventListener(
-    "DOMContentLoaded",
-    init
-  );
-
-}else{
-
-  init();
-
-}
+},1000);
 
 })();
+
 </script>
 
 </body>
