@@ -1,888 +1,704 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>AI Signal Scanner</title>
 
 <style>
 *{box-sizing:border-box}
 body{
-  margin:0;
-  background:#07111f;
-  color:#fff;
-  font-family:Arial,Helvetica,sans-serif;
+margin:0;
+font-family:Arial,sans-serif;
+background:#07111f;
+color:white;
 }
-.wrap{
-  max-width:1000px;
-  margin:auto;
-  padding:18px;
+.container{
+max-width:650px;
+margin:auto;
+padding:15px;
 }
 .card{
-  background:#0d1b2d;
-  border:1px solid #1d3550;
-  border-radius:18px;
-  padding:18px;
-  margin-bottom:15px;
-  box-shadow:0 10px 30px rgba(0,0,0,.25);
+background:#0d1b2a;
+border:1px solid #203a55;
+border-radius:18px;
+padding:18px;
+margin-bottom:15px;
 }
 h1{
-  margin:0 0 6px;
-  font-size:26px;
+text-align:center;
+margin:5px 0;
+font-size:25px;
 }
-.sub{
-  color:#91a4ba;
-  font-size:13px;
-}
-.grid{
-  display:grid;
-  grid-template-columns:repeat(4,1fr);
-  gap:10px;
-}
-label{
-  display:block;
-  font-size:12px;
-  color:#91a4ba;
-  margin-bottom:6px;
+.subtitle{
+text-align:center;
+color:#8da2b8;
+font-size:13px;
+margin-bottom:15px;
 }
 select,button{
-  width:100%;
-  border:1px solid #29445f;
-  background:#101f32;
-  color:#fff;
-  padding:12px;
-  border-radius:10px;
-  font-size:14px;
+width:100%;
+padding:13px;
+margin-top:8px;
+border-radius:10px;
+border:1px solid #294763;
+background:#102337;
+color:white;
+font-size:15px;
 }
 button{
-  cursor:pointer;
-  font-weight:bold;
+font-weight:bold;
+cursor:pointer;
 }
-button:hover{
-  background:#17304a;
+.scan{
+background:#14395b;
 }
-.actions{
-  display:grid;
-  grid-template-columns:1fr 1fr 1fr;
-  gap:10px;
-  margin-top:12px;
-}
-.signal{
-  text-align:center;
-  padding:28px 10px;
+.stop{
+background:#40202a;
 }
 .orb{
-  width:145px;
-  height:145px;
-  border-radius:50%;
-  margin:10px auto 18px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-size:28px;
-  font-weight:bold;
-  border:4px solid #29445f;
-  background:#102238;
+width:155px;
+height:155px;
+border-radius:50%;
+margin:25px auto;
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:28px;
+font-weight:bold;
+border:4px solid #465d73;
+background:#102337;
 }
-.orb.up{
-  border-color:#16d98b;
-  box-shadow:0 0 30px rgba(22,217,139,.3);
+.up{
+border-color:#16d98b;
+box-shadow:0 0 35px rgba(22,217,139,.35);
 }
-.orb.down{
-  border-color:#ff5b70;
-  box-shadow:0 0 30px rgba(255,91,112,.3);
+.down{
+border-color:#ff5068;
+box-shadow:0 0 35px rgba(255,80,104,.35);
 }
-.orb.wait{
-  border-color:#f0b429;
-  box-shadow:0 0 30px rgba(240,180,41,.2);
+.wait{
+border-color:#e6b93f;
+}
+.signalText{
+text-align:center;
+font-size:23px;
+font-weight:bold;
 }
 .info{
-  display:grid;
-  grid-template-columns:repeat(4,1fr);
-  gap:8px;
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:8px;
 }
-.metric{
-  background:#091626;
-  border:1px solid #1d3550;
-  padding:12px;
-  border-radius:10px;
-  text-align:center;
+.box{
+background:#081522;
+padding:12px;
+border-radius:10px;
+text-align:center;
 }
-.metric small{
-  display:block;
-  color:#91a4ba;
-  margin-bottom:5px;
-}
-.metric b{
-  font-size:16px;
-}
-.status{
-  text-align:center;
-  color:#91a4ba;
-  margin-top:10px;
+.box small{
+display:block;
+color:#8399af;
+margin-bottom:5px;
 }
 .history{
-  max-height:330px;
-  overflow:auto;
+max-height:300px;
+overflow:auto;
 }
-.row{
-  display:grid;
-  grid-template-columns:1.2fr .8fr .8fr .8fr 1fr;
-  gap:6px;
-  padding:10px 4px;
-  border-bottom:1px solid #1a3047;
-  font-size:13px;
+.historyRow{
+display:grid;
+grid-template-columns:1.2fr .8fr .8fr 1fr;
+gap:5px;
+padding:10px 2px;
+border-bottom:1px solid #1d3349;
+font-size:12px;
 }
 .green{color:#16d98b}
-.red{color:#ff5b70}
-.yellow{color:#f0b429}
-@media(max-width:700px){
-  .grid{grid-template-columns:1fr 1fr}
-  .info{grid-template-columns:1fr 1fr}
-  .actions{grid-template-columns:1fr}
+.red{color:#ff5068}
+.yellow{color:#e6b93f}
+.status{
+text-align:center;
+color:#8399af;
+margin-top:10px;
+}
+@media(max-width:500px){
+.container{padding:10px}
 }
 </style>
 </head>
 
 <body>
 
-<div class="wrap">
+<div class="container">
 
-  <div class="card">
-    <h1>AI Signal Scanner</h1>
-    <div class="sub">
-      Multi-confirmation signal engine • Demo/analysis mode
-    </div>
-  </div>
+<div class="card">
 
-  <div class="card">
+<h1>AI Signal Scanner</h1>
 
-    <div class="grid">
+<div class="subtitle">
+Smart Multi-Confirmation Signal Generator
+</div>
 
-      <div>
-        <label>Platform</label>
-        <select id="platform">
-          <option>Pocket Option</option>
-          <option>Quotex</option>
-        </select>
-      </div>
+<label>Platform</label>
 
-      <div>
-        <label>Pair</label>
-        <select id="pair">
+<select id="platform">
+<option>Pocket Option</option>
+<option>Quotex</option>
+</select>
 
-          <optgroup label="Major">
-            <option>EUR/USD</option>
-            <option>GBP/USD</option>
-            <option>USD/JPY</option>
-            <option>USD/CHF</option>
-            <option>AUD/USD</option>
-            <option>USD/CAD</option>
-            <option>NZD/USD</option>
-          </optgroup>
+<label>Trading Pair</label>
 
-          <optgroup label="Cross">
-            <option>EUR/GBP</option>
-            <option>EUR/JPY</option>
-            <option>GBP/JPY</option>
-            <option>EUR/CHF</option>
-            <option>GBP/CHF</option>
-            <option>AUD/JPY</option>
-            <option>CAD/JPY</option>
-            <option>CHF/JPY</option>
-            <option>NZD/JPY</option>
-            <option>AUD/CAD</option>
-            <option>AUD/CHF</option>
-            <option>AUD/NZD</option>
-            <option>CAD/CHF</option>
-            <option>EUR/AUD</option>
-            <option>EUR/CAD</option>
-            <option>EUR/NZD</option>
-            <option>GBP/AUD</option>
-            <option>GBP/CAD</option>
-            <option>GBP/NZD</option>
-          </optgroup>
+<select id="pair">
+<option>EUR/USD</option>
+<option>GBP/USD</option>
+<option>USD/JPY</option>
+<option>USD/CHF</option>
+<option>AUD/USD</option>
+<option>USD/CAD</option>
+<option>NZD/USD</option>
+<option>EUR/GBP</option>
+<option>EUR/JPY</option>
+<option>GBP/JPY</option>
+<option>EUR/CHF</option>
+<option>GBP/CHF</option>
+<option>AUD/JPY</option>
+<option>CAD/JPY</option>
+<option>CHF/JPY</option>
+<option>NZD/JPY</option>
+<option>AUD/CAD</option>
+<option>AUD/CHF</option>
+<option>AUD/NZD</option>
+<option>EUR/AUD</option>
+<option>EUR/CAD</option>
+<option>EUR/NZD</option>
+<option>GBP/AUD</option>
+<option>GBP/CAD</option>
+<option>GBP/NZD</option>
+<option>EUR/USD (OTC)</option>
+<option>GBP/USD (OTC)</option>
+<option>USD/JPY (OTC)</option>
+<option>USD/CHF (OTC)</option>
+<option>AUD/USD (OTC)</option>
+<option>USD/CAD (OTC)</option>
+<option>NZD/USD (OTC)</option>
+<option>EUR/GBP (OTC)</option>
+<option>EUR/JPY (OTC)</option>
+<option>GBP/JPY (OTC)</option>
+<option>USD/PKR (OTC)</option>
+<option>USD/INR (OTC)</option>
+<option>USD/BRL (OTC)</option>
+<option>USD/MXN (OTC)</option>
+</select>
 
-          <optgroup label="OTC">
-            <option>EUR/USD (OTC)</option>
-            <option>GBP/USD (OTC)</option>
-            <option>USD/JPY (OTC)</option>
-            <option>USD/CHF (OTC)</option>
-            <option>AUD/USD (OTC)</option>
-            <option>USD/CAD (OTC)</option>
-            <option>NZD/USD (OTC)</option>
-            <option>EUR/GBP (OTC)</option>
-            <option>EUR/JPY (OTC)</option>
-            <option>GBP/JPY (OTC)</option>
-            <option>EUR/CHF (OTC)</option>
-            <option>GBP/CHF (OTC)</option>
-            <option>AUD/JPY (OTC)</option>
-            <option>USD/ARS (OTC)</option>
-            <option>USD/BRL (OTC)</option>
-            <option>USD/INR (OTC)</option>
-            <option>USD/MXN (OTC)</option>
-            <option>USD/PKR (OTC)</option>
-            <option>USD/BDT (OTC)</option>
-            <option>USD/TRY (OTC)</option>
-          </optgroup>
+<label>Expiry</label>
 
-        </select>
-      </div>
+<select id="expiry">
+<option value="3">3 Seconds</option>
+<option value="5">5 Seconds</option>
+<option value="10">10 Seconds</option>
+<option value="15">15 Seconds</option>
+<option value="30">30 Seconds</option>
+<option value="60">1 Minute</option>
+<option value="120">2 Minutes</option>
+<option value="300" selected>5 Minutes</option>
+<option value="900">15 Minutes</option>
+<option value="1800">30 Minutes</option>
+<option value="3600">1 Hour</option>
+</select>
 
-      <div>
-        <label>Timeframe</label>
-        <select id="expiry">
-          <option value="3">3 sec</option>
-          <option value="5">5 sec</option>
-          <option value="10">10 sec</option>
-          <option value="15">15 sec</option>
-          <option value="30">30 sec</option>
-          <option value="60">1 min</option>
-          <option value="120">2 min</option>
-          <option value="300" selected>5 min</option>
-          <option value="900">15 min</option>
-          <option value="1800">30 min</option>
-          <option value="3600">1 hour</option>
-        </select>
-      </div>
-
-      <div>
-        <label>Signal Filter</label>
-        <select id="filter">
-          <option value="70">70% minimum</option>
-          <option value="75" selected>75% minimum</option>
-          <option value="80">80% minimum</option>
-          <option value="85">85% minimum</option>
-          <option value="90">90% minimum</option>
-        </select>
-      </div>
-
-    </div>
-
-    <div class="actions">
-      <button id="scanBtn">SCAN SIGNAL</button>
-      <button id="startBtn">AUTO SCAN</button>
-      <button id="stopBtn">STOP</button>
-    </div>
-
-  </div>
-
-  <div class="card signal">
-
-    <div id="orb" class="orb wait">WAIT</div>
-
-    <h2 id="signalText">Waiting for analysis</h2>
-
-    <div class="sub" id="platformText">
-      Select your market and scan
-    </div>
-
-    <div class="status" id="countdown">
-      Ready
-    </div>
-
-  </div>
-
-  <div class="card">
-
-    <div class="info">
-
-      <div class="metric">
-        <small>Confidence</small>
-        <b id="confidence">--</b>
-      </div>
-
-      <div class="metric">
-        <small>RSI</small>
-        <b id="rsi">--</b>
-      </div>
-
-      <div class="metric">
-        <small>Trend</small>
-        <b id="trend">--</b>
-      </div>
-
-      <div class="metric">
-        <small>Momentum</small>
-        <b id="momentum">--</b>
-      </div>
-
-    </div>
-
-  </div>
-
-  <div class="card">
-
-    <h3>Signal History</h3>
-
-    <div class="row">
-      <b>Pair</b>
-      <b>Signal</b>
-      <b>Confidence</b>
-      <b>Time</b>
-      <b>Status</b>
-    </div>
-
-    <div id="history" class="history"></div>
-
-  </div>
+<button class="scan" id="scan">GENERATE SIGNAL</button>
+<button id="auto">AUTO SCAN</button>
+<button class="stop" id="stop">STOP</button>
 
 </div>
 
+
+<div class="card">
+
+<div id="orb" class="orb wait">
+WAIT
+</div>
+
+<div id="signal" class="signalText yellow">
+WAITING
+</div>
+
+<div id="details" class="status">
+Press Generate Signal
+</div>
+
+<div id="countdown" class="status">
+Ready
+</div>
+
+</div>
+
+
+<div class="card">
+
+<div class="info">
+
+<div class="box">
+<small>Confidence</small>
+<b id="confidence">--</b>
+</div>
+
+<div class="box">
+<small>RSI</small>
+<b id="rsi">--</b>
+</div>
+
+<div class="box">
+<small>Trend</small>
+<b id="trend">--</b>
+</div>
+
+<div class="box">
+<small>Momentum</small>
+<b id="momentum">--</b>
+</div>
+
+</div>
+
+</div>
+
+
+<div class="card">
+
+<h3>Signal History</h3>
+
+<div class="historyRow">
+<b>Pair</b>
+<b>Signal</b>
+<b>Conf.</b>
+<b>Time</b>
+</div>
+
+<div id="history" class="history"></div>
+
+</div>
+
+</div>
+
+
 <script>
 
-const $ = id => document.getElementById(id);
+let prices=[];
+let autoTimer=null;
+let countdownTimer=null;
+let history=[];
 
-let running = false;
-let timer = null;
-let countdownTimer = null;
+const $=id=>document.getElementById(id);
 
-let candles = [];
-let history = [];
-
-const pair = $("pair");
-const platform = $("platform");
-const expiry = $("expiry");
-const filter = $("filter");
-
-const orb = $("orb");
-const signalText = $("signalText");
-const confidenceEl = $("confidence");
-const rsiEl = $("rsi");
-const trendEl = $("trend");
-const momentumEl = $("momentum");
-const countdownEl = $("countdown");
-const platformText = $("platformText");
-const historyEl = $("history");
-
-function randomBetween(min,max){
-  return Math.random()*(max-min)+min;
+function random(min,max){
+return Math.random()*(max-min)+min;
 }
 
-function seedMarket(){
+function createMarket(){
 
-  candles=[];
+prices=[];
 
-  let price=100+Math.random()*10;
+let p=100;
 
-  for(let i=0;i<120;i++){
+for(let i=0;i<120;i++){
 
-    const open=price;
+p+=random(-0.7,0.7);
 
-    const movement=randomBetween(-0.8,0.8);
+prices.push(p);
 
-    const close=open+movement;
+}
 
-    const high=Math.max(open,close)+Math.random()*0.35;
-
-    const low=Math.min(open,close)-Math.random()*0.35;
-
-    candles.push({
-      open,
-      high,
-      low,
-      close
-    });
-
-    price=close;
-  }
 }
 
 function updateMarket(){
 
-  if(!candles.length){
-    seedMarket();
-    return;
-  }
-
-  const last=candles[candles.length-1];
-
-  const open=last.close;
-
-  const movement=randomBetween(-0.8,0.8);
-
-  const close=open+movement;
-
-  candles.push({
-    open,
-    high:Math.max(open,close)+Math.random()*0.25,
-    low:Math.min(open,close)-Math.random()*0.25,
-    close
-  });
-
-  if(candles.length>150){
-    candles.shift();
-  }
+if(prices.length===0){
+createMarket();
+return;
 }
 
-function closes(){
+let last=prices[prices.length-1];
 
-  return candles.map(c=>c.close);
+last+=random(-0.7,0.7);
+
+prices.push(last);
+
+if(prices.length>120){
+prices.shift();
+}
 
 }
 
-function ema(values,period){
+function EMA(data,period){
 
-  if(values.length<period) return values[values.length-1];
-
-  const k=2/(period+1);
-
-  let result=values[0];
-
-  for(let i=1;i<values.length;i++){
-    result=values[i]*k+result*(1-k);
-  }
-
-  return result;
+if(data.length<period){
+return data[data.length-1];
 }
 
-function calculateRSI(values,period=14){
+let k=2/(period+1);
 
-  if(values.length<period+1) return 50;
+let value=data[0];
 
-  let gains=0;
-  let losses=0;
+for(let i=1;i<data.length;i++){
 
-  for(let i=values.length-period;i<values.length;i++){
+value=data[i]*k+value*(1-k);
 
-    const change=values[i]-values[i-1];
-
-    if(change>0) gains+=change;
-    else losses+=Math.abs(change);
-
-  }
-
-  if(losses===0) return 100;
-
-  const rs=gains/losses;
-
-  return 100-(100/(1+rs));
 }
 
-function macd(values){
-
-  const e12=ema(values,12);
-  const e26=ema(values,26);
-
-  return e12-e26;
+return value;
 }
 
-function calculateATR(){
 
-  if(candles.length<15) return 0;
+function RSI(data,period=14){
 
-  let total=0;
-
-  for(let i=candles.length-14;i<candles.length;i++){
-
-    const c=candles[i];
-
-    total+=c.high-c.low;
-  }
-
-  return total/14;
+if(data.length<period+1){
+return 50;
 }
+
+let gain=0;
+let loss=0;
+
+for(let i=data.length-period;i<data.length;i++){
+
+let change=data[i]-data[i-1];
+
+if(change>0){
+gain+=change;
+}else{
+loss+=Math.abs(change);
+}
+
+}
+
+if(loss===0){
+return 100;
+}
+
+let rs=gain/loss;
+
+return 100-(100/(1+rs));
+
+}
+
+
+function MACD(data){
+
+return EMA(data,12)-EMA(data,26);
+
+}
+
 
 function analyze(){
 
-  if(candles.length<40){
-    seedMarket();
-  }
+updateMarket();
 
-  const values=closes();
+let current=prices[prices.length-1];
 
-  const e9=ema(values,9);
-  const e21=ema(values,21);
-  const e50=ema(values,50);
+let e9=EMA(prices,9);
+let e21=EMA(prices,21);
+let e50=EMA(prices,50);
 
-  const current=values[values.length-1];
+let rsi=RSI(prices);
 
-  const rsi=calculateRSI(values,14);
+let macd=MACD(prices);
 
-  const macdValue=macd(values);
+let momentum=
+current-prices[prices.length-6];
 
-  const previous=values[values.length-6];
+let up=0;
+let down=0;
 
-  const momentum=current-previous;
 
-  const atr=calculateATR();
+/* EMA trend */
 
-  let up=0;
-  let down=0;
-
-  /*
-    TREND
-  */
-
-  if(current>e9) up+=15;
-  else down+=15;
-
-  if(e9>e21) up+=15;
-  else down+=15;
-
-  if(e21>e50) up+=10;
-  else down+=10;
-
-  /*
-    RSI
-  */
-
-  if(rsi>=52 && rsi<=68) up+=15;
-
-  if(rsi<=48 && rsi>=32) down+=15;
-
-  /*
-    MACD
-  */
-
-  if(macdValue>0) up+=15;
-  else down+=15;
-
-  /*
-    MOMENTUM
-  */
-
-  if(momentum>0) up+=15;
-  else if(momentum<0) down+=15;
-
-  /*
-    CANDLE PRESSURE
-  */
-
-  const last=candles[candles.length-1];
-
-  const body=last.close-last.open;
-
-  if(body>0) up+=10;
-  else if(body<0) down+=10;
-
-  /*
-    SUPPORT / RESISTANCE
-  */
-
-  const recent=values.slice(-20);
-
-  const highest=Math.max(...recent);
-  const lowest=Math.min(...recent);
-
-  const range=highest-lowest;
-
-  let nearResistance=false;
-  let nearSupport=false;
-
-  if(range>0){
-
-    nearResistance=(highest-current)/range<0.08;
-
-    nearSupport=(current-lowest)/range<0.08;
-  }
-
-  /*
-    Avoid buying directly into resistance
-    or selling directly into support.
-  */
-
-  if(nearResistance) up-=12;
-
-  if(nearSupport) down-=12;
-
-  /*
-    Volatility filter
-  */
-
-  if(atr<=0){
-    return {
-      signal:"WAIT",
-      confidence:0,
-      rsi,
-      trend:"UNKNOWN",
-      momentum,
-      reason:"Insufficient market data"
-    };
-  }
-
-  let signal="WAIT";
-
-  const best=Math.max(up,down);
-
-  let confidence=Math.round(
-    Math.min(99,(best/100)*100)
-  );
-
-  const minimum=Number(filter.value);
-
-  /*
-    Require strong agreement.
-  */
-
-  if(up>down && up-down>=15 && confidence>=minimum){
-
-    signal="UP";
-
-  }else if(down>up && down-up>=15 && confidence>=minimum){
-
-    signal="DOWN";
-
-  }else{
-
-    signal="WAIT";
-
-  }
-
-  let trend="SIDEWAYS";
-
-  if(e9>e21 && e21>e50){
-    trend="UPTREND";
-  }else if(e9<e21 && e21<e50){
-    trend="DOWNTREND";
-  }
-
-  let momentumText="NEUTRAL";
-
-  if(momentum>0) momentumText="BULLISH";
-  if(momentum<0) momentumText="BEARISH";
-
-  return {
-    signal,
-    confidence,
-    rsi,
-    trend,
-    momentum:momentumText,
-    reason:
-      signal==="WAIT"
-      ? "Indicators are not sufficiently aligned"
-      : "Multiple confirmations aligned"
-  };
+if(current>e9){
+up+=15;
+}else{
+down+=15;
 }
 
-function showResult(result){
-
-  orb.className="orb";
-
-  if(result.signal==="UP"){
-
-    orb.classList.add("up");
-    orb.textContent="UP";
-
-    signalText.textContent="CALL / UP";
-    signalText.className="green";
-
-  }else if(result.signal==="DOWN"){
-
-    orb.classList.add("down");
-    orb.textContent="DOWN";
-
-    signalText.textContent="PUT / DOWN";
-    signalText.className="red";
-
-  }else{
-
-    orb.classList.add("wait");
-    orb.textContent="WAIT";
-
-    signalText.textContent="NO TRADE";
-    signalText.className="yellow";
-  }
-
-  confidenceEl.textContent=result.confidence+"%";
-
-  rsiEl.textContent=result.rsi.toFixed(1);
-
-  trendEl.textContent=result.trend;
-
-  momentumEl.textContent=result.momentum;
-
-  platformText.textContent=
-    platform.value+
-    " • "+
-    pair.value+
-    " • "+
-    result.reason;
+if(e9>e21){
+up+=15;
+}else{
+down+=15;
 }
 
-function scan(){
-
-  updateMarket();
-
-  const result=analyze();
-
-  showResult(result);
-
-  if(result.signal!=="WAIT"){
-
-    addHistory(result);
-
-  }
-
-  return result;
+if(e21>e50){
+up+=10;
+}else{
+down+=10;
 }
 
-function addHistory(result){
 
-  history.unshift({
+/* RSI confirmation */
 
-    pair:pair.value,
-
-    signal:result.signal,
-
-    confidence:result.confidence,
-
-    time:new Date().toLocaleTimeString(),
-
-    status:"PENDING"
-
-  });
-
-  if(history.length>50){
-    history.pop();
-  }
-
-  renderHistory();
+if(rsi>=52 && rsi<=68){
+up+=15;
 }
+
+if(rsi<=48 && rsi>=32){
+down+=15;
+}
+
+
+/* MACD */
+
+if(macd>0){
+up+=15;
+}else{
+down+=15;
+}
+
+
+/* Momentum */
+
+if(momentum>0){
+up+=15;
+}
+
+if(momentum<0){
+down+=15;
+}
+
+
+/* Candle pressure */
+
+let previous=prices[prices.length-2];
+
+if(current>previous){
+up+=10;
+}else{
+down+=10;
+}
+
+
+/* Strong confirmation only */
+
+let difference=Math.abs(up-down);
+
+let confidence=Math.round(
+Math.min(99,Math.max(up,down))
+);
+
+let signal="WAIT";
+
+if(up>down && difference>=20 && confidence>=75){
+
+signal="UP";
+
+}
+
+else if(down>up && difference>=20 && confidence>=75){
+
+signal="DOWN";
+
+}
+
+
+/* Trend */
+
+let trend="SIDEWAYS";
+
+if(e9>e21 && e21>e50){
+trend="UPTREND";
+}
+
+else if(e9<e21 && e21<e50){
+trend="DOWNTREND";
+}
+
+
+let momentumText="NEUTRAL";
+
+if(momentum>0){
+momentumText="BULLISH";
+}
+
+else if(momentum<0){
+momentumText="BEARISH";
+}
+
+
+return{
+signal,
+confidence,
+rsi,
+trend,
+momentum:momentumText
+};
+
+}
+
+
+function display(result){
+
+const orb=$("orb");
+const signal=$("signal");
+
+orb.className="orb";
+
+if(result.signal==="UP"){
+
+orb.classList.add("up");
+orb.textContent="UP";
+
+signal.textContent="CALL / UP";
+signal.className="signalText green";
+
+}
+
+else if(result.signal==="DOWN"){
+
+orb.classList.add("down");
+orb.textContent="DOWN";
+
+signal.textContent="PUT / DOWN";
+signal.className="signalText red";
+
+}
+
+else{
+
+orb.classList.add("wait");
+orb.textContent="WAIT";
+
+signal.textContent="NO TRADE";
+signal.className="signalText yellow";
+
+}
+
+$("confidence").textContent=result.confidence+"%";
+
+$("rsi").textContent=result.rsi.toFixed(1);
+
+$("trend").textContent=result.trend;
+
+$("momentum").textContent=result.momentum;
+
+$("details").textContent=
+result.signal==="WAIT"
+?"Market conditions are not strong enough."
+:"Multiple indicators confirmed the direction.";
+
+}
+
+
+function generate(){
+
+let result=analyze();
+
+display(result);
+
+if(result.signal!=="WAIT"){
+
+history.unshift({
+
+pair:$("pair").value,
+signal:result.signal,
+confidence:result.confidence,
+time:new Date().toLocaleTimeString()
+
+});
+
+if(history.length>50){
+history.pop();
+}
+
+renderHistory();
+
+}
+
+return result;
+
+}
+
 
 function renderHistory(){
 
-  historyEl.innerHTML="";
+$("history").innerHTML="";
 
-  history.forEach((item,index)=>{
+history.forEach(item=>{
 
-    const row=document.createElement("div");
+let row=document.createElement("div");
 
-    row.className="row";
+row.className="historyRow";
 
-    const signalClass=
-      item.signal==="UP"
-      ?"green"
-      :"red";
+row.innerHTML=`
 
-    row.innerHTML=`
+<span>${item.pair}</span>
 
-      <span>${item.pair}</span>
+<span class="${item.signal==="UP"?"green":"red"}">
+${item.signal}
+</span>
 
-      <span class="${signalClass}">
-        ${item.signal}
-      </span>
+<span>${item.confidence}%</span>
 
-      <span>${item.confidence}%</span>
+<span>${item.time}</span>
 
-      <span>${item.time}</span>
+`;
 
-      <span>${item.status}</span>
+$("history").appendChild(row);
 
-    `;
-
-    historyEl.appendChild(row);
-
-  });
-}
-
-function start(){
-
-  if(running) return;
-
-  running=true;
-
-  scan();
-
-  timer=setInterval(()=>{
-
-    scan();
-
-  },5000);
-
-  startCountdown();
+});
 
 }
 
-function stop(){
 
-  running=false;
+function startAuto(){
 
-  clearInterval(timer);
-  clearInterval(countdownTimer);
+if(autoTimer){
+return;
+}
 
-  countdownEl.textContent="Stopped";
+generate();
+
+let seconds=5;
+
+$("countdown").textContent=
+"Next signal in "+seconds+"s";
+
+countdownTimer=setInterval(()=>{
+
+seconds--;
+
+if(seconds<=0){
+seconds=5;
+}
+
+$("countdown").textContent=
+"Next signal in "+seconds+"s";
+
+},1000);
+
+autoTimer=setInterval(()=>{
+
+generate();
+
+},5000);
 
 }
 
-function startCountdown(){
 
-  clearInterval(countdownTimer);
+function stopAuto(){
 
-  let seconds=5;
+clearInterval(autoTimer);
+clearInterval(countdownTimer);
 
-  countdownEl.textContent=
-    "Next scan in "+seconds+"s";
+autoTimer=null;
+countdownTimer=null;
 
-  countdownTimer=setInterval(()=>{
+$("countdown").textContent="Stopped";
 
-    seconds--;
-
-    if(seconds<=0){
-      seconds=5;
-    }
-
-    countdownEl.textContent=
-      "Next scan in "+seconds+"s";
-
-  },1000);
 }
 
-$("scanBtn").addEventListener("click",()=>{
 
-  scan();
+$("scan").addEventListener("click",generate);
 
-});
+$("auto").addEventListener("click",startAuto);
 
-$("startBtn").addEventListener("click",()=>{
+$("stop").addEventListener("click",stopAuto);
 
-  start();
-
-});
-
-$("stopBtn").addEventListener("click",()=>{
-
-  stop();
-
-});
-
-platform.addEventListener("change",()=>{
-
-  platformText.textContent=
-    platform.value+
-    " • "+
-    pair.value;
-
-});
-
-pair.addEventListener("change",()=>{
-
-  seedMarket();
-
-  platformText.textContent=
-    platform.value+
-    " • "+
-    pair.value;
-
-});
-
-expiry.addEventListener("change",()=>{
-
-  countdownEl.textContent=
-    "Timeframe: "+
-    expiry.options[expiry.selectedIndex].text;
-
-});
-
-filter.addEventListener("change",()=>{
-
-  scan();
-
-});
-
-seedMarket();
-
-renderHistory();
+createMarket();
 
 </script>
 
