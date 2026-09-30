@@ -4,489 +4,621 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="theme-color" content="#07101d">
+<meta name="theme-color" content="#050b14">
 <title>AI Signal Bot PRO</title>
 
 <style>
 *{box-sizing:border-box}
+
 :root{
-  --bg:#050b14;
-  --card:#0b1422;
-  --card2:#0e1929;
-  --line:#1b2a3d;
-  --text:#f4f7fb;
-  --muted:#8392a7;
-  --blue:#28a9ff;
-  --green:#20d58a;
-  --red:#ff5572;
-  --yellow:#ffc857;
-  --cyan:#39d8ff;
+ --bg:#050b14;
+ --card:#0b1422;
+ --card2:#081321;
+ --line:#1b2a3d;
+ --text:#f4f7fb;
+ --muted:#8291a6;
+ --blue:#29adff;
+ --green:#20d58a;
+ --red:#ff5572;
+ --yellow:#ffc857;
+ --cyan:#35d7ff;
 }
+
 body{
-  margin:0;
-  background:linear-gradient(180deg,#07101d,#030811);
-  color:var(--text);
-  font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI",Arial,sans-serif;
-  min-height:100vh;
+ margin:0;
+ min-height:100vh;
+ background:linear-gradient(180deg,#07101d,#030811);
+ color:var(--text);
+ font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI",Arial,sans-serif;
 }
+
 button,select{font:inherit}
 button{cursor:pointer}
+
 .app{
-  width:100%;
-  max-width:520px;
-  margin:auto;
-  min-height:100vh;
-  padding-bottom:82px;
-}
-.header{
-  position:sticky;
-  top:0;
-  z-index:20;
-  padding:15px 16px 13px;
-  background:rgba(5,11,20,.94);
-  backdrop-filter:blur(18px);
-  border-bottom:1px solid rgba(255,255,255,.05);
-}
-.headerRow{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-}
-.brand{
-  font-size:18px;
-  font-weight:800;
-  letter-spacing:.2px;
-}
-.status{
-  display:flex;
-  align-items:center;
-  gap:6px;
-  color:#72e9b3;
-  font-size:11px;
-  font-weight:700;
-  background:#092117;
-  border:1px solid #123c2b;
-  border-radius:20px;
-  padding:6px 9px;
-}
-.dot{
-  width:7px;
-  height:7px;
-  border-radius:50%;
-  background:#20d58a;
-  box-shadow:0 0 10px #20d58a;
-}
-.container{
-  padding:12px;
-}
-.card{
-  background:linear-gradient(145deg,rgba(14,25,41,.98),rgba(8,17,29,.98));
-  border:1px solid var(--line);
-  border-radius:17px;
-  margin-bottom:11px;
-  overflow:hidden;
-  box-shadow:0 10px 30px rgba(0,0,0,.18);
-}
-.cardHead{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  padding:13px 14px 8px;
-}
-.title{
-  font-size:12px;
-  font-weight:800;
-  letter-spacing:.65px;
-  text-transform:uppercase;
-}
-.sub{
-  font-size:10px;
-  color:var(--muted);
-}
-.badge{
-  font-size:9px;
-  font-weight:800;
-  padding:5px 8px;
-  border-radius:8px;
-  background:#101e30;
-  color:#91a4ba;
-  border:1px solid #203149;
+ width:100%;
+ max-width:520px;
+ margin:auto;
+ min-height:100vh;
+ padding-bottom:82px;
 }
 
-/* AI TRADE DECISION */
+.header{
+ position:sticky;
+ top:0;
+ z-index:20;
+ padding:15px 16px 13px;
+ background:rgba(5,11,20,.95);
+ backdrop-filter:blur(18px);
+ border-bottom:1px solid rgba(255,255,255,.05);
+}
+
+.headerRow{
+ display:flex;
+ justify-content:space-between;
+ align-items:center;
+}
+
+.brand{
+ font-size:18px;
+ font-weight:850;
+}
+
+.status{
+ display:flex;
+ align-items:center;
+ gap:6px;
+ padding:6px 9px;
+ border-radius:20px;
+ background:#092117;
+ border:1px solid #123c2b;
+ color:#72e9b3;
+ font-size:10px;
+ font-weight:800;
+}
+
+.dot{
+ width:7px;
+ height:7px;
+ border-radius:50%;
+ background:#20d58a;
+ box-shadow:0 0 10px #20d58a;
+}
+
+.container{padding:12px}
+
+.card{
+ margin-bottom:11px;
+ overflow:hidden;
+ border:1px solid var(--line);
+ border-radius:17px;
+ background:linear-gradient(145deg,#0e1929,#08111d);
+ box-shadow:0 10px 30px rgba(0,0,0,.18);
+}
+
+.cardHead{
+ display:flex;
+ justify-content:space-between;
+ align-items:center;
+ padding:13px 14px 8px;
+}
+
+.title{
+ font-size:12px;
+ font-weight:850;
+ letter-spacing:.6px;
+ text-transform:uppercase;
+}
+
+.sub{
+ margin-top:2px;
+ color:var(--muted);
+ font-size:9px;
+}
+
+.badge{
+ padding:5px 8px;
+ border:1px solid #203149;
+ border-radius:8px;
+ background:#101e30;
+ color:#91a4ba;
+ font-size:8px;
+ font-weight:800;
+}
+
+/* =========================
+   AI TRADE DECISION
+========================= */
+
 .decisionCard{
-  padding-bottom:10px;
+ padding-bottom:10px;
 }
+
 .pairLine{
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  gap:7px;
-  margin-top:1px;
+ display:flex;
+ justify-content:center;
+ align-items:center;
+ gap:7px;
+ margin-top:1px;
 }
+
 .pair{
-  font-size:13px;
-  font-weight:800;
+ font-size:13px;
+ font-weight:850;
 }
+
 .otc{
-  font-size:9px;
-  padding:3px 6px;
-  border-radius:5px;
-  background:#162438;
-  color:#91b4d7;
+ padding:3px 6px;
+ border-radius:5px;
+ background:#162438;
+ color:#91b4d7;
+ font-size:8px;
 }
+
 .marketOpen{
-  text-align:center;
-  color:#62e8a9;
-  font-size:9px;
-  margin-top:3px;
+ margin-top:3px;
+ text-align:center;
+ color:#62e8a9;
+ font-size:8px;
 }
+
+/* PROFIT / TRADE / LOSS */
+
+.tradeRatio{
+ display:grid;
+ grid-template-columns:1fr 1.2fr 1fr;
+ gap:7px;
+ padding:8px 11px 4px;
+}
+
+.ratioBox{
+ padding:7px 4px;
+ text-align:center;
+ border-radius:9px;
+ background:#081321;
+ border:1px solid #16273b;
+}
+
+.ratioLabel{
+ display:block;
+ margin-bottom:3px;
+ color:#74859b;
+ font-size:7px;
+ font-weight:800;
+ text-transform:uppercase;
+}
+
+.ratioValue{
+ font-size:13px;
+ font-weight:900;
+}
+
+.profit .ratioValue{color:var(--green)}
+.loss .ratioValue{color:var(--red)}
+
+.tradeState{
+ display:flex;
+ justify-content:center;
+ align-items:center;
+ min-height:34px;
+ font-size:13px;
+ font-weight:950;
+ letter-spacing:.4px;
+}
+
+.tradeState.trade{
+ color:var(--green);
+}
+
+.tradeState.noTrade{
+ color:var(--yellow);
+}
+
 .decisionBox{
-  padding:8px 14px 4px;
-  text-align:center;
+ padding:5px 14px 3px;
+ text-align:center;
 }
+
 .arrow{
-  height:40px;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  font-size:38px;
-  line-height:1;
-  font-weight:900;
+ height:34px;
+ display:flex;
+ justify-content:center;
+ align-items:center;
+ font-size:34px;
+ font-weight:950;
+ line-height:1;
 }
+
 .arrow.buy{color:var(--green)}
 .arrow.sell{color:var(--red)}
-.arrow.wait{color:var(--yellow)}
+
 .decision{
-  font-size:18px;
-  line-height:20px;
-  font-weight:900;
-  letter-spacing:.5px;
+ font-size:17px;
+ font-weight:900;
+ letter-spacing:.4px;
 }
+
 .confidence{
-  margin-top:3px;
-  font-size:11px;
-  color:#aab8ca;
+ margin-top:3px;
+ color:#aab8ca;
+ font-size:10px;
 }
-.confidence strong{
-  color:#fff;
-}
+
+.confidence strong{color:#fff}
+
 .stats{
-  display:grid;
-  grid-template-columns:repeat(4,1fr);
-  gap:6px;
-  padding:8px 11px 4px;
+ display:grid;
+ grid-template-columns:repeat(4,1fr);
+ gap:6px;
+ padding:7px 11px 4px;
 }
+
 .stat{
-  background:#091321;
-  border:1px solid #16263a;
-  border-radius:9px;
-  text-align:center;
-  padding:7px 3px;
+ padding:7px 3px;
+ text-align:center;
+ border-radius:9px;
+ background:#091321;
+ border:1px solid #16263a;
 }
+
 .statLabel{
-  display:block;
-  font-size:8px;
-  color:#718198;
-  text-transform:uppercase;
-  margin-bottom:3px;
+ display:block;
+ margin-bottom:3px;
+ color:#718198;
+ font-size:7px;
+ text-transform:uppercase;
 }
+
 .statValue{
-  font-size:10px;
-  font-weight:800;
+ font-size:9px;
+ font-weight:850;
 }
 
-/* AI SCORE */
+/* =========================
+   AI SIGNAL SCORE
+========================= */
+
 .scoreBox{
-  margin:6px 11px 8px;
-  padding:8px 10px;
-  border-radius:11px;
-  background:#08111e;
-  border:1px solid #18283b;
+ margin:6px 11px 8px;
+ padding:8px 10px;
+ border-radius:11px;
+ background:#08111e;
+ border:1px solid #18283b;
 }
+
 .scoreTop{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  margin-bottom:6px;
+ display:flex;
+ justify-content:space-between;
+ align-items:center;
+ margin-bottom:5px;
 }
+
 .scoreName{
-  font-size:10px;
-  font-weight:800;
-  letter-spacing:.4px;
+ font-size:9px;
+ font-weight:850;
+ letter-spacing:.4px;
 }
+
 .scoreNumber{
-  font-size:13px;
-  font-weight:900;
-  color:var(--cyan);
+ color:var(--cyan);
+ font-size:12px;
+ font-weight:900;
 }
+
 .factor{
-  display:grid;
-  grid-template-columns:74px 1fr 30px;
-  gap:6px;
-  align-items:center;
-  margin:4px 0;
+ display:grid;
+ grid-template-columns:72px 1fr 29px;
+ gap:6px;
+ align-items:center;
+ margin:4px 0;
 }
+
 .factorName{
-  font-size:8px;
-  color:#8494a9;
+ color:#8494a9;
+ font-size:7px;
 }
+
 .bar{
-  height:4px;
-  border-radius:10px;
-  background:#152337;
-  overflow:hidden;
+ height:4px;
+ overflow:hidden;
+ border-radius:10px;
+ background:#152337;
 }
+
 .fill{
-  height:100%;
-  width:0;
-  border-radius:10px;
-  background:linear-gradient(90deg,#228cff,#35d6ff);
-  transition:width .5s ease;
+ width:0;
+ height:100%;
+ border-radius:10px;
+ background:linear-gradient(90deg,#228cff,#35d6ff);
+ transition:width .5s ease;
 }
+
 .factorValue{
-  font-size:8px;
-  text-align:right;
-  color:#a9b9cb;
+ color:#a9b9cb;
+ font-size:7px;
+ text-align:right;
 }
+
 .countdown{
-  text-align:center;
-  padding:4px 0 0;
-  font-size:10px;
-  color:#7f91a8;
+ padding-top:3px;
+ color:#7f91a8;
+ text-align:center;
+ font-size:9px;
 }
+
 .countdown strong{
-  color:#fff;
-  font-size:12px;
+ color:#fff;
+ font-size:11px;
 }
 
-/* MARKET CONTROL */
+/* =========================
+   MARKET CONTROL
+========================= */
+
 .controlGrid{
-  padding:5px 13px 13px;
+ padding:5px 13px 13px;
 }
+
 .label{
-  display:block;
-  font-size:9px;
-  color:#75859b;
-  margin-bottom:6px;
-  text-transform:uppercase;
-  font-weight:700;
+ display:block;
+ margin-bottom:6px;
+ color:#75859b;
+ font-size:8px;
+ font-weight:750;
+ text-transform:uppercase;
 }
-select{
-  width:100%;
-  background:#081321;
-  border:1px solid #1b2d43;
-  color:#fff;
-  border-radius:10px;
-  padding:11px 10px;
-  outline:none;
-}
+
 .controlRow{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:9px;
+ display:grid;
+ grid-template-columns:1fr 1fr;
+ gap:9px;
 }
+
+select{
+ width:100%;
+ padding:11px 10px;
+ outline:none;
+ border:1px solid #1b2d43;
+ border-radius:10px;
+ background:#081321;
+ color:#fff;
+}
+
 .actions{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:9px;
-  margin-top:10px;
+ display:grid;
+ grid-template-columns:1fr 1fr;
+ gap:9px;
+ margin-top:10px;
 }
+
 .btn{
-  border:0;
-  border-radius:10px;
-  padding:11px 8px;
-  color:#fff;
-  font-weight:800;
-  font-size:11px;
+ padding:11px 8px;
+ border:0;
+ border-radius:10px;
+ color:#fff;
+ font-size:10px;
+ font-weight:850;
 }
+
 .scan{
-  background:linear-gradient(135deg,#147dff,#24b7ff);
+ background:linear-gradient(135deg,#147dff,#24b7ff);
 }
+
 .auto{
-  background:#101f31;
-  border:1px solid #223851;
+ border:1px solid #223851;
+ background:#101f31;
 }
+
 .auto.active{
-  background:#123b31;
-  color:#6ff0b3;
-  border-color:#23644e;
+ border-color:#23644e;
+ background:#123b31;
+ color:#6ff0b3;
 }
 
-/* TECHNICAL */
+/* =========================
+   TECHNICAL ANALYSIS
+========================= */
+
 .techBody{
-  padding:5px 13px 13px;
+ padding:5px 13px 13px;
 }
+
 .techRow{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:7px;
+ display:grid;
+ grid-template-columns:1fr 1fr;
+ gap:7px;
 }
+
 .techItem{
-  background:#081321;
-  border:1px solid #16273c;
-  border-radius:10px;
-  padding:9px;
+ padding:9px;
+ border:1px solid #16273c;
+ border-radius:10px;
+ background:#081321;
 }
+
 .techName{
-  font-size:8px;
-  color:#718197;
+ color:#718197;
+ font-size:8px;
 }
+
 .techValue{
-  margin-top:3px;
-  font-size:11px;
-  font-weight:800;
+ margin-top:3px;
+ font-size:11px;
+ font-weight:850;
 }
+
 .techSignal{
-  margin-top:2px;
-  font-size:8px;
-  color:#6bdbab;
+ margin-top:2px;
+ color:#6bdbab;
+ font-size:7px;
 }
 
-/* FILTER */
+/* =========================
+   FILTER
+========================= */
+
 .filterBody{
-  padding:4px 13px 13px;
-}
-.filterLine{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  background:#081321;
-  border:1px solid #17283c;
-  padding:10px 11px;
-  border-radius:10px;
-}
-.filterInfo strong{
-  display:block;
-  font-size:11px;
-}
-.filterInfo span{
-  font-size:8px;
-  color:#75869c;
-}
-.switch{
-  position:relative;
-  width:40px;
-  height:22px;
-}
-.switch input{
-  display:none;
-}
-.slider{
-  position:absolute;
-  inset:0;
-  border-radius:20px;
-  background:#26374a;
-  transition:.2s;
-}
-.slider:before{
-  content:"";
-  position:absolute;
-  width:16px;
-  height:16px;
-  left:3px;
-  top:3px;
-  border-radius:50%;
-  background:#fff;
-  transition:.2s;
-}
-input:checked+.slider{
-  background:#168c68;
-}
-input:checked+.slider:before{
-  transform:translateX(18px);
+ padding:4px 13px 13px;
 }
 
-/* HISTORY */
+.filterLine{
+ display:flex;
+ justify-content:space-between;
+ align-items:center;
+ padding:10px 11px;
+ border:1px solid #17283c;
+ border-radius:10px;
+ background:#081321;
+}
+
+.filterInfo strong{
+ display:block;
+ font-size:10px;
+}
+
+.filterInfo span{
+ color:#75869c;
+ font-size:7px;
+}
+
+.switch{
+ position:relative;
+ width:40px;
+ height:22px;
+}
+
+.switch input{display:none}
+
+.slider{
+ position:absolute;
+ inset:0;
+ border-radius:20px;
+ background:#26374a;
+ transition:.2s;
+}
+
+.slider:before{
+ content:"";
+ position:absolute;
+ width:16px;
+ height:16px;
+ top:3px;
+ left:3px;
+ border-radius:50%;
+ background:#fff;
+ transition:.2s;
+}
+
+input:checked+.slider{
+ background:#168c68;
+}
+
+input:checked+.slider:before{
+ transform:translateX(18px);
+}
+
+/* =========================
+   HISTORY
+========================= */
+
 .historyBody{
-  padding:3px 13px 10px;
+ padding:3px 13px 10px;
 }
+
 .historyItem{
-  display:grid;
-  grid-template-columns:42px 1fr auto;
-  gap:8px;
-  align-items:center;
-  padding:9px 0;
-  border-bottom:1px solid #152337;
+ display:grid;
+ grid-template-columns:42px 1fr auto;
+ gap:8px;
+ align-items:center;
+ padding:9px 0;
+ border-bottom:1px solid #152337;
 }
+
 .historyItem:last-child{
-  border-bottom:0;
+ border-bottom:0;
 }
+
 .hTime{
-  font-size:8px;
-  color:#64758b;
+ color:#64758b;
+ font-size:8px;
 }
+
 .hPair{
-  font-size:10px;
-  font-weight:800;
+ font-size:10px;
+ font-weight:800;
 }
+
 .hMeta{
-  font-size:8px;
-  color:#6f8095;
-  margin-top:2px;
+ margin-top:2px;
+ color:#6f8095;
+ font-size:7px;
 }
+
 .hSignal{
-  font-size:9px;
-  font-weight:900;
+ font-size:8px;
+ font-weight:900;
 }
+
 .hSignal.buy{color:var(--green)}
 .hSignal.sell{color:var(--red)}
 .hSignal.wait{color:var(--yellow)}
 
-/* NOTICE */
+/* =========================
+   NOTICE
+========================= */
+
 .notice{
-  padding:10px 12px;
-  font-size:9px;
-  line-height:14px;
-  color:#788aa0;
-}
-.notice b{
-  color:#b9c6d6;
+ padding:10px 12px;
+ color:#788aa0;
+ font-size:8px;
+ line-height:13px;
 }
 
-/* NAV */
+.notice b{color:#b9c6d6}
+
+/* =========================
+   BOTTOM NAV
+========================= */
+
 .bottomNav{
-  position:fixed;
-  z-index:30;
-  bottom:0;
-  left:50%;
-  transform:translateX(-50%);
-  width:100%;
-  max-width:520px;
-  display:grid;
-  grid-template-columns:repeat(4,1fr);
-  padding:8px 9px calc(8px + env(safe-area-inset-bottom));
-  background:rgba(5,11,20,.96);
-  backdrop-filter:blur(18px);
-  border-top:1px solid #182638;
+ position:fixed;
+ z-index:30;
+ bottom:0;
+ left:50%;
+ width:100%;
+ max-width:520px;
+ transform:translateX(-50%);
+ display:grid;
+ grid-template-columns:repeat(4,1fr);
+ padding:8px 9px calc(8px + env(safe-area-inset-bottom));
+ border-top:1px solid #182638;
+ background:rgba(5,11,20,.96);
+ backdrop-filter:blur(18px);
 }
+
 .navBtn{
-  background:none;
-  border:0;
-  color:#66788e;
-  padding:5px 0;
-  font-size:8px;
-  font-weight:700;
+ padding:5px 0;
+ border:0;
+ background:none;
+ color:#66788e;
+ font-size:8px;
+ font-weight:700;
 }
+
 .navIcon{
-  display:block;
-  font-size:16px;
-  margin-bottom:3px;
+ display:block;
+ margin-bottom:3px;
+ font-size:16px;
 }
+
 .navBtn.active{
-  color:#35bdff;
+ color:#35bdff;
 }
 
 @media(max-width:360px){
-  .factor{
-    grid-template-columns:66px 1fr 27px;
-  }
-  .stats{
-    gap:4px;
-  }
-  .stat{
-    padding:6px 2px;
-  }
+ .factor{
+  grid-template-columns:64px 1fr 27px;
+ }
 }
 </style>
 </head>
@@ -496,309 +628,427 @@ input:checked+.slider:before{
 <div class="app">
 
 <header class="header">
-  <div class="headerRow">
-    <div class="brand">AI Signal Bot PRO</div>
-    <div class="status">
-      <span class="dot"></span>
-      ONLINE
-    </div>
+ <div class="headerRow">
+  <div class="brand">AI Signal Bot PRO</div>
+
+  <div class="status">
+   <span class="dot"></span>
+   ONLINE
   </div>
+ </div>
 </header>
+
 
 <main class="container">
 
-<!-- 1. AI TRADE DECISION -->
+<!-- =================================
+     1. AI TRADE DECISION
+================================= -->
+
 <section class="card decisionCard" id="decisionSection">
 
-  <div class="cardHead">
-    <div>
-      <div class="title">AI Trade Decision</div>
-      <div class="sub">Multi-factor market analysis</div>
-    </div>
-    <div class="badge" id="marketBadge">LIVE</div>
+ <div class="cardHead">
+  <div>
+   <div class="title">AI Trade Decision</div>
+   <div class="sub">Multi-factor signal analysis</div>
   </div>
 
-  <div class="pairLine">
-    <span class="pair" id="heroPair">EUR/USD</span>
-    <span class="otc">OTC</span>
+  <div class="badge">80% RULE</div>
+ </div>
+
+ <div class="pairLine">
+  <span class="pair" id="heroPair">EUR/USD</span>
+  <span class="otc">OTC</span>
+ </div>
+
+ <div class="marketOpen">
+  ● MARKET ACTIVE
+ </div>
+
+
+ <!-- PROFIT / TRADE / LOSS -->
+
+ <div class="tradeRatio">
+
+  <div class="ratioBox profit">
+   <span class="ratioLabel">Profit %</span>
+   <span class="ratioValue" id="profitPercent">--%</span>
   </div>
 
-  <div class="marketOpen">● MARKET ACTIVE</div>
-
-  <div class="decisionBox">
-    <div class="arrow wait" id="directionArrow">→</div>
-    <div class="decision" id="decisionText">WAIT</div>
-    <div class="confidence">
-      Confidence <strong id="confidence">--%</strong>
-    </div>
+  <div class="ratioBox">
+   <span class="ratioLabel">Decision</span>
+   <div class="tradeState noTrade" id="tradeState">
+    NO TRADE
+   </div>
   </div>
 
-  <div class="stats">
-    <div class="stat">
-      <span class="statLabel">Strength</span>
-      <span class="statValue" id="strength">--</span>
-    </div>
-    <div class="stat">
-      <span class="statLabel">Signal</span>
-      <span class="statValue" id="signalStat">WAIT</span>
-    </div>
-    <div class="stat">
-      <span class="statLabel">Expiry</span>
-      <span class="statValue" id="expiryStat">30s</span>
-    </div>
-    <div class="stat">
-      <span class="statLabel">Quality</span>
-      <span class="statValue" id="quality">--</span>
-    </div>
+  <div class="ratioBox loss">
+   <span class="ratioLabel">Loss %</span>
+   <span class="ratioValue" id="lossPercent">--%</span>
   </div>
 
-  <!-- 2. AI SIGNAL SCORE -->
-  <div class="scoreBox">
-    <div class="scoreTop">
-      <span class="scoreName">AI SIGNAL SCORE</span>
-      <span class="scoreNumber" id="scoreNumber">--/100</span>
-    </div>
+ </div>
 
-    <div class="factor">
-      <span class="factorName">Trend</span>
-      <div class="bar"><div class="fill" id="trendBar"></div></div>
-      <span class="factorValue" id="trendVal">--</span>
-    </div>
 
-    <div class="factor">
-      <span class="factorName">Momentum</span>
-      <div class="bar"><div class="fill" id="momentumBar"></div></div>
-      <span class="factorValue" id="momentumVal">--</span>
-    </div>
+ <div class="decisionBox">
 
-    <div class="factor">
-      <span class="factorName">RSI</span>
-      <div class="bar"><div class="fill" id="rsiBar"></div></div>
-      <span class="factorValue" id="rsiVal">--</span>
-    </div>
+  <!-- Arrow is only visible for BUY/SELL -->
+  <div class="arrow" id="directionArrow"></div>
 
-    <div class="factor">
-      <span class="factorName">Price Action</span>
-      <div class="bar"><div class="fill" id="priceBar"></div></div>
-      <span class="factorValue" id="priceVal">--</span>
-    </div>
-
-    <div class="factor">
-      <span class="factorName">Volatility</span>
-      <div class="bar"><div class="fill" id="volBar"></div></div>
-      <span class="factorValue" id="volVal">--</span>
-    </div>
-
-    <div class="factor">
-      <span class="factorName">Confirmation</span>
-      <div class="bar"><div class="fill" id="confirmBar"></div></div>
-      <span class="factorValue" id="confirmVal">--</span>
-    </div>
+  <div class="decision" id="decisionText">
+   NO TRADE
   </div>
 
-  <div class="countdown">
-    Next analysis in <strong id="countdown">30s</strong>
+  <div class="confidence">
+   Signal confidence <strong id="confidence">--%</strong>
   </div>
+
+ </div>
+
+
+ <div class="stats">
+
+  <div class="stat">
+   <span class="statLabel">Strength</span>
+   <span class="statValue" id="strength">--</span>
+  </div>
+
+  <div class="stat">
+   <span class="statLabel">Signal</span>
+   <span class="statValue" id="signalStat">WAIT</span>
+  </div>
+
+  <div class="stat">
+   <span class="statLabel">Expiry</span>
+   <span class="statValue" id="expiryStat">30s</span>
+  </div>
+
+  <div class="stat">
+   <span class="statLabel">Quality</span>
+   <span class="statValue" id="quality">--</span>
+  </div>
+
+ </div>
+
+
+ <!-- =================================
+      2. AI SIGNAL SCORE
+ ================================= -->
+
+ <div class="scoreBox">
+
+  <div class="scoreTop">
+   <span class="scoreName">AI SIGNAL SCORE</span>
+   <span class="scoreNumber" id="scoreNumber">--/100</span>
+  </div>
+
+  <div class="factor">
+   <span class="factorName">Trend</span>
+   <div class="bar">
+    <div class="fill" id="trendBar"></div>
+   </div>
+   <span class="factorValue" id="trendVal">--</span>
+  </div>
+
+  <div class="factor">
+   <span class="factorName">Momentum</span>
+   <div class="bar">
+    <div class="fill" id="momentumBar"></div>
+   </div>
+   <span class="factorValue" id="momentumVal">--</span>
+  </div>
+
+  <div class="factor">
+   <span class="factorName">RSI</span>
+   <div class="bar">
+    <div class="fill" id="rsiBar"></div>
+   </div>
+   <span class="factorValue" id="rsiVal">--</span>
+  </div>
+
+  <div class="factor">
+   <span class="factorName">Price Action</span>
+   <div class="bar">
+    <div class="fill" id="priceBar"></div>
+   </div>
+   <span class="factorValue" id="priceVal">--</span>
+  </div>
+
+  <div class="factor">
+   <span class="factorName">Volatility</span>
+   <div class="bar">
+    <div class="fill" id="volBar"></div>
+   </div>
+   <span class="factorValue" id="volVal">--</span>
+  </div>
+
+  <div class="factor">
+   <span class="factorName">Confirmation</span>
+   <div class="bar">
+    <div class="fill" id="confirmBar"></div>
+   </div>
+   <span class="factorValue" id="confirmVal">--</span>
+  </div>
+
+ </div>
+
+
+ <div class="countdown">
+  Next analysis in <strong id="countdown">30s</strong>
+ </div>
 
 </section>
 
 
-<!-- 3. MARKET CONTROL -->
+<!-- =================================
+     3. MARKET CONTROL
+================================= -->
+
 <section class="card" id="settingsSection">
 
-  <div class="cardHead">
-    <div>
-      <div class="title">Market Control</div>
-      <div class="sub">Configure signal analysis</div>
-    </div>
-    <div class="badge">CONTROL</div>
+ <div class="cardHead">
+  <div>
+   <div class="title">Market Control</div>
+   <div class="sub">Configure signal analysis</div>
   </div>
 
-  <div class="controlGrid">
+  <div class="badge">CONTROL</div>
+ </div>
 
-    <div class="controlRow">
+ <div class="controlGrid">
 
-      <div>
-        <label class="label">Currency Pair</label>
-        <select id="pairSelect">
-          <option>EUR/USD</option>
-          <option>GBP/USD</option>
-          <option>USD/JPY</option>
-          <option>USD/CHF</option>
-          <option>AUD/USD</option>
-          <option>USD/CAD</option>
-          <option>NZD/USD</option>
-          <option>EUR/GBP</option>
-          <option>EUR/JPY</option>
-          <option>GBP/JPY</option>
-          <option>AUD/JPY</option>
-          <option>EUR/AUD</option>
-          <option>GBP/AUD</option>
-          <option>USD/SGD</option>
-          <option>USD/HKD</option>
-        </select>
-      </div>
+  <div class="controlRow">
 
-      <div>
-        <label class="label">Expiry Time</label>
-        <select id="expirySelect">
-          <option value="3">3 Seconds</option>
-          <option value="5">5 Seconds</option>
-          <option value="10">10 Seconds</option>
-          <option value="15">15 Seconds</option>
-          <option value="30" selected>30 Seconds</option>
-          <option value="60">1 Minute</option>
-          <option value="120">2 Minutes</option>
-          <option value="300">5 Minutes</option>
-          <option value="600">10 Minutes</option>
-          <option value="900">15 Minutes</option>
-          <option value="1800">30 Minutes</option>
-          <option value="3600">1 Hour</option>
-        </select>
-      </div>
+   <div>
+    <label class="label">Currency Pair</label>
 
-    </div>
+    <select id="pairSelect">
 
-    <div class="actions">
-      <button class="btn scan" id="scanBtn">SCAN NOW</button>
-      <button class="btn auto" id="autoBtn">AUTO SCAN</button>
-    </div>
+     <option>EUR/USD</option>
+     <option>GBP/USD</option>
+     <option>USD/JPY</option>
+     <option>USD/CHF</option>
+     <option>AUD/USD</option>
+     <option>USD/CAD</option>
+     <option>NZD/USD</option>
+     <option>EUR/GBP</option>
+     <option>EUR/JPY</option>
+     <option>GBP/JPY</option>
+     <option>AUD/JPY</option>
+     <option>EUR/AUD</option>
+     <option>GBP/AUD</option>
+     <option>USD/SGD</option>
+     <option>USD/HKD</option>
+
+    </select>
+   </div>
+
+
+   <div>
+    <label class="label">Expiry Time</label>
+
+    <select id="expirySelect">
+
+     <option value="3">3 Seconds</option>
+     <option value="5">5 Seconds</option>
+     <option value="10">10 Seconds</option>
+     <option value="15">15 Seconds</option>
+     <option value="30" selected>30 Seconds</option>
+     <option value="60">1 Minute</option>
+     <option value="120">2 Minutes</option>
+     <option value="300">5 Minutes</option>
+     <option value="600">10 Minutes</option>
+     <option value="900">15 Minutes</option>
+     <option value="1800">30 Minutes</option>
+     <option value="3600">1 Hour</option>
+
+    </select>
+   </div>
 
   </div>
+
+
+  <div class="actions">
+
+   <button class="btn scan" id="scanBtn">
+    SCAN NOW
+   </button>
+
+   <button class="btn auto" id="autoBtn">
+    AUTO SCAN
+   </button>
+
+  </div>
+
+ </div>
+
 </section>
 
 
-<!-- 4. TECHNICAL ANALYSIS -->
+<!-- =================================
+     4. TECHNICAL ANALYSIS
+================================= -->
+
 <section class="card" id="technicalSection">
 
-  <div class="cardHead">
-    <div>
-      <div class="title">Technical Analysis</div>
-      <div class="sub">Live indicator conditions</div>
-    </div>
-    <div class="badge">ANALYSIS</div>
+ <div class="cardHead">
+
+  <div>
+   <div class="title">Technical Analysis</div>
+   <div class="sub">Indicator conditions</div>
   </div>
 
-  <div class="techBody">
+  <div class="badge">ANALYSIS</div>
 
-    <div class="techRow">
+ </div>
 
-      <div class="techItem">
-        <div class="techName">RSI (14)</div>
-        <div class="techValue" id="rsiValue">--</div>
-        <div class="techSignal" id="rsiSignal">Waiting</div>
-      </div>
 
-      <div class="techItem">
-        <div class="techName">EMA Trend</div>
-        <div class="techValue" id="emaValue">--</div>
-        <div class="techSignal" id="emaSignal">Waiting</div>
-      </div>
+ <div class="techBody">
 
-      <div class="techItem">
-        <div class="techName">Momentum</div>
-        <div class="techValue" id="momentumValue">--</div>
-        <div class="techSignal" id="momentumSignal">Waiting</div>
-      </div>
+  <div class="techRow">
 
-      <div class="techItem">
-        <div class="techName">Volatility</div>
-        <div class="techValue" id="volatilityValue">--</div>
-        <div class="techSignal" id="volatilitySignal">Waiting</div>
-      </div>
+   <div class="techItem">
+    <div class="techName">RSI (14)</div>
+    <div class="techValue" id="rsiValue">--</div>
+    <div class="techSignal" id="rsiSignal">Waiting</div>
+   </div>
 
-    </div>
+   <div class="techItem">
+    <div class="techName">EMA Trend</div>
+    <div class="techValue" id="emaValue">--</div>
+    <div class="techSignal" id="emaSignal">Waiting</div>
+   </div>
+
+   <div class="techItem">
+    <div class="techName">Momentum</div>
+    <div class="techValue" id="momentumValue">--</div>
+    <div class="techSignal" id="momentumSignal">Waiting</div>
+   </div>
+
+   <div class="techItem">
+    <div class="techName">Volatility</div>
+    <div class="techValue" id="volatilityValue">--</div>
+    <div class="techSignal" id="volatilitySignal">Waiting</div>
+   </div>
 
   </div>
+
+ </div>
+
 </section>
 
 
-<!-- 5. SIGNAL FILTER -->
+<!-- =================================
+     5. SIGNAL FILTER
+================================= -->
+
 <section class="card" id="filterSection">
 
-  <div class="cardHead">
-    <div>
-      <div class="title">Signal Filter</div>
-      <div class="sub">Control signal quality threshold</div>
-    </div>
-    <div class="badge">FILTER</div>
+ <div class="cardHead">
+
+  <div>
+   <div class="title">Signal Filter</div>
+   <div class="sub">Control signal quality</div>
   </div>
 
-  <div class="filterBody">
+  <div class="badge">FILTER</div>
 
-    <div class="filterLine">
+ </div>
 
-      <div class="filterInfo">
-        <strong>Strong Signal Only</strong>
-        <span>Show signals above 70% confidence</span>
-      </div>
 
-      <label class="switch">
-        <input type="checkbox" id="strongOnly">
-        <span class="slider"></span>
-      </label>
+ <div class="filterBody">
 
-    </div>
+  <div class="filterLine">
+
+   <div class="filterInfo">
+    <strong>80% Trade Threshold</strong>
+    <span>Trade signal only when confidence is 80% or higher</span>
+   </div>
+
+   <label class="switch">
+    <input type="checkbox" id="strongOnly" checked>
+    <span class="slider"></span>
+   </label>
 
   </div>
+
+ </div>
+
 </section>
 
 
-<!-- 6. SIGNAL HISTORY -->
+<!-- =================================
+     6. SIGNAL HISTORY
+================================= -->
+
 <section class="card" id="historySection">
 
-  <div class="cardHead">
-    <div>
-      <div class="title">Signal History</div>
-      <div class="sub">Latest generated signals</div>
-    </div>
-    <div class="badge" id="historyCount">0</div>
+ <div class="cardHead">
+
+  <div>
+   <div class="title">Signal History</div>
+   <div class="sub">Latest generated signals</div>
   </div>
 
-  <div class="historyBody" id="historyList">
-    <div style="text-align:center;padding:18px;color:#65768b;font-size:10px">
-      No signals generated yet
-    </div>
+  <div class="badge" id="historyCount">0</div>
+
+ </div>
+
+
+ <div class="historyBody" id="historyList">
+
+  <div style="
+   text-align:center;
+   padding:18px;
+   color:#65768b;
+   font-size:10px;
+  ">
+   No signals generated yet
   </div>
+
+ </div>
 
 </section>
 
 
-<!-- NOTICE -->
 <section class="card">
-  <div class="notice">
-    <b>Important:</b> This interface performs technical signal analysis for informational/testing purposes.
-    It does not guarantee trading results and does not directly execute trades on Quotex,
-    Pocket Option, or any other broker. Live market-data integration requires an authorized
-    data/API connection.
-  </div>
+
+ <div class="notice">
+
+  <b>Important:</b>
+  The percentage shown is the strategy's calculated signal confidence,
+  not a guaranteed win percentage. An 80% threshold means the interface
+  will classify the signal as TRADE when its calculated confidence reaches
+  80% or above. It does not guarantee a profitable outcome.
+
+ </div>
+
 </section>
 
 </main>
 
 
-<!-- BOTTOM NAV -->
 <nav class="bottomNav">
 
-  <button class="navBtn active" onclick="goTo('decisionSection')">
-    <span class="navIcon">⌁</span>
-    SIGNAL
-  </button>
+ <button class="navBtn active" onclick="goTo('decisionSection')">
+  <span class="navIcon">⌁</span>
+  SIGNAL
+ </button>
 
-  <button class="navBtn" onclick="goTo('settingsSection')">
-    <span class="navIcon">⚙</span>
-    CONTROL
-  </button>
+ <button class="navBtn" onclick="goTo('settingsSection')">
+  <span class="navIcon">⚙</span>
+  CONTROL
+ </button>
 
-  <button class="navBtn" onclick="goTo('technicalSection')">
-    <span class="navIcon">◈</span>
-    ANALYSIS
-  </button>
+ <button class="navBtn" onclick="goTo('technicalSection')">
+  <span class="navIcon">◈</span>
+  ANALYSIS
+ </button>
 
-  <button class="navBtn" onclick="goTo('historySection')">
-    <span class="navIcon">◷</span>
-    HISTORY
-  </button>
+ <button class="navBtn" onclick="goTo('historySection')">
+  <span class="navIcon">◷</span>
+  HISTORY
+ </button>
 
 </nav>
 
@@ -806,441 +1056,880 @@ input:checked+.slider:before{
 
 
 <script>
-/* =========================================
-   AI SIGNAL BOT PRO
-   Local technical-analysis engine
-   ========================================= */
 
-const state = {
-  pair:"EUR/USD",
-  expiry:30,
-  auto:false,
-  timer:30,
-  timerId:null,
-  autoId:null,
-  history:[],
-  prices:[]
+/* =========================================
+   AI SIGNAL ENGINE
+========================================= */
+
+const state={
+ pair:"EUR/USD",
+ expiry:30,
+ auto:false,
+ timer:30,
+ timerId:null,
+ autoId:null,
+ history:[]
 };
 
-const $ = id => document.getElementById(id);
+
+const $=id=>document.getElementById(id);
+
 
 function clamp(n,min,max){
-  return Math.max(min,Math.min(max,n));
+ return Math.max(min,Math.min(max,n));
 }
+
 
 function randomBetween(min,max){
-  return Math.random()*(max-min)+min;
+ return Math.random()*(max-min)+min;
 }
+
 
 function generatePrices(){
-  let base = 1.0850 + randomBetween(-0.008,0.008);
-  const arr=[];
 
-  for(let i=0;i<80;i++){
-    base += randomBetween(-0.0014,0.0014);
-    arr.push(base);
-  }
+ let base=1.0850+randomBetween(-.008,.008);
 
-  return arr;
+ const prices=[];
+
+ for(let i=0;i<80;i++){
+
+  base+=randomBetween(-.0014,.0014);
+
+  prices.push(base);
+
+ }
+
+ return prices;
 }
+
 
 function ema(data,period){
-  if(data.length===0)return 0;
 
-  const k=2/(period+1);
-  let result=data[0];
+ if(!data.length)return 0;
 
-  for(let i=1;i<data.length;i++){
-    result=data[i]*k+result*(1-k);
-  }
+ const k=2/(period+1);
 
-  return result;
+ let result=data[0];
+
+ for(let i=1;i<data.length;i++){
+
+  result=
+   data[i]*k+
+   result*(1-k);
+
+ }
+
+ return result;
 }
+
 
 function calculateRSI(data,period=14){
-  if(data.length<=period)return 50;
 
-  let gain=0;
-  let loss=0;
+ if(data.length<=period)return 50;
 
-  for(let i=data.length-period;i<data.length;i++){
-    const diff=data[i]-data[i-1];
+ let gain=0;
+ let loss=0;
 
-    if(diff>=0) gain+=diff;
-    else loss+=Math.abs(diff);
-  }
+ for(let i=data.length-period;i<data.length;i++){
 
-  if(loss===0)return 100;
+  const diff=data[i]-data[i-1];
 
-  const rs=(gain/period)/(loss/period);
+  if(diff>=0)gain+=diff;
+  else loss+=Math.abs(diff);
 
-  return 100-(100/(1+rs));
+ }
+
+ if(loss===0)return 100;
+
+ const rs=(gain/period)/(loss/period);
+
+ return 100-(100/(1+rs));
 }
+
+
+/* =========================================
+   ANALYSIS
+========================================= */
 
 function calculateAnalysis(){
 
-  const prices=generatePrices();
-  state.prices=prices;
+ const prices=generatePrices();
 
-  const last=prices[prices.length-1];
-  const previous=prices[prices.length-2];
+ const last=prices[prices.length-1];
 
-  const shortEMA=ema(prices.slice(-20),8);
-  const longEMA=ema(prices.slice(-40),21);
+ const previous=prices[prices.length-2];
 
-  const rsi=calculateRSI(prices,14);
+ const shortEMA=
+  ema(prices.slice(-20),8);
 
-  const momentumRaw=((last-previous)/previous)*10000;
-  const momentum=clamp(50+momentumRaw*7,0,100);
+ const longEMA=
+  ema(prices.slice(-40),21);
 
-  const trendDiff=((shortEMA-longEMA)/longEMA)*10000;
-  const trend=clamp(50+trendDiff*8,0,100);
+ const rsi=
+  calculateRSI(prices,14);
 
-  const priceMove=((last-prices[prices.length-6])/prices[prices.length-6])*10000;
-  const priceAction=clamp(50+priceMove*5,0,100);
 
-  const changes=[];
+ const momentumRaw=
+  ((last-previous)/previous)*10000;
 
-  for(let i=prices.length-10;i<prices.length;i++){
-    changes.push(Math.abs((prices[i]-prices[i-1])/prices[i-1])*10000);
-  }
+ const momentum=
+  clamp(
+   50+momentumRaw*7,
+   0,
+   100
+  );
 
-  const avgVol=changes.reduce((a,b)=>a+b,0)/changes.length;
-  const volatility=clamp(45+avgVol*8,0,100);
 
-  let rsiScore;
+ const trendDiff=
+  ((shortEMA-longEMA)/longEMA)*10000;
 
-  if(rsi>70){
-    rsiScore=35;
-  }else if(rsi<30){
-    rsiScore=65;
+ const trend=
+  clamp(
+   50+trendDiff*8,
+   0,
+   100
+  );
+
+
+ const priceMove=
+  ((last-prices[prices.length-6])/
+   prices[prices.length-6])*10000;
+
+ const priceAction=
+  clamp(
+   50+priceMove*5,
+   0,
+   100
+  );
+
+
+ const changes=[];
+
+ for(
+  let i=prices.length-10;
+  i<prices.length;
+  i++
+ ){
+
+  changes.push(
+   Math.abs(
+    (prices[i]-prices[i-1])/
+    prices[i-1]
+   )*10000
+  );
+
+ }
+
+
+ const avgVol=
+  changes.reduce((a,b)=>a+b,0)/
+  changes.length;
+
+
+ const volatility=
+  clamp(
+   45+avgVol*8,
+   0,
+   100
+  );
+
+
+ let rsiScore;
+
+ if(rsi>70){
+
+  rsiScore=35;
+
+ }else if(rsi<30){
+
+  rsiScore=65;
+
+ }else{
+
+  rsiScore=
+   clamp(
+    50+(50-rsi)*.45,
+    0,
+    100
+   );
+
+ }
+
+
+ const confirmation=
+  trend*.25+
+  momentum*.25+
+  priceAction*.25+
+  rsiScore*.25;
+
+
+ const score=
+  trend*.24+
+  momentum*.20+
+  rsiScore*.16+
+  priceAction*.16+
+  volatility*.08+
+  confirmation*.16;
+
+
+ /*
+   PROFIT CONFIDENCE
+
+   For this interface:
+   score >= 50 => bullish side
+   score < 50  => bearish side
+
+   Confidence is normalized so that
+   higher agreement between factors
+   produces a stronger signal.
+ */
+
+ const distance=
+  Math.abs(score-50);
+
+ let confidence=
+  50+
+  distance*1.65+
+  confirmation*.12;
+
+ confidence=
+  clamp(
+   Math.round(confidence),
+   50,
+   96
+  );
+
+
+ /*
+   80% RULE
+
+   >=80 = TRADE
+   <80  = NO TRADE
+ */
+
+ let trade=false;
+
+ if(confidence>=80){
+  trade=true;
+ }
+
+
+ let direction="WAIT";
+
+
+ if(trade){
+
+  if(score>=50){
+   direction="BUY";
   }else{
-    rsiScore=clamp(50+(50-rsi)*.45,0,100);
+   direction="SELL";
   }
 
-  const confirmation=
-    trend*.25+
-    momentum*.25+
-    priceAction*.25+
-    rsiScore*.25;
+ }
 
-  const score=
-    trend*.24+
-    momentum*.20+
-    rsiScore*.16+
-    priceAction*.16+
-    volatility*.08+
-    confirmation*.16;
 
-  let direction="WAIT";
+ return{
 
-  const bullish=
-    trend>55 &&
-    momentum>53 &&
-    priceAction>52;
+  trend:Math.round(trend),
 
-  const bearish=
-    trend<45 &&
-    momentum<47 &&
-    priceAction<48;
+  momentum:Math.round(momentum),
 
-  if(bullish)direction="BUY";
-  else if(bearish)direction="SELL";
+  rsiScore:Math.round(rsiScore),
 
-  let confidence;
+  priceAction:Math.round(priceAction),
 
-  if(direction==="BUY"){
-    confidence=score;
-  }else if(direction==="SELL"){
-    confidence=100-score;
-  }else{
-    confidence=50+Math.abs(score-50)*.35;
-  }
+  volatility:Math.round(volatility),
 
-  confidence=clamp(Math.round(confidence),50,95);
+  confirmation:Math.round(confirmation),
 
-  return {
-    trend:Math.round(trend),
-    momentum:Math.round(momentum),
-    rsiScore:Math.round(rsiScore),
-    priceAction:Math.round(priceAction),
-    volatility:Math.round(volatility),
-    confirmation:Math.round(confirmation),
-    score:Math.round(score),
-    direction,
-    confidence,
-    rsi,
-    shortEMA,
-    longEMA,
-    avgVol
-  };
+  score:Math.round(score),
+
+  confidence,
+
+  direction,
+
+  trade,
+
+  rsi,
+
+  shortEMA,
+
+  longEMA,
+
+  avgVol
+
+ };
+
 }
 
-function setBar(id,value){
-  $(id).style.width=clamp(value,0,100)+"%";
-  $(id.replace("Bar","Val")).textContent=Math.round(value);
+
+/* =========================================
+   UI
+========================================= */
+
+function setBar(barId,value){
+
+ $(barId).style.width=
+  clamp(value,0,100)+"%";
+
+ const valueId=
+  barId.replace("Bar","Val");
+
+ $(valueId).textContent=
+  Math.round(value);
 }
+
 
 function updateUI(a){
 
-  $("heroPair").textContent=state.pair;
+ $("heroPair").textContent=
+  state.pair;
 
-  $("decisionText").textContent=a.direction;
 
-  $("directionArrow").className=
-    "arrow "+a.direction.toLowerCase();
+ /*
+   PROFIT / LOSS
 
-  $("directionArrow").textContent=
-    a.direction==="BUY" ? "↑" :
-    a.direction==="SELL" ? "↓" : "→";
+   The displayed percentages are
+   complementary confidence values.
+ */
 
-  $("confidence").textContent=a.confidence+"%";
+ let profit;
 
-  $("strength").textContent=
-    a.score>=75 ? "HIGH" :
-    a.score>=60 ? "MEDIUM" : "LOW";
+ let loss;
 
-  $("signalStat").textContent=a.direction;
+ if(a.trade){
 
-  $("expiryStat").textContent=formatExpiry(state.expiry);
+  profit=a.confidence;
 
-  $("quality").textContent=
-    a.confidence>=75 ? "A+" :
-    a.confidence>=65 ? "A" :
-    a.confidence>=55 ? "B" : "C";
+  loss=100-profit;
 
-  $("scoreNumber").textContent=a.score+"/100";
+ }else{
 
-  setBar("trendBar",a.trend);
-  setBar("momentumBar",a.momentum);
-  setBar("rsiBar",a.rsiScore);
-  setBar("priceBar",a.priceAction);
-  setBar("volBar",a.volatility);
-  setBar("confirmBar",a.confirmation);
+  profit=a.confidence;
 
-  $("rsiValue").textContent=a.rsi.toFixed(1);
+  loss=100-profit;
 
-  $("rsiSignal").textContent=
-    a.rsi>70 ? "Overbought" :
-    a.rsi<30 ? "Oversold" : "Neutral";
+ }
 
-  $("emaValue").textContent=
-    a.shortEMA>a.longEMA ? "BULLISH" : "BEARISH";
 
-  $("emaSignal").textContent=
-    a.shortEMA>a.longEMA ? "EMA 8 > EMA 21" : "EMA 8 < EMA 21";
+ $("profitPercent").textContent=
+  profit+"%";
 
-  $("momentumValue").textContent=
-    a.momentum>=60 ? "STRONG UP" :
-    a.momentum<=40 ? "STRONG DOWN" : "NEUTRAL";
+ $("lossPercent").textContent=
+  loss+"%";
 
-  $("momentumSignal").textContent=
-    a.momentum>=60 ? "Positive pressure" :
-    a.momentum<=40 ? "Negative pressure" : "Mixed pressure";
 
-  $("volatilityValue").textContent=
-    a.volatility>=65 ? "HIGH" :
-    a.volatility>=45 ? "NORMAL" : "LOW";
+ const tradeState=
+  $("tradeState");
 
-  $("volatilitySignal").textContent=
-    a.volatility>=65 ? "Fast movement" :
-    a.volatility>=45 ? "Stable movement" : "Quiet market";
+ const arrow=
+  $("directionArrow");
+
+ const decision=
+  $("decisionText");
+
+
+ /*
+   TRADE STATE
+ */
+
+ if(a.trade){
+
+  tradeState.textContent=
+   "TRADE";
+
+  tradeState.className=
+   "tradeState trade";
+
+
+  decision.textContent=
+   a.direction;
+
+
+  arrow.textContent=
+   a.direction==="BUY"
+    ? "↑"
+    : "↓";
+
+
+  arrow.className=
+   "arrow "+
+   a.direction.toLowerCase();
+
+ }else{
+
+  tradeState.textContent=
+   "NO TRADE";
+
+  tradeState.className=
+   "tradeState noTrade";
+
+
+  decision.textContent=
+   "NO TRADE";
+
+
+  /*
+    IMPORTANT:
+    No arrow for WAIT.
+  */
+
+  arrow.textContent="";
+  arrow.className="arrow";
+
+ }
+
+
+ $("confidence").textContent=
+  a.confidence+"%";
+
+
+ $("strength").textContent=
+  a.confidence>=80
+   ? "HIGH"
+   : a.confidence>=65
+    ? "MEDIUM"
+    : "LOW";
+
+
+ $("signalStat").textContent=
+  a.trade
+   ? a.direction
+   : "WAIT";
+
+
+ $("expiryStat").textContent=
+  formatExpiry(state.expiry);
+
+
+ $("quality").textContent=
+  a.confidence>=80
+   ? "A+"
+   : a.confidence>=70
+    ? "A"
+    : a.confidence>=60
+     ? "B"
+     : "C";
+
+
+ $("scoreNumber").textContent=
+  a.score+"/100";
+
+
+ setBar("trendBar",a.trend);
+ setBar("momentumBar",a.momentum);
+ setBar("rsiBar",a.rsiScore);
+ setBar("priceBar",a.priceAction);
+ setBar("volBar",a.volatility);
+ setBar("confirmBar",a.confirmation);
+
+
+ $("rsiValue").textContent=
+  a.rsi.toFixed(1);
+
+
+ $("rsiSignal").textContent=
+  a.rsi>70
+   ? "Overbought"
+   : a.rsi<30
+    ? "Oversold"
+    : "Neutral";
+
+
+ $("emaValue").textContent=
+  a.shortEMA>a.longEMA
+   ? "BULLISH"
+   : "BEARISH";
+
+
+ $("emaSignal").textContent=
+  a.shortEMA>a.longEMA
+   ? "EMA 8 > EMA 21"
+   : "EMA 8 < EMA 21";
+
+
+ $("momentumValue").textContent=
+  a.momentum>=60
+   ? "STRONG UP"
+   : a.momentum<=40
+    ? "STRONG DOWN"
+    : "NEUTRAL";
+
+
+ $("momentumSignal").textContent=
+  a.momentum>=60
+   ? "Positive pressure"
+   : a.momentum<=40
+    ? "Negative pressure"
+    : "Mixed pressure";
+
+
+ $("volatilityValue").textContent=
+  a.volatility>=65
+   ? "HIGH"
+   : a.volatility>=45
+    ? "NORMAL"
+    : "LOW";
+
+
+ $("volatilitySignal").textContent=
+  a.volatility>=65
+   ? "Fast movement"
+   : a.volatility>=45
+    ? "Stable movement"
+    : "Quiet market";
+
 }
 
-function formatExpiry(seconds){
 
-  if(seconds<60)return seconds+"s";
-
-  if(seconds%3600===0)
-    return (seconds/3600)+"h";
-
-  if(seconds%60===0)
-    return (seconds/60)+"m";
-
-  return seconds+"s";
-}
+/* =========================================
+   SCAN
+========================================= */
 
 function runScan(){
 
-  const analysis=calculateAnalysis();
+ const analysis=
+  calculateAnalysis();
 
-  const strongOnly=$("strongOnly").checked;
 
-  if(strongOnly && analysis.confidence<70){
-    analysis.direction="WAIT";
-  }
+ /*
+   The 80% threshold is always active.
+ */
 
-  updateUI(analysis);
+ updateUI(analysis);
 
-  addHistory(analysis);
+ addHistory(analysis);
 
-  resetTimer();
+ resetTimer();
+
 }
+
 
 function addHistory(a){
 
-  const now=new Date();
+ const now=new Date();
 
-  state.history.unshift({
-    time:now.toLocaleTimeString([],{
-      hour:"2-digit",
-      minute:"2-digit",
-      second:"2-digit"
-    }),
-    pair:state.pair,
-    direction:a.direction,
-    confidence:a.confidence
-  });
+ state.history.unshift({
 
-  state.history=state.history.slice(0,8);
+  time:
+   now.toLocaleTimeString([],{
+    hour:"2-digit",
+    minute:"2-digit",
+    second:"2-digit"
+   }),
 
-  renderHistory();
+  pair:state.pair,
+
+  direction:
+   a.trade
+    ? a.direction
+    : "NO TRADE",
+
+  confidence:a.confidence,
+
+  trade:a.trade
+
+ });
+
+
+ state.history=
+  state.history.slice(0,8);
+
+
+ renderHistory();
+
 }
+
 
 function renderHistory(){
 
-  $("historyCount").textContent=state.history.length;
+ $("historyCount").textContent=
+  state.history.length;
 
-  if(!state.history.length){
-    $("historyList").innerHTML=
-      '<div style="text-align:center;padding:18px;color:#65768b;font-size:10px">No signals generated yet</div>';
-    return;
-  }
 
-  $("historyList").innerHTML=state.history.map(item=>`
+ if(!state.history.length){
 
-    <div class="historyItem">
+  $("historyList").innerHTML=
+   '<div style="text-align:center;padding:18px;color:#65768b;font-size:10px">No signals generated yet</div>';
 
-      <div class="hTime">${item.time}</div>
+  return;
 
-      <div>
-        <div class="hPair">${item.pair}</div>
-        <div class="hMeta">Confidence ${item.confidence}%</div>
-      </div>
+ }
 
-      <div class="hSignal ${item.direction.toLowerCase()}">
-        ${item.direction}
-      </div>
+
+ $("historyList").innerHTML=
+  state.history.map(item=>`
+
+   <div class="historyItem">
+
+    <div class="hTime">
+     ${item.time}
+    </div>
+
+    <div>
+
+     <div class="hPair">
+      ${item.pair}
+     </div>
+
+     <div class="hMeta">
+      Confidence ${item.confidence}%
+     </div>
 
     </div>
 
+    <div class="hSignal ${
+      item.trade
+       ? item.direction.toLowerCase()
+       : "wait"
+    }">
+
+     ${item.direction}
+
+    </div>
+
+   </div>
+
   `).join("");
+
 }
+
+
+/* =========================================
+   TIMER
+========================================= */
+
+function formatExpiry(seconds){
+
+ if(seconds<60)
+  return seconds+"s";
+
+ if(seconds%3600===0)
+  return (seconds/3600)+"h";
+
+ if(seconds%60===0)
+  return (seconds/60)+"m";
+
+ return seconds+"s";
+}
+
 
 function resetTimer(){
 
-  state.timer=state.expiry;
-  $("countdown").textContent=formatExpiry(state.timer);
+ state.timer=
+  state.expiry;
+
+ $("countdown").textContent=
+  formatExpiry(state.timer);
+
 }
+
 
 function startTimer(){
 
-  clearInterval(state.timerId);
+ clearInterval(
+  state.timerId
+ );
 
-  state.timer=state.expiry;
 
-  state.timerId=setInterval(()=>{
+ state.timer=
+  state.expiry;
 
-    state.timer--;
 
-    if(state.timer<=0){
+ state.timerId=
+  setInterval(()=>{
 
-      runScan();
+   state.timer--;
 
-      state.timer=state.expiry;
 
-    }
+   if(state.timer<=0){
 
-    $("countdown").textContent=formatExpiry(state.timer);
+    runScan();
+
+    state.timer=
+     state.expiry;
+
+   }
+
+
+   $("countdown").textContent=
+    formatExpiry(state.timer);
 
   },1000);
+
 }
+
+
+/* =========================================
+   AUTO SCAN
+========================================= */
 
 function startAuto(){
 
-  clearInterval(state.autoId);
+ clearInterval(
+  state.autoId
+ );
 
-  if(!state.auto)return;
 
-  state.autoId=setInterval(()=>{
+ if(!state.auto)
+  return;
 
-    if(state.auto){
-      runScan();
-    }
 
-  },Math.max(state.expiry*1000,5000));
+ state.autoId=
+  setInterval(()=>{
+
+   if(state.auto)
+    runScan();
+
+  },
+  Math.max(
+   state.expiry*1000,
+   5000
+  ));
+
 }
+
 
 function toggleAuto(){
 
-  state.auto=!state.auto;
+ state.auto=
+  !state.auto;
 
-  $("autoBtn").classList.toggle("active",state.auto);
 
-  $("autoBtn").textContent=
-    state.auto ? "AUTO ON" : "AUTO SCAN";
+ $("autoBtn")
+  .classList
+  .toggle(
+   "active",
+   state.auto
+  );
 
-  if(state.auto){
 
-    runScan();
-    startAuto();
+ $("autoBtn").textContent=
+  state.auto
+   ? "AUTO ON"
+   : "AUTO SCAN";
 
-  }else{
 
-    clearInterval(state.autoId);
+ if(state.auto){
 
-  }
+  runScan();
+
+  startAuto();
+
+ }else{
+
+  clearInterval(
+   state.autoId
+  );
+
+ }
+
 }
+
+
+/* =========================================
+   NAVIGATION
+========================================= */
 
 function goTo(id){
 
-  const element=$(id);
+ const element=$(id);
 
-  if(element){
-    element.scrollIntoView({
-      behavior:"smooth",
-      block:"start"
-    });
-  }
+ if(element){
+
+  element.scrollIntoView({
+   behavior:"smooth",
+   block:"start"
+  });
+
+ }
+
 }
 
-$("scanBtn").addEventListener("click",runScan);
 
-$("autoBtn").addEventListener("click",toggleAuto);
+/* =========================================
+   EVENTS
+========================================= */
 
-$("pairSelect").addEventListener("change",e=>{
+$("scanBtn")
+ .addEventListener(
+  "click",
+  runScan
+ );
 
-  state.pair=e.target.value;
 
-  runScan();
+$("autoBtn")
+ .addEventListener(
+  "click",
+  toggleAuto
+ );
 
-});
 
-$("expirySelect").addEventListener("change",e=>{
+$("pairSelect")
+ .addEventListener(
+  "change",
+  e=>{
 
-  state.expiry=parseInt(e.target.value,10);
+   state.pair=
+    e.target.value;
 
-  resetTimer();
+   runScan();
 
-  if(state.auto){
-    startAuto();
   }
-
-});
-
-$("strongOnly").addEventListener("change",()=>{
-
-  runScan();
-
-});
+ );
 
 
-/* INITIALIZE */
+$("expirySelect")
+ .addEventListener(
+  "change",
+  e=>{
 
-state.pair=$("pairSelect").value;
-state.expiry=parseInt($("expirySelect").value,10);
+   state.expiry=
+    parseInt(
+     e.target.value,
+     10
+    );
+
+   resetTimer();
+
+   if(state.auto)
+    startAuto();
+
+  }
+ );
+
+
+/*
+  The filter is informational here
+  because the 80% threshold is mandatory.
+ */
+
+$("strongOnly")
+ .addEventListener(
+  "change",
+  ()=>{
+
+   runScan();
+
+  }
+ );
+
+
+/* =========================================
+   INITIALIZE
+========================================= */
+
+state.pair=
+ $("pairSelect").value;
+
+state.expiry=
+ parseInt(
+  $("expirySelect").value,
+  10
+);
 
 runScan();
+
 startTimer();
 
 </script>
