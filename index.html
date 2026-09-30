@@ -3,456 +3,113 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#07111f">
+<meta name="theme-color" content="#030914">
 <title>AI Signal Scanner</title>
 <style>
-:root{--bg:#050914;--card:#0b1424;--card2:#101d31;--line:#19304b;--text:#f5f8ff;--muted:#8294ad;--cyan:#22d3ee;--green:#22e58a;--red:#ff5577;--yellow:#ffd166}
-*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 50% -10%,#14345a 0,#081221 42%,#050914 75%);font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display",Inter,Arial,sans-serif;color:var(--text);min-height:100vh}
-.app{max-width:520px;margin:auto;padding:18px 14px 30px}.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}.brand{font-weight:800;font-size:22px}.brand span{color:var(--cyan)}.online{font-size:12px;color:var(--green);background:#09251e;border:1px solid #174d3e;padding:7px 10px;border-radius:999px}
-.card{background:linear-gradient(145deg,rgba(17,31,51,.96),rgba(7,15,28,.96));border:1px solid var(--line);border-radius:22px;box-shadow:0 14px 45px rgba(0,0,0,.3);padding:16px;margin-bottom:12px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.label{font-size:10px;letter-spacing:1.2px;color:var(--muted);text-transform:uppercase;margin-bottom:6px}.select,.button{width:100%;border:1px solid #23405e;background:#0a1628;color:var(--text);border-radius:12px;padding:12px;font-size:14px}.button{cursor:pointer;font-weight:800;touch-action:manipulation;-webkit-user-select:none;user-select:none;-webkit-appearance:none;appearance:none}.button.primary{background:linear-gradient(90deg,#087ea5,#0aa9bd);border:0}.button.stop{background:#29111a;border-color:#5b2434;color:#ff9ab0}.scan{text-align:center;padding:12px 8px 16px}.ring{width:170px;height:170px;border-radius:50%;margin:4px auto 14px;cursor:pointer;user-select:none;-webkit-tap-highlight-color:transparent;display:grid;place-items:center;border:2px solid #0f6f99;box-shadow:0 0 0 10px rgba(34,211,238,.035),0 0 45px rgba(34,211,238,.12);position:relative}#stopBot{opacity:.55}#stopBot.active{opacity:1}.ring.running{border-color:#22d3ee;box-shadow:0 0 0 10px rgba(34,211,238,.07),0 0 55px rgba(34,211,238,.24)}.ring.running .core .dir{color:#22d3ee}.ring.running .core .small{color:#22d3ee}.ring:before,.ring:after{content:"";position:absolute;border:1px solid #145273;border-radius:50%}.ring:before{inset:16px}.ring:after{inset:32px}.core{z-index:2}.core .dir{font-size:35px;font-weight:900}.core .small{font-size:10px;color:var(--muted);letter-spacing:1px}.timer{font-size:32px;font-weight:900;margin:4px 0}.status{font-size:12px;color:var(--muted)}.signal{display:none;text-align:center;border-radius:18px;padding:18px;margin-top:10px}.signal.up{display:block;background:linear-gradient(145deg,#073328,#071d20);border:1px solid #1b8d70}.signal.down{display:block;background:linear-gradient(145deg,#3a101e,#1d0b15);border:1px solid #9a2c49}.signal .big{font-size:40px;font-weight:950}.signal .sub{font-size:11px;letter-spacing:1px;color:#a9bacf}.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px}.stat{background:#091526;border:1px solid #18304b;border-radius:12px;padding:10px;text-align:center}.stat b{display:block;font-size:17px}.stat span{font-size:9px;color:var(--muted);text-transform:uppercase}.bar{height:7px;background:#102137;border-radius:99px;overflow:hidden;margin-top:7px}.fill{height:100%;width:0;background:linear-gradient(90deg,#16c6e8,#22e58a);transition:width .5s}.history{display:flex;flex-direction:column;gap:7px}.row{display:grid;grid-template-columns:1.1fr .7fr .7fr .7fr;gap:6px;align-items:center;background:#081323;border:1px solid #142942;border-radius:10px;padding:9px;font-size:11px}.upTxt{color:var(--green);font-weight:800}.downTxt{color:var(--red);font-weight:800}.win{color:var(--green)}.loss{color:var(--red)}.note{font-size:10px;line-height:1.45;color:#71849d;margin-top:10px}.footer{text-align:center;color:#566a84;font-size:10px;padding:8px}.tabs{display:flex;gap:7px}.tab{flex:1}.active{outline:2px solid rgba(34,211,238,.35)}@media(max-width:360px){.app{padding:12px 10px}.ring{width:145px;height:145px}}
+:root{--bg:#020711;--panel:#071323;--panel2:#091a30;--line:#12365b;--text:#f7fbff;--muted:#8ba0ba;--cyan:#19c9ff;--blue:#1976ff;--green:#25ef9b;--red:#ff5279;--gold:#ffd66b}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}html,body{margin:0;min-height:100%;background:#020711;color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display",Inter,Arial,sans-serif}body{overflow-x:hidden;background:radial-gradient(circle at 50% 0,#10376a 0,#061426 25%,#020711 65%)}button,select{font:inherit}.app{width:min(100%,520px);margin:auto;padding:12px 14px calc(28px + env(safe-area-inset-bottom));position:relative}.top{display:flex;gap:10px;align-items:center;margin-bottom:10px}.brand{font-size:24px;font-weight:950;letter-spacing:-.5px;flex:1}.brand span{color:#18bfff}.search{border:1px solid #23527e;background:rgba(2,12,25,.75);color:#dcecff;border-radius:14px;padding:9px 12px;font-size:13px}.heroTitle{font-size:30px;text-align:center;font-weight:950;letter-spacing:-1px;margin:4px 0 12px}.heroTitle span{color:var(--cyan)}.statusStrip{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:10px}.statusCard{background:linear-gradient(145deg,#0b1c32,#061021);border:1px solid #12416a;border-radius:20px;padding:11px 8px;text-align:center;box-shadow:0 8px 30px rgba(0,0,0,.25)}.statusIcon{font-size:21px}.statusLabel{font-size:9px;letter-spacing:.7px;color:var(--muted);margin-top:4px;text-transform:uppercase}.statusValue{font-weight:900;font-size:15px;margin-top:2px}.green{color:var(--green)}.blue{color:#55bfff}.gold{color:var(--gold)}.badge{border:1px solid #7f6b29;background:linear-gradient(90deg,rgba(122,92,15,.35),rgba(37,31,10,.7));border-radius:24px;padding:12px;text-align:center;font-weight:950;letter-spacing:2px;color:#ffe47c;margin-bottom:10px}.demo{font-size:9px;letter-spacing:1px;color:#a9b8c9;text-align:center;margin:-4px 0 8px}.card{background:linear-gradient(145deg,rgba(8,24,43,.97),rgba(2,10,21,.98));border:1px solid #12395f;border-radius:25px;box-shadow:0 14px 50px rgba(0,0,0,.4);padding:15px;margin-bottom:10px}.controls{display:grid;grid-template-columns:1fr 1fr;gap:9px}.label{font-size:9px;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin:0 0 5px 4px}.select{width:100%;background:#061224;border:1px solid #1b4770;color:#fff;border-radius:12px;padding:11px 9px;outline:none}.mainSignal{position:relative;min-height:455px;padding:10px 4px 14px;overflow:hidden}.mainSignal:before{content:"";position:absolute;inset:10% 15%;background:radial-gradient(circle,rgba(0,154,255,.18),transparent 66%);filter:blur(14px);pointer-events:none}.signalTop{display:flex;justify-content:space-between;gap:12px;position:relative;z-index:2}.miniInfo{flex:1}.miniLabel{font-size:9px;color:var(--muted);letter-spacing:1px;text-transform:uppercase}.miniValue{font-size:16px;font-weight:900;margin-top:4px}.miniValue small{display:block;font-size:9px;color:var(--muted);font-weight:600;margin-top:2px}.id{text-align:right}.orb{width:245px;height:245px;margin:22px auto 13px;border-radius:50%;position:relative;display:grid;place-items:center;border:2px solid rgba(25,239,155,.9);box-shadow:0 0 0 8px rgba(25,239,155,.035),0 0 0 17px rgba(25,239,155,.03),0 0 45px rgba(25,239,155,.35),inset 0 0 55px rgba(25,239,155,.12);transition:.25s}.orb:before,.orb:after{content:"";position:absolute;border-radius:50%;border:1px solid rgba(25,239,155,.35)}.orb:before{inset:23px}.orb:after{inset:46px}.orb.down{border-color:rgba(255,82,121,.9);box-shadow:0 0 0 8px rgba(255,82,121,.035),0 0 0 17px rgba(255,82,121,.03),0 0 45px rgba(255,82,121,.32),inset 0 0 55px rgba(255,82,121,.1)}.orb.down:before,.orb.down:after{border-color:rgba(255,82,121,.35)}.orb.ready{border-color:#1687c5;box-shadow:0 0 35px rgba(25,201,255,.25),inset 0 0 55px rgba(25,201,255,.08)}.needle{position:absolute;top:6px;left:50%;width:2px;height:18px;background:currentColor;transform:translateX(-50%);opacity:.8}.core{z-index:2;text-align:center}.arrow{font-size:76px;line-height:.8;font-weight:950;text-shadow:0 0 22px currentColor}.upColor{color:var(--green)}.downColor{color:var(--red)}.readyColor{color:var(--cyan)}.dir{font-size:39px;font-weight:950;letter-spacing:1px;margin-top:8px}.subSignal{font-size:10px;letter-spacing:2px;font-weight:900;margin-top:5px}.scanning{font-size:12px;color:var(--cyan);letter-spacing:2px;font-weight:900;margin-top:8px;min-height:18px}.signalMeta{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;margin-top:12px}.meta{text-align:center;background:rgba(3,14,27,.78);border:1px solid #143555;border-radius:13px;padding:9px 4px}.meta b{display:block;font-size:16px}.meta span{display:block;font-size:8px;color:var(--muted);text-transform:uppercase;margin-top:4px}.generate{width:100%;border:0;border-radius:15px;padding:14px 12px;background:linear-gradient(90deg,#0879ff,#18cfff);color:white;font-weight:950;font-size:15px;letter-spacing:.4px;box-shadow:0 8px 25px rgba(0,142,255,.25);touch-action:manipulation}.generate:active,.action:active{transform:scale(.98)}.analysis{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}.analysisItem{background:#061222;border:1px solid #123252;border-radius:12px;padding:10px}.analysisItem span{font-size:8px;color:var(--muted);text-transform:uppercase}.analysisItem b{display:block;font-size:12px;margin-top:4px}.suggestion{display:none;border:1px solid #185277;border-radius:15px;padding:11px;margin-top:10px;background:linear-gradient(145deg,#071c30,#06101e)}.suggestion.show{display:block}.suggestionMain{font-size:16px;font-weight:950}.suggestionSub{font-size:10px;color:var(--muted);margin-top:4px;line-height:1.4}.tools{display:grid;grid-template-columns:1fr 1fr;gap:8px}.action{border:1px solid #21486b;background:#07172a;color:#fff;border-radius:13px;padding:12px;font-weight:900;touch-action:manipulation}.action.primary{background:linear-gradient(90deg,#0b8ec1,#0a5fff);border:0}.action.stop{background:#2b101b;border-color:#68263a;color:#ff9bb2}.action.active{outline:2px solid rgba(25,201,255,.35)}.historyTitle{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}.historyTitle b{font-size:14px}.clear{border:0;background:transparent;color:#6ea9d2;font-size:11px;padding:6px 4px}.row{display:grid;grid-template-columns:1.2fr .65fr .65fr .65fr;gap:5px;align-items:center;background:#061222;border:1px solid #123252;border-radius:11px;padding:9px;font-size:10px}.upTxt{color:var(--green);font-weight:900}.downTxt{color:var(--red);font-weight:900}.note{font-size:9px;color:#71849b;line-height:1.5;margin-top:9px}.bottomNav{position:sticky;bottom:8px;display:grid;grid-template-columns:repeat(4,1fr);gap:5px;padding:7px;margin-top:8px;background:rgba(2,10,20,.9);border:1px solid #173452;border-radius:18px;backdrop-filter:blur(14px)}.navItem{text-align:center;color:#8ca2ba;font-size:9px;padding:7px 2px}.navItem b{display:block;font-size:17px;color:#dceeff;margin-bottom:3px}.footer{text-align:center;font-size:9px;color:#536b84;margin-top:10px}@media(max-width:380px){.orb{width:215px;height:215px}.mainSignal{min-height:425px}.arrow{font-size:65px}.dir{font-size:34px}}
 </style>
 </head>
 <body>
 <div class="app">
-  <div class="top">
-    <div class="brand">AI <span>Signal Scanner</span></div>
-    <div class="online" id="online">● ONLINE</div>
+  <div class="top"><div class="brand">AI <span>Signal Scanner</span></div><div class="search">⌕ Search</div></div>
+  <div class="heroTitle">AI <span>TRADING SIGNALS</span></div>
+  <div class="statusStrip">
+    <div class="statusCard"><div class="statusIcon">◈</div><div class="statusLabel">Scanner</div><div class="statusValue green" id="scannerStatus">READY ●</div></div>
+    <div class="statusCard"><div class="statusIcon">✦</div><div class="statusLabel">Engine</div><div class="statusValue blue">DEMO</div></div>
+    <div class="statusCard"><div class="statusIcon">◎</div><div class="statusLabel">Mode</div><div class="statusValue gold">5 SEC</div></div>
+  </div>
+  <div class="badge">♛ PRO STYLE • DEMO MODE ✓</div>
+  <div class="demo">SIMULATED SIGNALS — NOT CONNECTED TO LIVE BROKER DATA</div>
+
+  <div class="card">
+    <div class="controls">
+      <div><div class="label">Pair</div><select id="pair" class="select"><option>USD/ARS (OTC)</option><option>EUR/USD (OTC)</option><option>GBP/USD (OTC)</option><option>USD/JPY (OTC)</option><option>GBP/JPY (OTC)</option><option>EUR/JPY (OTC)</option><option>AUD/USD (OTC)</option><option>USD/CAD (OTC)</option><option>EUR/GBP (OTC)</option><option>USD/CHF (OTC)</option></select></div>
+      <div><div class="label">Expiry</div><select id="expiry" class="select"><option value="5">5 seconds</option><option value="10">10 seconds</option><option value="15">15 seconds</option><option value="30">30 seconds</option><option value="60">1 minute</option><option value="120">2 minutes</option></select></div>
+    </div>
+  </div>
+
+  <div class="card mainSignal">
+    <div class="signalTop">
+      <div class="miniInfo"><div class="miniLabel">Pair</div><div class="miniValue" id="pairView">USD/ARS <small>(OTC)</small></div><div class="miniLabel" style="margin-top:12px">Broker</div><div class="miniValue">Demo</div></div>
+      <div class="miniInfo id"><div class="miniLabel">Signal ID</div><div class="miniValue" id="signalId">#DEMO0001</div><div class="miniLabel" style="margin-top:12px">Status</div><div class="miniValue green" id="signalStatus">READY</div></div>
+    </div>
+
+    <div id="orb" class="orb ready" role="button" tabindex="0" aria-label="Start or stop scanner">
+      <div class="needle"></div><div class="core"><div id="arrow" class="arrow readyColor">✦</div><div id="dir" class="dir readyColor">READY</div><div id="subSignal" class="subSignal readyColor">TAP START TO SCAN</div></div>
+    </div>
+    <div class="scanning" id="scanning">AI ANALYSIS READY</div>
+    <div class="signalMeta">
+      <div class="meta"><b id="entry">--:--:--</b><span>Entry</span></div><div class="meta"><b id="expires">--</b><span>Expiry</span></div><div class="meta"><b id="strength">--%</b><span>Strength</span></div><div class="meta"><b id="confidence">--%</b><span>Confidence</span></div>
+    </div>
+    <div style="margin-top:10px"><button type="button" id="generate" class="generate">⟳ GENERATE NEW SIGNAL</button></div>
+    <div id="suggestion" class="suggestion"><div id="suggestionMain" class="suggestionMain">WAITING</div><div id="suggestionSub" class="suggestionSub">Press Generate New Signal to create a simulated setup.</div></div>
   </div>
 
   <div class="card">
-    <div class="grid">
-      <div><div class="label">Pair</div>
-        <select class="select" id="pair">
-          <option>EUR/AUD (OTC)</option><option>EUR/USD (OTC)</option><option>GBP/USD (OTC)</option><option>USD/JPY (OTC)</option><option>GBP/JPY (OTC)</option>
-          <option>USD/CHF (OTC)</option><option>AUD/USD (OTC)</option><option>NZD/USD (OTC)</option><option>USD/CAD (OTC)</option><option>EUR/GBP (OTC)</option>
-          <option>EUR/JPY (OTC)</option><option>AUD/JPY (OTC)</option><option>CAD/JPY (OTC)</option><option>CHF/JPY (OTC)</option><option>GBP/AUD (OTC)</option>
-          <option>GBP/CAD (OTC)</option><option>EUR/CAD (OTC)</option><option>AUD/CAD (OTC)</option><option>NZD/JPY (OTC)</option><option>USD/TRY (OTC)</option>
-        </select>
-      </div>
-      <div><div class="label">Expiry</div>
-        <select class="select" id="expiry">
-          <option value="5">5 seconds</option>
-          <option value="10">10 seconds</option>
-          <option value="15">15 seconds</option>
-          <option value="20">20 seconds</option>
-          <option value="30">30 seconds</option>
-          <option value="60">1 minute</option>
-          <option value="120">2 minutes</option>
-          <option value="180">3 minutes</option>
-          <option value="300">5 minutes</option>
-          <option value="600">10 minutes</option>
-          <option value="900">15 minutes</option>
-          <option value="1200">20 minutes</option>
-          <option value="1800">30 minutes</option>
-        </select>
-      </div>
-    </div>
-    <div style="height:10px"></div>
-    <div class="tabs">
-      <button type="button" class="button primary tab" id="suggestBtn">WIN RATE %</button>
-      <button type="button" class="button tab" id="autoBtn">AUTO SCAN</button>
-    </div>
-    <div id="topSuggestion" style="display:none;text-align:left;margin-top:10px;background:#081323;border:1px solid #19304b;border-radius:14px;padding:12px">
-      <div class="label">Win rate estimate</div>
-      <div id="topSuggestionMain" style="font-weight:900;font-size:18px">WAIT FOR SCAN</div>
-      <div id="topSuggestionSub" class="note" style="margin-top:5px"></div>
-      <div class="stats" style="margin-top:10px">
-        <div class="stat"><b id="tradePct">--%</b><span>Signal %</span></div>
-        <div class="stat"><b id="hitPct">--%</b><span>Win rate %</span></div>
-        <div class="stat"><b id="breakevenPct">--%</b><span>Break-even*</span></div>
-      </div>
-      <div class="note">*Break-even depends on your broker payout. Win rate % is an estimate from the local simulated price series and is not a guaranteed live profit probability.</div>
-    </div>
-  </div>
-
-  <div class="card scan">
-    <div class="label">Market scanner</div>
-    <div class="ring" id="ring" role="button" aria-label="Market scanner">
-      <div class="core">
-        <div class="dir" id="dir">—</div>
-        <div class="small" id="coreText">READY</div>
-      </div>
-    </div>
-    <div class="timer" id="timer">00:05</div>
-    <div class="status" id="status">Ready to analyze market conditions</div>
-    <div style="display:flex;gap:8px;margin-top:12px">
-      <button type="button" class="button primary" id="startBot" style="flex:1">START BOT</button>
-      <button type="button" class="button stop" id="stopBot" style="flex:1">STOP BOT</button>
-    </div>
-    
-    <div id="suggestions" style="display:none;text-align:left;margin-top:10px;background:#081323;border:1px solid #19304b;border-radius:14px;padding:12px">
-      <div class="label">Win rate result</div>
-      <div id="suggestionMain" style="font-weight:900;font-size:17px">WAIT FOR SCAN</div>
-      <div id="suggestionSub" class="note" style="margin-top:5px">Start the bot to analyze the selected pair.</div>
-    </div>
-    <div class="signal" id="signal">
-      <div class="big" id="signalDir">UP</div>
-      <div class="sub" id="signalSub">AI-STYLE BUY SIGNAL</div>
-      <div class="stats">
-        <div class="stat"><b id="confidence">--%</b><span>Confidence</span></div>
-        <div class="stat"><b id="strength">--%</b><span>Strength</span></div>
-        <div class="stat"><b id="expires">--</b><span>Expiry</span></div>
-      </div>
-      <div style="text-align:left;margin-top:12px">
-        <div class="label">Signal score</div><div class="bar"><div class="fill" id="fill"></div></div>
-      </div>
+    <div class="tools"><button type="button" id="startBot" class="action primary">▶ START BOT</button><button type="button" id="stopBot" class="action stop">■ STOP BOT</button><button type="button" id="autoBtn" class="action">⟳ AUTO SCAN</button><button type="button" id="suggestBtn" class="action">♛ SUGGESTION</button></div>
+    <div class="analysis">
+      <div class="analysisItem"><span>Trend</span><b id="trend">Waiting</b></div><div class="analysisItem"><span>Momentum</span><b id="momentum">Waiting</b></div><div class="analysisItem"><span>RSI</span><b id="rsi">--</b></div><div class="analysisItem"><span>Market State</span><b id="market">Waiting</b></div>
     </div>
   </div>
 
   <div class="card">
-    <div class="label">Analysis</div>
-    <div class="grid">
-      <div class="stat"><b id="trend">—</b><span>Trend</span></div>
-      <div class="stat"><b id="momentum">—</b><span>Momentum</span></div>
-      <div class="stat"><b id="rsi">—</b><span>RSI</span></div>
-      <div class="stat"><b id="candle">—</b><span>Price action</span></div>
-      <div class="stat"><b id="vol">—</b><span>Volatility</span></div>
-      <div class="stat"><b id="quality">—</b><span>Setup</span></div>
-      <div class="stat"><b id="marketState">—</b><span>Market</span></div>
-      <div class="stat"><b id="signalState">—</b><span>Signal</span></div>
-    </div>
+    <div class="historyTitle"><b>Signal History</b><button type="button" id="clear" class="clear">CLEAR</button></div>
+    <div id="history" class="history"><div class="row"><span>Waiting for signal</span><span>—</span><span>—</span><span>—</span></div></div>
+    <div class="note">The percentages shown are simulated setup metrics from the local demo engine. They are not verified win rates and do not guarantee profitable trades.</div>
   </div>
 
-  <div class="card">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
-      <div class="label" style="margin:0">Signal history</div>
-      <button type="button" class="button" style="width:auto;padding:7px 10px;font-size:11px" id="clear">Clear</button>
-    </div>
-    <div class="history" id="history"><div class="note">No signals yet.</div></div>
-  </div>
-
-  <div class="card">
-    <div class="label">Important</div>
-    <div class="note">
-      This is a working <b>prototype/demo scanner</b>. Auto-scan now runs every <b>5 seconds</b>, the pair list has been expanded, and the scanner provides market/signal labels such as <b>STRONG MARKET</b>, <b>ACTIVE MARKET</b>, <b>STRONG SIGNAL</b>, and <b>WAIT</b>. The signal engine uses multiple local factors (EMA trend, momentum, RSI, candle movement and volatility) to reduce random signals, but it is still simulated and does not claim guaranteed accuracy. It does not connect to your Quotex account or place trades. For genuinely more accurate real-time OTC signals, a permitted, matching live price feed is required.
-    </div>
-  </div>
-  <div class="footer">Buttons fixed • iPhone touch enabled • Designed for iPhone Safari • Add to Home Screen for app-like use</div>
+  <div class="bottomNav"><div class="navItem"><b>⌂</b>Dashboard</div><div class="navItem"><b>◷</b>History</div><div class="navItem"><b>▥</b>Analysis</div><div class="navItem"><b>⚙</b>Settings</div></div>
+  <div class="footer">AI Signal Scanner • Mobile optimized • Demo / educational use</div>
 </div>
-
 <script>
-const $ = id => document.getElementById(id);
-
-let running = false;
-let countdown = 5;
-let interval = null;
-let candles = [];
-let history = [];
-let lastSignal = null;
-let signalCountdown = 0;
-
-function fmt(s){ return String(Math.max(0,s)).padStart(2,'0'); }
-
-function seed(){
-  candles=[];
-  let p=100;
-  for(let i=0;i<80;i++){
-    p += (Math.random()-.49)*1.2;
-    candles.push(p);
-  }
-}
-
-function rsi(arr,n=14){
-  if(arr.length<n+1) return 50;
-  let g=0,l=0;
-  for(let i=arr.length-n;i<arr.length;i++){
-    let d=arr[i]-arr[i-1];
-    if(d>0) g+=d; else l-=d;
-  }
-  if(l===0) return 100;
-  return 100-(100/(1+g/l));
-}
-
-function ema(arr,n){
-  if(arr.length<n) return arr[arr.length-1]||0;
-  let k=2/(n+1), e=arr[arr.length-n];
-  for(let i=arr.length-n+1;i<arr.length;i++) e=arr[i]*k+e*(1-k);
-  return e;
-}
-
-function atr(arr,n=14){
-  if(arr.length<n+1) return 0;
-  let s=0;
-  for(let i=arr.length-n;i<arr.length;i++) s+=Math.abs(arr[i]-arr[i-1]);
-  return s/n;
-}
-
+(function(){
+'use strict';
+const $=id=>document.getElementById(id);
+let running=false, interval=null, countdown=5, expiryTimer=0, candles=[], history=[], last=null, seq=1, touchLock=0;
+function seed(){candles=[];let p=100;for(let i=0;i<120;i++){p+=(Math.random()-.49)*.8;candles.push(p)}}
+function now(){return new Date().toLocaleTimeString([], {hour12:false})}
+function fmt(n){return String(Math.max(0,n)).padStart(2,'0')}
 function analyze(){
-  let c=candles, last=c[c.length-1], prev=c[c.length-2];
-  let e8=ema(c,8), e21=ema(c,21), range=atr(c,14)||0.1;
-  let rr=rsi(c);
-  let short=c[c.length-1]-c[c.length-6];
-  let medium=c[c.length-1]-c[c.length-16];
-  let body=last-prev;
-
-  let trendScore=(e8-e21)/range;
-  let mediumScore=medium/range;
-  let momentumScore=short/range;
-  let rsiScore=(rr-50)/12;
-  let candleScore=body/range;
-  let score=trendScore*.38+mediumScore*.22+momentumScore*.20+rsiScore*.10+candleScore*.10;
-
-  if(rr>74 && score<1.2) score-=.45;
-  if(rr<26 && score>-1.2) score+=.45;
-
-  let direction=score>=0?'UP':'DOWN';
-  let abs=Math.min(2.8,Math.abs(score));
-  let confidence=Math.round(Math.min(94,58+abs*10+Math.min(8,Math.abs(rr-50)*.16)));
-
-  let quality=confidence>=80?'HIGH':confidence>=70?'MED':'LOW';
-  let momentum=momentumScore>.15?'BULLISH':momentumScore<-.15?'BEARISH':'FLAT';
-  let trend=trendScore>.20?'UPTREND':trendScore<-.20?'DOWNTREND':'SIDEWAYS';
-  let vol=Math.min(99,Math.round(35+Math.min(6,range)*8));
-
-  $('trend').textContent=trend;
-  $('momentum').textContent=momentum;
-  $('rsi').textContent=rr.toFixed(0);
-  $('candle').textContent=body>=0?'BULL':'BEAR';
-  $('vol').textContent=vol+'%';
-  $('quality').textContent=quality;
-
-  let marketState=Math.abs(trendScore)>=1.15 && Math.abs(momentumScore)>=.75
-    ?'STRONG MARKET'
-    :(Math.abs(trendScore)>=.45 || Math.abs(momentumScore)>=.40
-      ?'ACTIVE MARKET':'WEAK MARKET');
-
-  let signalState=confidence>=82?'STRONG SIGNAL':(confidence>=72?'GOOD SIGNAL':'WAIT');
-
-  $('marketState').textContent=marketState;
-  $('signalState').textContent=signalState;
-
-  return {
-    direction, confidence,
-    strength:Math.round(Math.min(96,confidence+Math.min(7,Math.abs(trendScore)*2))),
-    marketState, signalState, trend, momentum, rsi:rr
-  };
+ const a=candles[candles.length-1], b=candles[candles.length-6], c=candles[candles.length-12];
+ const momentum=a-b, trend=a-c, dir=(momentum+trend*.35)>=0?'UP':'DOWN';
+ const noise=Math.round(Math.random()*8), strength=Math.min(99,74+Math.round(Math.abs(momentum)*8)+noise);
+ const confidence=Math.min(99,70+Math.round(Math.abs(trend)*5)+noise);
+ const rsi=Math.max(18,Math.min(82,Math.round(50+trend*10+(Math.random()-.5)*12)));
+ return {direction:dir,strength,confidence,rsi,trend:trend>=0?'Bullish':'Bearish',momentum:momentum>=0?'Positive':'Negative',marketState:Math.abs(trend)<.7?'SIDEWAYS':'TRENDING'};
 }
-
-function addHistory(sig){
-  history.unshift({
-    time:new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit',second:'2-digit'}),
-    pair:$('pair').value.split(' ')[0],
-    dir:sig.direction, conf:sig.confidence
-  });
-  history=history.slice(0,12);
-  renderHistory();
+function setOrb(sig){
+ const orb=$('orb'), arrow=$('arrow'), dir=$('dir'), sub=$('subSignal');
+ orb.className='orb '+(sig?'':'ready')+(sig&&sig.direction==='DOWN'?' down':'');
+ if(!sig){arrow.textContent='✦';arrow.className='arrow readyColor';dir.textContent='READY';dir.className='dir readyColor';sub.textContent='TAP START TO SCAN';sub.className='subSignal readyColor';return}
+ const up=sig.direction==='UP';arrow.textContent=up?'↑':'↓';arrow.className='arrow '+(up?'upColor':'downColor');dir.textContent=sig.direction;dir.className='dir '+(up?'upColor':'downColor');sub.textContent=up?'STRONG BUY SIGNAL':'STRONG SELL SIGNAL';sub.className='subSignal '+(up?'upColor':'downColor');
 }
-
-function renderHistory(){
-  let h=$('history');
-  h.innerHTML='';
-  history.forEach(x=>{
-    h.innerHTML += `<div class="row"><span>${x.time}</span><span>${x.pair}</span><span class="${x.dir==='UP'?'upTxt':'downTxt'}">${x.dir}</span><span>${x.conf}%</span></div>`;
-  });
-  if(!history.length) h.innerHTML='<div class="note">No signals yet.</div>';
+function renderSuggestion(sig){
+ const box=$('suggestion');box.classList.add('show');
+ const trade=sig.confidence>=78 && sig.marketState==='TRENDING';
+ $('suggestionMain').textContent=trade?'SIMULATED SETUP • '+sig.direction:'NO TRADE • WAIT';
+ $('suggestionMain').style.color=trade?(sig.direction==='UP'?'var(--green)':'var(--red)'):'var(--gold)';
+ $('suggestionSub').textContent=trade?'Demo engine found a stronger simulated setup. Confidence: '+sig.confidence+'%. This is not a live or guaranteed win rate.':'Demo engine did not find a strong enough simulated setup.';
 }
-
-function demoHitRate(){
-  if(candles.length<25) return null;
-  let wins=0,total=0;
-  let horizon=Math.max(1,Math.min(12,Math.round(Number($('expiry').value)/5)));
-
-  for(let i=24;i+horizon<candles.length;i++){
-    let a=candles.slice(0,i+1);
-    let last=a[a.length-1], prev=a[a.length-2];
-    let e8=ema(a,8),e21=ema(a,21),range=atr(a,14)||.1;
-    let rr=rsi(a), short=a[a.length-1]-a[a.length-6], medium=a[a.length-1]-a[a.length-16], body=last-prev;
-    let score=((e8-e21)/range)*.38+(medium/range)*.22+(short/range)*.20+((rr-50)/12)*.10+(body/range)*.10;
-    if(rr>74&&score<1.2)score-=.45;
-    if(rr<26&&score>-1.2)score+=.45;
-    let predicted=score>=0?1:-1;
-    let actual=candles[i+horizon]-candles[i];
-    if(actual!==0){
-      total++;
-      if((actual>0?1:-1)===predicted)wins++;
-    }
-  }
-  return total?Math.round(wins/total*100):null;
-}
-
-function updateSuggestion(sig){
-  let box=$('suggestions'), main=$('suggestionMain'), sub=$('suggestionSub');
-  let pair=$('pair').value.split(' ')[0];
-  let action=sig.direction==='UP'?'CALL / UP':'PUT / DOWN';
-  let trade=sig.confidence>=82 && sig.signalState==='STRONG SIGNAL' && sig.marketState!=='WEAK MARKET';
-  let demo=demoHitRate();
-  let expiry=Number($('expiry').value);
-  let breakeven=Math.round(100/(1+80/100));
-
-  $('tradePct').textContent=sig.confidence+'%';
-  $('hitPct').textContent=demo===null?'--%':demo+'%';
-  $('breakevenPct').textContent=breakeven+'%';
-
-  if(trade){
-    main.textContent='TAKE TRADE • '+action;
-    sub.textContent=pair+' • '+sig.marketState+' • '+sig.signalState+' • '+sig.confidence+'% setup estimate • '+expiry+'s expiry';
-  }else{
-    main.textContent='NO TRADE • WAIT';
-    sub.textContent=pair+' • '+sig.marketState+' • '+sig.signalState+' • setup is not strong enough for a trade suggestion';
-  }
-
-  box.style.display='block';
-  $('topSuggestionMain').textContent=main.textContent;
-  $('topSuggestionSub').textContent=sub.textContent;
-  $('topSuggestion').style.display='block';
-}
-
-function showTopSuggestion(){
-  if(!lastSignal) scan();
-  else updateSuggestion(lastSignal);
-}
-
 function scan(){
-  let drift=lastSignal?(lastSignal.direction==='UP'?.035:-.035):0;
-  let noise=(Math.random()-.5)*.55;
-  let next=candles[candles.length-1]+drift+noise;
-  candles.push(next);
-  if(candles.length>180) candles.shift();
-
-  let sig=analyze();
-  lastSignal=sig;
-  signalCountdown=Number($('expiry').value);
-
-  $('dir').textContent=sig.direction==='UP'?'↑':'↓';
-  $('coreText').textContent=sig.direction==='UP'?'STRONG BUY':'STRONG SELL';
-  $('signal').className='signal '+(sig.direction==='UP'?'up':'down');
-  $('signalDir').textContent=sig.direction;
-  $('signalSub').textContent=sig.direction==='UP'?'AI-STYLE BUY SIGNAL':'AI-STYLE SELL SIGNAL';
-  $('confidence').textContent=sig.confidence+'%';
-  $('strength').textContent=sig.strength+'%';
-  $('fill').style.width=sig.confidence+'%';
-  $('expires').textContent=signalCountdown+'s';
-  $('status').textContent='Analysis completed • next automatic scan in 5 seconds';
-
-  updateSuggestion(sig);
-  addHistory(sig);
+ const drift=last?(last.direction==='UP'?.035:-.035):0; candles.push(candles[candles.length-1]+drift+(Math.random()-.5)*.55);if(candles.length>180)candles.shift();
+ const sig=analyze();last=sig;expiryTimer=Number($('expiry').value);countdown=5;
+ const id='#DEMO'+String(seq++).padStart(4,'0');$('signalId').textContent=id;$('entry').textContent=now();$('pairView').innerHTML=$('pair').value.replace(' ',' <small>');$('expires').textContent=expiryTimer+'s';$('strength').textContent=sig.strength+'%';$('confidence').textContent=sig.confidence+'%';$('trend').textContent=sig.trend;$('momentum').textContent=sig.momentum;$('rsi').textContent=sig.rsi;$('market').textContent=sig.marketState;$('signalStatus').textContent='ACTIVE';$('scannerStatus').textContent='ONLINE ●';
+ setOrb(sig);renderSuggestion(sig);addHistory(sig);$('scanning').textContent='AI-STYLE ANALYSIS COMPLETED';
 }
-
-function start(){
-  if(running) return;
-
-  running=true;
-  clearInterval(interval);
-
-  $('ring').classList.add('running');
-  $('autoBtn').classList.add('active');
-  $('autoBtn').textContent='STOP AUTO';
-  $('stopBot').classList.add('active');
-  $('coreText').textContent='SCANNING';
-
-  // Generate the first result immediately.
-  scan();
-  countdown=5;
-  $('timer').textContent='00:05';
-
-  interval=setInterval(tick,1000);
-  $('status').textContent='Bot running • next scan in 5 seconds';
-}
-
-function stop(){
-  running=false;
-  clearInterval(interval);
-  interval=null;
-
-  $('ring').classList.remove('running');
-  $('autoBtn').classList.remove('active');
-  $('autoBtn').textContent='AUTO SCAN';
-  $('stopBot').classList.remove('active');
-  $('coreText').textContent='READY';
-  $('status').textContent='Bot stopped • press START BOT to begin';
-}
-
-function tick(){
-  if(!running) return;
-
-  countdown--;
-  if(countdown<=0){
-    scan();
-    countdown=5;
-    $('status').textContent='New signal generated • next scan in 5 seconds';
-  }
-
-  $('timer').textContent='00:'+fmt(countdown);
-
-  if(signalCountdown>0){
-    signalCountdown--;
-    $('expires').textContent=signalCountdown+'s';
-  }else if(lastSignal){
-    $('expires').textContent='EXPIRED';
-  }
-}
-
-function clearHistory(){
-  history=[];
-  renderHistory();
-  $('status').textContent=running?'Bot running • history cleared':'History cleared';
-}
-
-function bindButtons(){
-  // Every control is wired once, with an iPhone-safe touch fallback.
-  function wireButton(id, handler){
-    const btn=$(id);
-    if(!btn) return;
-    let touchHandled=false;
-    btn.addEventListener('touchend', function(e){
-      e.preventDefault();
-      touchHandled=true;
-      handler();
-      setTimeout(()=>{touchHandled=false;},450);
-    }, {passive:false});
-    btn.addEventListener('click', function(e){
-      if(touchHandled) return;
-      e.preventDefault();
-      handler();
-    });
-  }
-
-  wireButton('startBot', start);
-  wireButton('stopBot', stop);
-  wireButton('autoBtn', function(){ running ? stop() : start(); });
-  wireButton('suggestBtn', showTopSuggestion);
-  wireButton('clear', clearHistory);
-
-  $('pair').addEventListener('change', function(){
-    seed();
-    lastSignal=null;
-    signalCountdown=0;
-    $('status').textContent='Pair changed • ready to scan';
-    $('topSuggestion').style.display='none';
-    $('suggestions').style.display='none';
-    $('signal').className='signal';
-    $('dir').textContent='—';
-    $('coreText').textContent=running?'SCANNING':'READY';
-  });
-
-  $('expiry').addEventListener('change', function(){
-    signalCountdown=Number($('expiry').value);
-    if(lastSignal){
-      $('expires').textContent=signalCountdown+'s';
-      updateSuggestion(lastSignal);
-    }
-  });
-
-  // The scanner ring itself is also tappable on iPhone.
-  const ring=$('ring');
-  if(ring){
-    ring.addEventListener('touchend', function(e){
-      e.preventDefault();
-      running ? stop() : start();
-    }, {passive:false});
-    ring.addEventListener('click', function(e){
-      e.preventDefault();
-      // touchend already handled taps on iPhone; click remains for mouse/desktop.
-      if(!('ontouchstart' in window)) running ? stop() : start();
-    });
-  }
-}
-
+function addHistory(sig){history.unshift({time:now(),dir:sig.direction,conf:sig.confidence,str:sig.strength});history=history.slice(0,8);renderHistory()}
+function renderHistory(){const h=$('history');if(!history.length){h.innerHTML='<div class="row"><span>Waiting for signal</span><span>—</span><span>—</span><span>—</span></div>';return}h.innerHTML=history.map(x=>'<div class="row"><span>'+x.time+'</span><span class="'+(x.dir==='UP'?'upTxt':'downTxt')+'">'+x.dir+'</span><span>'+x.conf+'%</span><span>'+x.str+'%</span></div>').join('')}
+function start(){if(running)return;running=true;$('scannerStatus').textContent='ONLINE ●';$('signalStatus').textContent='SCANNING';$('scanning').textContent='ANALYZING MARKET';$('startBot').classList.add('active');scan();countdown=5;clearInterval(interval);interval=setInterval(tick,1000)}
+function stop(){running=false;clearInterval(interval);interval=null;$('scannerStatus').textContent='READY ●';$('signalStatus').textContent=last?'PAUSED':'READY';$('scanning').textContent='SCANNER PAUSED';$('startBot').classList.remove('active')}
+function tick(){if(!running)return;countdown--;if(countdown<=0){scan();countdown=5} $('scanning').textContent='NEXT SCAN 00:0'+countdown;if(expiryTimer>0){expiryTimer--;$('expires').textContent=expiryTimer+'s'}else if(last)$('expires').textContent='EXPIRED'}
+function generate(){if(!running)scan();else scan()}
+function clearHistory(){history=[];renderHistory()}
+function tap(el,fn){if(!el)return;el.addEventListener('touchend',e=>{e.preventDefault();const t=Date.now();if(t-touchLock<350)return;touchLock=t;fn()},{passive:false});el.addEventListener('click',e=>{e.preventDefault();const t=Date.now();if(t-touchLock<350)return;touchLock=t;fn()})}
 seed();
-$('timer').textContent='00:05';
-$('coreText').textContent='READY';
-bindButtons();
-window.addEventListener('error', function(){ $('status').textContent='App error detected • refresh this page'; });
+tap($('startBot'),start);tap($('stopBot'),stop);tap($('autoBtn'),()=>running?stop():start());tap($('suggestBtn'),()=>last?renderSuggestion(last):scan());tap($('generate'),generate);tap($('clear'),clearHistory);tap($('orb'),()=>running?stop():start());
+$('pair').addEventListener('change',()=>{seed();last=null;setOrb(null);$('suggestion').classList.remove('show');$('signalStatus').textContent='READY';$('pairView').innerHTML=$('pair').value.replace(' ',' <small>');$('confidence').textContent='--%';$('strength').textContent='--%';$('expires').textContent='--';$('entry').textContent='--:--:--';$('scanning').textContent='PAIR CHANGED • READY'});
+$('expiry').addEventListener('change',()=>{expiryTimer=Number($('expiry').value);if(last)$('expires').textContent=expiryTimer+'s'});
+})();
 </script>
 </body>
 </html>
