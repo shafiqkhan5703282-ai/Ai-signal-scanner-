@@ -49,8 +49,8 @@
     </div>
     <div style="height:10px"></div>
     <div class="tabs">
-      <button class="button primary tab" id="suggestBtn">WIN RATE %</button>
-      <button class="button tab" id="autoBtn">AUTO SCAN</button>
+      <button type="button" class="button primary tab" id="suggestBtn">WIN RATE %</button>
+      <button type="button" class="button tab" id="autoBtn">AUTO SCAN</button>
     </div>
     <div id="topSuggestion" style="display:none;text-align:left;margin-top:10px;background:#081323;border:1px solid #19304b;border-radius:14px;padding:12px">
       <div class="label">Win rate estimate</div>
@@ -67,7 +67,7 @@
 
   <div class="card scan">
     <div class="label">Market scanner</div>
-    <div class="ring">
+    <div class="ring" id="ring" role="button" aria-label="Market scanner">
       <div class="core">
         <div class="dir" id="dir">—</div>
         <div class="small" id="coreText">READY</div>
@@ -76,8 +76,8 @@
     <div class="timer" id="timer">00:05</div>
     <div class="status" id="status">Ready to analyze market conditions</div>
     <div style="display:flex;gap:8px;margin-top:12px">
-      <button class="button primary" id="startBot" style="flex:1">START BOT</button>
-      <button class="button stop" id="stopBot" style="flex:1">STOP BOT</button>
+      <button type="button" class="button primary" id="startBot" style="flex:1">START BOT</button>
+      <button type="button" class="button stop" id="stopBot" style="flex:1">STOP BOT</button>
     </div>
     
     <div id="suggestions" style="display:none;text-align:left;margin-top:10px;background:#081323;border:1px solid #19304b;border-radius:14px;padding:12px">
@@ -116,7 +116,7 @@
   <div class="card">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
       <div class="label" style="margin:0">Signal history</div>
-      <button class="button" style="width:auto;padding:7px 10px;font-size:11px" id="clear">Clear</button>
+      <button type="button" class="button" style="width:auto;padding:7px 10px;font-size:11px" id="clear">Clear</button>
     </div>
     <div class="history" id="history"><div class="note">No signals yet.</div></div>
   </div>
@@ -389,22 +389,43 @@ function clearHistory(){
 }
 
 function bindButtons(){
-  $('startBot').addEventListener('click',start);
-  $('stopBot').addEventListener('click',stop);
-  $('autoBtn').addEventListener('click',()=>running?stop():start());
-  $('suggestBtn').addEventListener('click',showTopSuggestion);
-  $('clear').addEventListener('click',clearHistory);
+  // Every control is wired once, with an iPhone-safe touch fallback.
+  function wireButton(id, handler){
+    const btn=$(id);
+    if(!btn) return;
+    let touchHandled=false;
+    btn.addEventListener('touchend', function(e){
+      e.preventDefault();
+      touchHandled=true;
+      handler();
+      setTimeout(()=>{touchHandled=false;},450);
+    }, {passive:false});
+    btn.addEventListener('click', function(e){
+      if(touchHandled) return;
+      e.preventDefault();
+      handler();
+    });
+  }
 
-  $('pair').addEventListener('change',()=>{
+  wireButton('startBot', start);
+  wireButton('stopBot', stop);
+  wireButton('autoBtn', function(){ running ? stop() : start(); });
+  wireButton('suggestBtn', showTopSuggestion);
+  wireButton('clear', clearHistory);
+
+  $('pair').addEventListener('change', function(){
     seed();
     lastSignal=null;
     signalCountdown=0;
     $('status').textContent='Pair changed • ready to scan';
     $('topSuggestion').style.display='none';
     $('suggestions').style.display='none';
+    $('signal').className='signal';
+    $('dir').textContent='—';
+    $('coreText').textContent=running?'SCANNING':'READY';
   });
 
-  $('expiry').addEventListener('change',()=>{
+  $('expiry').addEventListener('change', function(){
     signalCountdown=Number($('expiry').value);
     if(lastSignal){
       $('expires').textContent=signalCountdown+'s';
@@ -412,19 +433,26 @@ function bindButtons(){
     }
   });
 
-  // Extra iPhone touch fallback.
-  document.querySelectorAll('button').forEach(btn=>{
-    btn.addEventListener('touchend',e=>{
+  // The scanner ring itself is also tappable on iPhone.
+  const ring=$('ring');
+  if(ring){
+    ring.addEventListener('touchend', function(e){
       e.preventDefault();
-      btn.click();
-    },{passive:false});
-  });
+      running ? stop() : start();
+    }, {passive:false});
+    ring.addEventListener('click', function(e){
+      e.preventDefault();
+      // touchend already handled taps on iPhone; click remains for mouse/desktop.
+      if(!('ontouchstart' in window)) running ? stop() : start();
+    });
+  }
 }
 
 seed();
 $('timer').textContent='00:05';
 $('coreText').textContent='READY';
 bindButtons();
+window.addEventListener('error', function(){ $('status').textContent='App error detected • refresh this page'; });
 </script>
 </body>
 </html>
