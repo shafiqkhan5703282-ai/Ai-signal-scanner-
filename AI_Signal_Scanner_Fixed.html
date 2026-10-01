@@ -84,19 +84,30 @@
       <div>
         <label class="text-xs font-extrabold text-orange-400 uppercase tracking-wider">Timeframe / Expiry</label>
         <select id="timerSelect" class="w-full bg-slate-950 border border-slate-800 rounded-2xl p-4 mt-1.5 text-base font-bold text-white focus:outline-none focus:border-orange-500">
-          <option value="3 Seconds">3 Seconds (Ultra Fast)</option>
+
+          <option value="3 Seconds">3 Seconds</option>
           <option value="5 Seconds" selected>5 Seconds (Recommended)</option>
+          <option value="7 Seconds">7 Seconds</option>
           <option value="10 Seconds">10 Seconds</option>
-          <option value="15 Seconds">15 Seconds</option>
+          <option value="13 Seconds">13 Seconds</option>
+          <option value="16 Seconds">16 Seconds</option>
+          <option value="18 Seconds">18 Seconds</option>
+          <option value="20 Seconds">20 Seconds</option>
+          <option value="23 Seconds">23 Seconds</option>
+          <option value="27 Seconds">27 Seconds</option>
           <option value="30 Seconds">30 Seconds</option>
+
           <option value="1 Minute">1 Minute</option>
           <option value="2 Minutes">2 Minutes</option>
           <option value="3 Minutes">3 Minutes</option>
           <option value="5 Minutes">5 Minutes</option>
           <option value="10 Minutes">10 Minutes</option>
           <option value="15 Minutes">15 Minutes</option>
+          <option value="20 Minutes">20 Minutes</option>
           <option value="30 Minutes">30 Minutes</option>
+          <option value="45 Minutes">45 Minutes</option>
           <option value="1 Hour">1 Hour</option>
+
         </select>
       </div>
 
@@ -107,17 +118,20 @@
 
     <!-- ⚡ ANALYZING / COUNTDOWN VIEW -->
     <div id="loadingView" class="hidden text-center py-8 space-y-5">
+
       <div class="w-20 h-20 border-4 border-orange-500 border-t-transparent rounded-full animate-spin-custom mx-auto shadow-lg shadow-orange-500/20"></div>
 
       <div class="space-y-2">
+
         <p class="text-base font-black text-orange-400 uppercase tracking-wider">
           Deep AI Technical Analysis...
         </p>
 
         <p id="loadingMeta" class="text-xs font-mono text-slate-400"></p>
 
-        <!-- Temporary UP/DOWN -->
+        <!-- Temporary UP/DOWN + 5 TO 1 COUNTDOWN -->
         <div class="bg-slate-950 border border-red-500/50 rounded-2xl p-5 mt-4">
+
           <div id="preSignal" class="text-5xl font-black text-red-500 animate-pulse">
             UP
           </div>
@@ -127,22 +141,25 @@
           </div>
 
           <div id="countdownNumber" class="text-4xl font-black text-red-500 mt-1">
-            1
+            5
           </div>
 
           <div class="text-xs text-red-400 font-bold mt-1">
             WAIT FOR FINAL SIGNAL
           </div>
+
         </div>
 
         <div id="analysisStep" class="text-xs font-bold text-amber-300/80 bg-slate-950 py-2 px-4 rounded-xl border border-slate-800 inline-block mt-2">
           Fetching Order Book Volume...
         </div>
+
       </div>
     </div>
 
     <!-- 📈 RESULT SIGNAL VIEW -->
     <div id="resultView" class="hidden space-y-5 text-center">
+
       <div class="flex justify-between items-center text-xs font-mono text-slate-400 border-b border-slate-800 pb-3">
         <span id="resPair" class="font-bold text-slate-200">PAIR: USD/ARS (OTC)</span>
         <span id="resId" class="text-orange-400 font-bold">ID: #CSA2582</span>
@@ -155,22 +172,29 @@
         <p id="resType" class="text-sm font-black tracking-wider uppercase">STRONG BUY SIGNAL</p>
       </div>
 
+      <!-- Advanced Analysis Breakdown -->
       <div class="bg-slate-950/80 border border-slate-800/80 rounded-2xl p-3.5 text-left text-xs space-y-1.5 font-mono">
+
         <div class="flex justify-between">
           <span class="text-slate-400">RSI Indicator (14):</span>
           <span id="resRsi" class="font-bold text-slate-200">28.4 (Oversold)</span>
         </div>
+
         <div class="flex justify-between">
           <span class="text-slate-400">MACD Histogram:</span>
           <span id="resMacd" class="font-bold text-emerald-400">+0.0014 Cross Up</span>
         </div>
+
         <div class="flex justify-between">
           <span class="text-slate-400">Trend Alignment:</span>
           <span id="resTrend" class="font-bold text-amber-400">Bullish Momentum</span>
         </div>
+
       </div>
 
+      <!-- Signal Metrics Grid -->
       <div class="grid grid-cols-2 gap-3 text-xs">
+
         <div class="bg-slate-950 p-3 rounded-xl border border-slate-800">
           <span class="text-slate-400 block text-[10px] uppercase font-bold">Broker</span>
           <span id="resBroker" class="font-extrabold text-white text-sm">Quotex</span>
@@ -190,16 +214,19 @@
           <span class="text-slate-400 block text-[10px] uppercase font-bold">Signal Confidence</span>
           <span id="resStrength" class="font-extrabold text-orange-400 text-sm">96.5%</span>
         </div>
+
       </div>
 
       <button id="resetBtn" class="w-full bg-slate-950 hover:bg-slate-800 text-xs font-black py-4 rounded-2xl text-orange-400 transition-colors border border-orange-500/40 uppercase tracking-wider">
         🔄 Scan Next Market Signal
       </button>
+
     </div>
 
   </div>
 
   <script>
+
     const VALID_KEY = "AWRSK78";
 
     const TRADING_PAIRS = {
@@ -210,16 +237,20 @@
         'GBP/JPY (OTC)', 'USD/CAD (OTC)', 'USD/CHF (OTC)', 'USD/INR (OTC)', 
         'USD/BRL (OTC)', 'USD/PKR (OTC)', 'USD/EGP (OTC)', 'USD/BDT (OTC)'
       ],
+
       'Live Currency Markets': [
         'EUR/USD', 'GBP/USD', 'USD/JPY', 'USD/CHF', 'USD/CAD', 
         'AUD/USD', 'NZD/USD', 'EUR/GBP', 'EUR/JPY', 'GBP/JPY'
       ],
+
       'Crypto Markets': [
         'BTC/USD', 'ETH/USD', 'SOL/USD', 'XRP/USD', 'LTC/USD'
       ],
+
       'Commodities': [
         'USCRUDE (WTI)', 'UKBRENT (Brent)', 'XAU/USD (Gold)', 'XAG/USD (Silver)'
       ],
+
       'Indices & Stocks': [
         'US100 (Nasdaq)', 'SP500', 'DJI30', 'Apple OTC', 'Microsoft OTC', 'Tesla OTC'
       ]
@@ -238,35 +269,46 @@
     const pairSelect = document.getElementById('pairSelect');
     const brokerSelect = document.getElementById('brokerSelect');
     const timerSelect = document.getElementById('timerSelect');
+
     const loadingMeta = document.getElementById('loadingMeta');
     const analysisStep = document.getElementById('analysisStep');
 
     // Key Validation
     activateBtn.addEventListener('click', () => {
-      const enteredKey = activationKeyInput.value.trim().toUpperCase();
+
+      const enteredKey =
+        activationKeyInput.value.trim().toUpperCase();
 
       if (enteredKey === VALID_KEY) {
+
         keyError.classList.add('hidden');
         activationView.classList.add('hidden');
         controlPanel.classList.remove('hidden');
+
       } else {
+
         keyError.classList.remove('hidden');
+
       }
+
     });
 
     function populatePairs() {
+
       const selectedMarket = marketSelect.value;
       const pairs = TRADING_PAIRS[selectedMarket] || [];
 
-      pairSelect.innerHTML = pairs
-        .map(p => `<option value="${p}">${p}</option>`)
-        .join('');
+      pairSelect.innerHTML =
+        pairs.map(p => `<option value="${p}">${p}</option>`).join('');
+
     }
 
     marketSelect.addEventListener('change', populatePairs);
+
     populatePairs();
 
-    // Signal Generation Logic
+
+    // SIGNAL GENERATION
     document.getElementById('generateBtn').addEventListener('click', () => {
 
       const selectedPair = pairSelect.value;
@@ -279,51 +321,71 @@
       resultView.classList.add('hidden');
       loadingView.classList.remove('hidden');
 
-      // Temporary signal starts RED
-      const preSignal = document.getElementById('preSignal');
-      const countdownNumber = document.getElementById('countdownNumber');
 
-      preSignal.textContent = Math.random() > 0.5 ? 'UP' : 'DOWN';
+      // Temporary red UP/DOWN
+      const preSignal =
+        document.getElementById('preSignal');
+
+      const countdownNumber =
+        document.getElementById('countdownNumber');
+
+      preSignal.textContent =
+        Math.random() > 0.5 ? 'UP' : 'DOWN';
+
       preSignal.className =
         'text-5xl font-black text-red-500 animate-pulse';
 
-      // Countdown 1 → 5 seconds
-      let count = 1;
+
+      // COUNTDOWN 5 → 4 → 3 → 2 → 1
+      let count = 5;
 
       countdownNumber.textContent = count;
 
-      const countdownInterval = setInterval(() => {
-        count++;
+      const countdownInterval =
+        setInterval(() => {
 
-        if (count <= 5) {
-          countdownNumber.textContent = count;
-        }
-      }, 1000);
+          count--;
 
-      // Analysis messages
-      analysisStep.textContent = "Fetching Order Book Volume...";
+          if (count >= 1) {
+            countdownNumber.textContent = count;
+          }
+
+        }, 1000);
+
+
+      // Analysis stages
+      analysisStep.textContent =
+        "Fetching Order Book Volume...";
 
       setTimeout(() => {
+
         analysisStep.textContent =
           "Calculating Bollinger Bands & RSI...";
+
       }, 800);
 
       setTimeout(() => {
+
         analysisStep.textContent =
           "Scanning MACD & Price Action Volume...";
+
       }, 1700);
 
       setTimeout(() => {
+
         analysisStep.textContent =
           "Finalizing High-Precision AI Signal...";
+
       }, 2400);
 
-      // Final signal after exactly 5 seconds
+
+      // FINAL SIGNAL AFTER 5 SECONDS
       setTimeout(() => {
 
         clearInterval(countdownInterval);
 
-        const isUp = Math.random() > 0.5;
+        const isUp =
+          Math.random() > 0.5;
 
         const accuracyVal =
           (94.5 + Math.random() * 4.8).toFixed(1) + '%';
@@ -333,6 +395,7 @@
 
         const signalId =
           `#CSA${Math.floor(1000 + Math.random() * 9000)}`;
+
 
         document.getElementById('resPair').textContent =
           `PAIR: ${selectedPair}`;
@@ -352,6 +415,7 @@
         document.getElementById('resStrength').textContent =
           strengthVal;
 
+
         const resDir =
           document.getElementById('resDirection');
 
@@ -367,9 +431,11 @@
         const resTrend =
           document.getElementById('resTrend');
 
+
         if (isUp) {
 
-          resDir.textContent = 'CALL ▲';
+          resDir.textContent =
+            'CALL ▲';
 
           resDir.className =
             'font-black text-5xl tracking-widest animate-pulse text-emerald-400';
@@ -394,7 +460,8 @@
 
         } else {
 
-          resDir.textContent = 'PUT ▼';
+          resDir.textContent =
+            'PUT ▼';
 
           resDir.className =
             'font-black text-5xl tracking-widest animate-pulse text-red-400';
@@ -416,18 +483,28 @@
 
           resTrend.className =
             'font-bold text-red-400';
+
         }
+
 
         loadingView.classList.add('hidden');
         resultView.classList.remove('hidden');
 
       }, 5000);
+
     });
 
+
+    // SCAN NEXT MARKET SIGNAL
     document.getElementById('resetBtn').addEventListener('click', () => {
+
       resultView.classList.add('hidden');
+
       controlPanel.classList.remove('hidden');
+
     });
+
   </script>
+
 </body>
 </html>
