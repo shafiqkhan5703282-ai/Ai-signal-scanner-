@@ -1,307 +1,1040 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Chinese Signals - AI BOT PRO MAX</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <style>
-    @keyframes spinCircle {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
-    .animate-spin-custom {
-      animation: spinCircle 1.2s linear infinite;
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chinese Signals - AI BOT PRO MAX</title>
+
+<script src="https://cdn.tailwindcss.com"></script>
+
+<style>
+@keyframes spinCircle {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.animate-spin-custom {
+  animation: spinCircle 1.2s linear infinite;
+}
+
+@keyframes pulseSignal {
+  0%,100% { opacity:1; transform:scale(1); }
+  50% { opacity:.65; transform:scale(1.02); }
+}
+
+.signal-pulse {
+  animation:pulseSignal 1.2s infinite;
+}
+
+.progress-bar {
+  transition:width .25s linear;
+}
+</style>
 </head>
+
 <body class="bg-slate-950 text-white min-h-screen flex items-center justify-center p-3 font-sans">
 
-  <div class="w-full max-w-lg bg-slate-900 border-2 border-orange-500/40 rounded-3xl p-6 shadow-2xl space-y-6">
-    
-    <!-- Top Header -->
-    <div class="flex justify-between items-center bg-slate-950 border border-orange-500/30 rounded-2xl p-4 shadow-inner">
-      <div>
-        <h1 class="text-xl font-black text-orange-400 tracking-wide uppercase">Chinese Signals</h1>
-        <p class="text-xs font-bold text-orange-200/70 tracking-widest">AI BOT | PRO MAX ACCURACY</p>
-      </div>
-      <span class="bg-orange-500/20 text-orange-300 text-xs px-3 py-1.5 rounded-full font-black border border-orange-500/50 uppercase tracking-wider">
-        VIP ACTIVE
+<div class="w-full max-w-lg bg-slate-900 border-2 border-orange-500/40 rounded-3xl p-6 shadow-2xl space-y-6">
+
+<!-- HEADER -->
+<div class="flex justify-between items-center bg-slate-950 border border-orange-500/30 rounded-2xl p-4 shadow-inner">
+
+  <div>
+    <h1 class="text-xl font-black text-orange-400 tracking-wide uppercase">
+      Chinese Signals
+    </h1>
+
+    <p class="text-xs font-bold text-orange-200/70 tracking-widest">
+      AI BOT | PRO MAX
+    </p>
+  </div>
+
+  <span class="bg-orange-500/20 text-orange-300 text-xs px-3 py-1.5 rounded-full font-black border border-orange-500/50 uppercase tracking-wider">
+    VIP ACTIVE
+  </span>
+
+</div>
+
+
+<!-- ACTIVATION -->
+<div id="activationView" class="space-y-5 text-center py-4">
+
+  <div class="bg-orange-500/10 border border-orange-500/30 rounded-2xl p-4">
+
+    <h2 class="text-lg font-bold text-orange-400 mb-1">
+      Security Access Required
+    </h2>
+
+    <p class="text-xs text-slate-400">
+      Enter your VIP Activation Key to unlock the scanner.
+    </p>
+
+  </div>
+
+  <div>
+
+    <input
+      type="text"
+      id="activationKeyInput"
+      placeholder="Enter Key (e.g. AWRSK78)"
+      class="w-full bg-slate-950 border-2 border-orange-500/50 rounded-2xl p-4 text-center font-mono font-bold text-lg text-orange-300 placeholder-slate-600 focus:outline-none focus:border-orange-400 uppercase tracking-widest"
+    >
+
+    <p id="keyError"
+       class="hidden text-xs text-red-400 font-bold mt-2">
+       Invalid Activation Key.
+    </p>
+
+  </div>
+
+  <button
+    id="activateBtn"
+    class="w-full bg-orange-500 hover:bg-orange-400 text-slate-950 font-black text-base py-4 rounded-2xl transition-all shadow-lg shadow-orange-500/30 uppercase tracking-wider">
+    🔓 Unlock Bot Access
+  </button>
+
+</div>
+
+
+<!-- CONTROL PANEL -->
+<div id="controlPanel" class="hidden space-y-5">
+
+  <div>
+
+    <label class="text-xs font-extrabold text-orange-400 uppercase tracking-wider">
+      Select Broker
+    </label>
+
+    <select
+      id="brokerSelect"
+      class="w-full bg-slate-950 border border-slate-800 rounded-2xl p-4 mt-1.5 text-base font-bold text-white focus:outline-none focus:border-orange-500">
+
+      <option>Quotex</option>
+      <option>Pocket Option</option>
+      <option>IQ Option</option>
+      <option>Olymp Trade</option>
+
+    </select>
+
+  </div>
+
+
+  <div>
+
+    <label class="text-xs font-extrabold text-orange-400 uppercase tracking-wider">
+      Market Type
+    </label>
+
+    <select
+      id="marketSelect"
+      class="w-full bg-slate-950 border border-slate-800 rounded-2xl p-4 mt-1.5 text-base font-bold text-white focus:outline-none focus:border-orange-500">
+
+      <option value="OTC Markets">OTC Markets (High Payout)</option>
+      <option value="Live Currency Markets">Live Currency Markets</option>
+      <option value="Crypto Markets">Crypto Markets</option>
+      <option value="Commodities">Commodities</option>
+      <option value="Indices & Stocks">Indices & Stocks</option>
+
+    </select>
+
+  </div>
+
+
+  <div>
+
+    <label class="text-xs font-extrabold text-orange-400 uppercase tracking-wider">
+      Trading Pair
+    </label>
+
+    <select
+      id="pairSelect"
+      class="w-full bg-slate-950 border border-slate-800 rounded-2xl p-4 mt-1.5 text-base font-bold text-white focus:outline-none focus:border-orange-500">
+    </select>
+
+  </div>
+
+
+  <div>
+
+    <label class="text-xs font-extrabold text-orange-400 uppercase tracking-wider">
+      Timeframe / Expiry
+    </label>
+
+    <select
+      id="timerSelect"
+      class="w-full bg-slate-950 border border-slate-800 rounded-2xl p-4 mt-1.5 text-base font-bold text-white focus:outline-none focus:border-orange-500">
+
+      <option value="3 Seconds">3 Seconds</option>
+      <option value="5 Seconds" selected>5 Seconds</option>
+      <option value="10 Seconds">10 Seconds</option>
+      <option value="15 Seconds">15 Seconds</option>
+      <option value="30 Seconds">30 Seconds</option>
+      <option value="1 Minute">1 Minute</option>
+      <option value="2 Minutes">2 Minutes</option>
+      <option value="3 Minutes">3 Minutes</option>
+      <option value="5 Minutes">5 Minutes</option>
+      <option value="10 Minutes">10 Minutes</option>
+      <option value="15 Minutes">15 Minutes</option>
+      <option value="30 Minutes">30 Minutes</option>
+      <option value="1 Hour">1 Hour</option>
+
+    </select>
+
+  </div>
+
+
+  <button
+    id="startBtn"
+    class="w-full bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-400 hover:to-amber-400 text-slate-950 font-black text-lg py-4 rounded-2xl transition-all shadow-xl shadow-orange-500/25 uppercase tracking-wider">
+
+    ⚡ START AUTO SCANNER
+
+  </button>
+
+</div>
+
+
+<!-- AUTOMATIC SCANNER -->
+<div id="scannerView" class="hidden space-y-5 text-center">
+
+  <div class="bg-slate-950 border border-orange-500/30 rounded-2xl p-4">
+
+    <div class="flex justify-between text-xs">
+
+      <span class="text-slate-400">
+        AUTO SCANNER
       </span>
+
+      <span id="scannerStatus"
+            class="text-orange-400 font-black">
+        ACTIVE
+      </span>
+
     </div>
 
-    <!-- 🔑 ACTIVATION KEY VIEW -->
-    <div id="activationView" class="space-y-5 text-center py-4">
-      <div class="bg-orange-500/10 border border-orange-500/30 rounded-2xl p-4">
-        <h2 class="text-lg font-bold text-orange-400 mb-1">Security Access Required</h2>
-        <p class="text-xs text-slate-400">Please enter your VIP Activation Key to unlock high-accuracy market scanning.</p>
+    <div class="mt-3 h-2 bg-slate-800 rounded-full overflow-hidden">
+
+      <div
+        id="progressBar"
+        class="progress-bar h-full bg-orange-500"
+        style="width:100%">
       </div>
 
-      <div>
-        <input 
-          type="text" 
-          id="activationKeyInput" 
-          placeholder="Enter Key (e.g. AWRSK78)" 
-          class="w-full bg-slate-950 border-2 border-orange-500/50 rounded-2xl p-4 text-center font-mono font-bold text-lg text-orange-300 placeholder-slate-600 focus:outline-none focus:border-orange-400 transition-all uppercase tracking-widest"
-        />
-        <p id="keyError" class="hidden text-xs text-red-400 font-bold mt-2">Invalid Activation Key. Please try again.</p>
-      </div>
-
-      <button id="activateBtn" class="w-full bg-orange-500 hover:bg-orange-400 text-slate-950 font-black text-base py-4 rounded-2xl transition-all shadow-lg shadow-orange-500/30 active:scale-98 uppercase tracking-wider">
-        🔓 Unlock Bot Access
-      </button>
     </div>
 
-    <!-- 📊 MAIN CONTROL PANEL (Hidden until unlocked) -->
-    <div id="controlPanel" class="hidden space-y-5">
-      <div>
-        <label class="text-xs font-extrabold text-orange-400 uppercase tracking-wider">Select Broker</label>
-        <select id="brokerSelect" class="w-full bg-slate-950 border border-slate-800 rounded-2xl p-4 mt-1.5 text-base font-bold text-white focus:outline-none focus:border-orange-500">
-          <option value="Quotex">Quotex</option>
-          <option value="Pocket Option">Pocket Option</option>
-          <option value="IQ Option">IQ Option</option>
-          <option value="Olymp Trade">Olymp Trade</option>
-        </select>
-      </div>
+    <p class="text-xs text-slate-500 mt-2">
+      Next scan in
+      <span id="countdown"
+            class="text-orange-400 font-black">
+        7
+      </span>
+      seconds
+    </p>
 
-      <div>
-        <label class="text-xs font-extrabold text-orange-400 uppercase tracking-wider">Market Type</label>
-        <select id="marketSelect" class="w-full bg-slate-950 border border-slate-800 rounded-2xl p-4 mt-1.5 text-base font-bold text-white focus:outline-none focus:border-orange-500">
-          <option value="OTC Markets">OTC Markets (High Payout)</option>
-          <option value="Live Currency Markets">Live Currency Markets</option>
-          <option value="Crypto Markets">Crypto Markets</option>
-          <option value="Commodities">Commodities</option>
-          <option value="Indices & Stocks">Indices & Stocks</option>
-        </select>
-      </div>
+  </div>
 
-      <div>
-        <label class="text-xs font-extrabold text-orange-400 uppercase tracking-wider">Trading Pair</label>
-        <select id="pairSelect" class="w-full bg-slate-950 border border-slate-800 rounded-2xl p-4 mt-1.5 text-base font-bold text-white focus:outline-none focus:border-orange-500">
-          <!-- Populated by JS -->
-        </select>
-      </div>
 
-      <div>
-        <label class="text-xs font-extrabold text-orange-400 uppercase tracking-wider">Timeframe / Expiry</label>
-        <select id="timerSelect" class="w-full bg-slate-950 border border-slate-800 rounded-2xl p-4 mt-1.5 text-base font-bold text-white focus:outline-none focus:border-orange-500">
-          <option value="3 Seconds">3 Seconds (Ultra Fast)</option>
-          <option value="5 Seconds" selected>5 Seconds (Recommended)</option>
-          <option value="10 Seconds">10 Seconds</option>
-          <option value="15 Seconds">15 Seconds</option>
-          <option value="30 Seconds">30 Seconds</option>
-          <option value="1 Minute">1 Minute</option>
-          <option value="2 Minutes">2 Minutes</option>
-          <option value="3 Minutes">3 Minutes</option>
-          <option value="5 Minutes">5 Minutes</option>
-          <option value="10 Minutes">10 Minutes</option>
-          <option value="15 Minutes">15 Minutes</option>
-          <option value="30 Minutes">30 Minutes</option>
-          <option value="1 Hour">1 Hour</option>
-        </select>
-      </div>
+  <!-- CURRENT SIGNAL -->
 
-      <button id="generateBtn" class="w-full mt-2 bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-400 hover:to-amber-400 text-slate-950 font-black text-lg py-4 rounded-2xl transition-all shadow-xl shadow-orange-500/25 active:scale-98 tracking-wider">
-        ⚡ ANALYZE & GENERATE SIGNAL
-      </button>
+  <div
+    id="signalBox"
+    class="bg-slate-950 border border-slate-800 rounded-2xl p-6 space-y-3">
+
+    <p class="text-xs text-slate-400 uppercase font-bold tracking-widest">
+      Current Signal
+    </p>
+
+    <div
+      id="signalDirection"
+      class="font-black text-5xl tracking-widest text-orange-400">
+      SCANNING
     </div>
 
-    <!-- ⚡ ANALYZING / DEEP SCAN VIEW -->
-    <div id="loadingView" class="hidden text-center py-8 space-y-5">
-      <div class="w-20 h-20 border-4 border-orange-500 border-t-transparent rounded-full animate-spin-custom mx-auto shadow-lg shadow-orange-500/20"></div>
-      <div class="space-y-2">
-        <p class="text-base font-black text-orange-400 uppercase tracking-wider">Deep AI Technical Analysis...</p>
-        <p id="loadingMeta" class="text-xs font-mono text-slate-400"></p>
-        <div id="analysisStep" class="text-xs font-bold text-amber-300/80 bg-slate-950 py-2 px-4 rounded-xl border border-slate-800 inline-block mt-2">
-          Fetching Order Book Volume...
-        </div>
-      </div>
+    <p
+      id="signalMessage"
+      class="text-sm font-black text-orange-400 uppercase">
+      Analysing market...
+    </p>
+
+  </div>
+
+
+  <!-- MARKET INFORMATION -->
+
+  <div class="bg-slate-950/80 border border-slate-800 rounded-2xl p-3.5 text-left text-xs space-y-2 font-mono">
+
+    <div class="flex justify-between">
+
+      <span class="text-slate-400">
+        Pair
+      </span>
+
+      <span id="resPair"
+            class="font-bold text-white">
+        -
+      </span>
+
     </div>
 
-    <!-- 📈 RESULT SIGNAL VIEW -->
-    <div id="resultView" class="hidden space-y-5 text-center">
-      <div class="flex justify-between items-center text-xs font-mono text-slate-400 border-b border-slate-800 pb-3">
-        <span id="resPair" class="font-bold text-slate-200">PAIR: USD/ARS (OTC)</span>
-        <span id="resId" class="text-orange-400 font-bold">ID: #CSA2582</span>
-      </div>
 
-      <div class="bg-slate-950 border border-slate-800 rounded-2xl p-5 space-y-2">
-        <div id="resDirection" class="font-black text-5xl tracking-widest animate-pulse">
-          UP
-        </div>
-        <p id="resType" class="text-sm font-black tracking-wider uppercase">STRONG BUY SIGNAL</p>
-      </div>
+    <div class="flex justify-between">
 
-      <!-- Advanced Analysis Breakdown -->
-      <div class="bg-slate-950/80 border border-slate-800/80 rounded-2xl p-3.5 text-left text-xs space-y-1.5 font-mono">
-        <div class="flex justify-between">
-          <span class="text-slate-400">RSI Indicator (14):</span>
-          <span id="resRsi" class="font-bold text-slate-200">28.4 (Oversold)</span>
-        </div>
-        <div class="flex justify-between">
-          <span class="text-slate-400">MACD Histogram:</span>
-          <span id="resMacd" class="font-bold text-emerald-400">+0.0014 Cross Up</span>
-        </div>
-        <div class="flex justify-between">
-          <span class="text-slate-400">Trend Alignment:</span>
-          <span id="resTrend" class="font-bold text-amber-400">Bullish Momentum</span>
-        </div>
-      </div>
+      <span class="text-slate-400">
+        Broker
+      </span>
 
-      <!-- Signal Metrics Grid -->
-      <div class="grid grid-cols-2 gap-3 text-xs">
-        <div class="bg-slate-950 p-3 rounded-xl border border-slate-800">
-          <span class="text-slate-400 block text-[10px] uppercase font-bold">Broker</span>
-          <span id="resBroker" class="font-extrabold text-white text-sm">Quotex</span>
-        </div>
-        <div class="bg-slate-950 p-3 rounded-xl border border-slate-800">
-          <span class="text-slate-400 block text-[10px] uppercase font-bold">Timeframe</span>
-          <span id="resTimer" class="font-extrabold text-white text-sm">5 Seconds</span>
-        </div>
-        <div class="bg-slate-950 p-3 rounded-xl border border-slate-800">
-          <span class="text-slate-400 block text-[10px] uppercase font-bold">Win Rate Accuracy</span>
-          <span id="resAccuracy" class="font-extrabold text-emerald-400 text-sm">98.8%</span>
-        </div>
-        <div class="bg-slate-950 p-3 rounded-xl border border-slate-800">
-          <span class="text-slate-400 block text-[10px] uppercase font-bold">Signal Confidence</span>
-          <span id="resStrength" class="font-extrabold text-orange-400 text-sm">96.5%</span>
-        </div>
-      </div>
+      <span id="resBroker"
+            class="font-bold text-white">
+        -
+      </span>
 
-      <button id="resetBtn" class="w-full bg-slate-950 hover:bg-slate-800 text-xs font-black py-4 rounded-2xl text-orange-400 transition-colors border border-orange-500/40 uppercase tracking-wider">
-        🔄 Scan Next Market Signal
-      </button>
+    </div>
+
+
+    <div class="flex justify-between">
+
+      <span class="text-slate-400">
+        Expiry
+      </span>
+
+      <span id="resTimer"
+            class="font-bold text-white">
+        -
+      </span>
+
+    </div>
+
+
+    <div class="flex justify-between">
+
+      <span class="text-slate-400">
+        Scan #
+      </span>
+
+      <span id="scanNumber"
+            class="font-bold text-orange-400">
+        0
+      </span>
+
     </div>
 
   </div>
 
-  <script>
-    const VALID_KEY = "AWRSK78";
 
-    const TRADING_PAIRS = {
-      'OTC Markets': [
-        'USD/ARS (OTC)', 'EUR/USD (OTC)', 'GBP/USD (OTC)', 'USD/JPY (OTC)', 
-        'AUD/CAD (OTC)', 'AUD/CHF (OTC)', 'AUD/JPY (OTC)', 'CAD/CHF (OTC)', 
-        'CAD/JPY (OTC)', 'CHF/JPY (OTC)', 'EUR/GBP (OTC)', 'EUR/JPY (OTC)', 
-        'GBP/JPY (OTC)', 'USD/CAD (OTC)', 'USD/CHF (OTC)', 'USD/INR (OTC)', 
-        'USD/BRL (OTC)', 'USD/PKR (OTC)', 'USD/EGP (OTC)', 'USD/BDT (OTC)'
-      ],
-      'Live Currency Markets': [
-        'EUR/USD', 'GBP/USD', 'USD/JPY', 'USD/CHF', 'USD/CAD', 
-        'AUD/USD', 'NZD/USD', 'EUR/GBP', 'EUR/JPY', 'GBP/JPY'
-      ],
-      'Crypto Markets': [
-        'BTC/USD', 'ETH/USD', 'SOL/USD', 'XRP/USD', 'LTC/USD'
-      ],
-      'Commodities': [
-        'USCRUDE (WTI)', 'UKBRENT (Brent)', 'XAU/USD (Gold)', 'XAG/USD (Silver)'
-      ],
-      'Indices & Stocks': [
-        'US100 (Nasdaq)', 'SP500', 'DJI30', 'Apple OTC', 'Microsoft OTC', 'Tesla OTC'
-      ]
+  <!-- ANALYSIS -->
+
+  <div class="bg-slate-950/80 border border-slate-800 rounded-2xl p-3.5 text-left text-xs space-y-2 font-mono">
+
+    <div class="flex justify-between">
+
+      <span class="text-slate-400">
+        RSI
+      </span>
+
+      <span id="resRsi"
+            class="font-bold text-slate-200">
+        Waiting
+      </span>
+
+    </div>
+
+
+    <div class="flex justify-between">
+
+      <span class="text-slate-400">
+        Momentum
+      </span>
+
+      <span id="resMomentum"
+            class="font-bold text-slate-200">
+        Waiting
+      </span>
+
+    </div>
+
+
+    <div class="flex justify-between">
+
+      <span class="text-slate-400">
+        Trend
+      </span>
+
+      <span id="resTrend"
+            class="font-bold text-slate-200">
+        Waiting
+      </span>
+
+    </div>
+
+
+    <div class="flex justify-between">
+
+      <span class="text-slate-400">
+        Signal Strength
+      </span>
+
+      <span id="resStrength"
+            class="font-bold text-orange-400">
+        -
+      </span>
+
+    </div>
+
+  </div>
+
+
+  <!-- CONTROL BUTTONS -->
+
+  <div class="grid grid-cols-2 gap-3">
+
+    <button
+      id="pauseBtn"
+      class="bg-slate-950 hover:bg-slate-800 text-xs font-black py-4 rounded-2xl text-orange-400 border border-orange-500/40 uppercase">
+
+      ⏸ Pause Scanner
+
+    </button>
+
+
+    <button
+      id="stopBtn"
+      class="bg-slate-950 hover:bg-slate-800 text-xs font-black py-4 rounded-2xl text-red-400 border border-red-500/40 uppercase">
+
+      ⛔ Stop
+
+    </button>
+
+  </div>
+
+
+  <p class="text-[10px] text-slate-500 leading-relaxed">
+
+    Demo/local analysis only. No signal can guarantee a profitable trade.
+    Connect a verified live market-data source before using this for real trading.
+
+  </p>
+
+</div>
+
+</div>
+
+
+<script>
+
+const VALID_KEY = "AWRSK78";
+
+const SCAN_INTERVAL = 7;
+
+let scannerTimer = null;
+let countdownTimer = null;
+let scanCount = 0;
+let secondsLeft = SCAN_INTERVAL;
+let scannerRunning = false;
+let scannerPaused = false;
+
+
+const TRADING_PAIRS = {
+
+  "OTC Markets": [
+    "USD/ARS (OTC)",
+    "EUR/USD (OTC)",
+    "GBP/USD (OTC)",
+    "USD/JPY (OTC)",
+    "AUD/CAD (OTC)",
+    "AUD/CHF (OTC)",
+    "AUD/JPY (OTC)",
+    "CAD/CHF (OTC)",
+    "CAD/JPY (OTC)",
+    "CHF/JPY (OTC)",
+    "EUR/GBP (OTC)",
+    "EUR/JPY (OTC)",
+    "GBP/JPY (OTC)",
+    "USD/CAD (OTC)",
+    "USD/CHF (OTC)",
+    "USD/INR (OTC)",
+    "USD/BRL (OTC)",
+    "USD/PKR (OTC)",
+    "USD/EGP (OTC)",
+    "USD/BDT (OTC)"
+  ],
+
+  "Live Currency Markets": [
+    "EUR/USD",
+    "GBP/USD",
+    "USD/JPY",
+    "USD/CHF",
+    "USD/CAD",
+    "AUD/USD",
+    "NZD/USD",
+    "EUR/GBP",
+    "EUR/JPY",
+    "GBP/JPY"
+  ],
+
+  "Crypto Markets": [
+    "BTC/USD",
+    "ETH/USD",
+    "SOL/USD",
+    "XRP/USD",
+    "LTC/USD"
+  ],
+
+  "Commodities": [
+    "USCRUDE (WTI)",
+    "UKBRENT (Brent)",
+    "XAU/USD (Gold)",
+    "XAG/USD (Silver)"
+  ],
+
+  "Indices & Stocks": [
+    "US100 (Nasdaq)",
+    "SP500",
+    "DJI30",
+    "Apple OTC",
+    "Microsoft OTC",
+    "Tesla OTC"
+  ]
+
+};
+
+
+const activationView =
+document.getElementById("activationView");
+
+const controlPanel =
+document.getElementById("controlPanel");
+
+const scannerView =
+document.getElementById("scannerView");
+
+const activationKeyInput =
+document.getElementById("activationKeyInput");
+
+const keyError =
+document.getElementById("keyError");
+
+const activateBtn =
+document.getElementById("activateBtn");
+
+const marketSelect =
+document.getElementById("marketSelect");
+
+const pairSelect =
+document.getElementById("pairSelect");
+
+const brokerSelect =
+document.getElementById("brokerSelect");
+
+const timerSelect =
+document.getElementById("timerSelect");
+
+const signalDirection =
+document.getElementById("signalDirection");
+
+const signalMessage =
+document.getElementById("signalMessage");
+
+const countdown =
+document.getElementById("countdown");
+
+const progressBar =
+document.getElementById("progressBar");
+
+const scannerStatus =
+document.getElementById("scannerStatus");
+
+
+/* =========================
+   ACTIVATION
+========================= */
+
+activateBtn.addEventListener("click", () => {
+
+  const key =
+    activationKeyInput.value.trim().toUpperCase();
+
+  if (key === VALID_KEY) {
+
+    keyError.classList.add("hidden");
+
+    activationView.classList.add("hidden");
+
+    controlPanel.classList.remove("hidden");
+
+  } else {
+
+    keyError.classList.remove("hidden");
+
+  }
+
+});
+
+
+/* =========================
+   PAIRS
+========================= */
+
+function populatePairs() {
+
+  const market =
+    marketSelect.value;
+
+  const pairs =
+    TRADING_PAIRS[market] || [];
+
+  pairSelect.innerHTML = "";
+
+  pairs.forEach(pair => {
+
+    const option =
+      document.createElement("option");
+
+    option.value = pair;
+
+    option.textContent = pair;
+
+    pairSelect.appendChild(option);
+
+  });
+
+}
+
+marketSelect.addEventListener(
+  "change",
+  populatePairs
+);
+
+populatePairs();
+
+
+/* =========================
+   DEMO ANALYSIS ENGINE
+========================= */
+
+function generateLocalAnalysis() {
+
+  /*
+    This is NOT live market analysis.
+
+    It intentionally does not claim
+    real accuracy.
+
+    Replace this function with a
+    real candle/price-data engine
+    when a live data source is connected.
+  */
+
+  const rsi =
+    25 + Math.random() * 50;
+
+  const momentum =
+    Math.random();
+
+  const trend =
+    Math.random();
+
+  /*
+    Weak conditions = NO TRADE
+  */
+
+  const strength =
+    Math.round(
+      50 +
+      Math.random() * 48
+    );
+
+  if (strength < 68) {
+
+    return {
+
+      signal: "NO TRADE",
+
+      message:
+        "MARKET CONDITIONS NOT CLEAR",
+
+      rsi: rsi.toFixed(1),
+
+      momentum:
+        momentum > 0.5
+          ? "Positive"
+          : "Negative",
+
+      trend:
+        trend > 0.5
+          ? "Bullish"
+          : "Bearish",
+
+      strength:
+        strength + "%"
+
     };
 
-    const activationView = document.getElementById('activationView');
-    const controlPanel = document.getElementById('controlPanel');
-    const loadingView = document.getElementById('loadingView');
-    const resultView = document.getElementById('resultView');
+  }
 
-    const activationKeyInput = document.getElementById('activationKeyInput');
-    const keyError = document.getElementById('keyError');
-    const activateBtn = document.getElementById('activateBtn');
 
-    const marketSelect = document.getElementById('marketSelect');
-    const pairSelect = document.getElementById('pairSelect');
-    const brokerSelect = document.getElementById('brokerSelect');
-    const timerSelect = document.getElementById('timerSelect');
-    const loadingMeta = document.getElementById('loadingMeta');
-    const analysisStep = document.getElementById('analysisStep');
+  const direction =
+    Math.random() > 0.5
+      ? "CALL"
+      : "PUT";
 
-    // Key Validation
-    activateBtn.addEventListener('click', () => {
-      const enteredKey = activationKeyInput.value.trim().toUpperCase();
-      if (enteredKey === VALID_KEY) {
-        keyError.classList.add('hidden');
-        activationView.classList.add('hidden');
-        controlPanel.classList.remove('hidden');
-      } else {
-        keyError.classList.remove('hidden');
+
+  if (direction === "CALL") {
+
+    return {
+
+      signal: "CALL ▲",
+
+      message:
+        "UP SIGNAL",
+
+      rsi: rsi.toFixed(1),
+
+      momentum: "Positive",
+
+      trend: "Bullish",
+
+      strength:
+        strength + "%"
+
+    };
+
+  }
+
+
+  return {
+
+    signal: "PUT ▼",
+
+    message:
+      "DOWN SIGNAL",
+
+    rsi: rsi.toFixed(1),
+
+    momentum: "Negative",
+
+    trend: "Bearish",
+
+    strength:
+      strength + "%"
+
+  };
+
+}
+
+
+/* =========================
+   DISPLAY SIGNAL
+========================= */
+
+function showSignal() {
+
+  scanCount++;
+
+  document.getElementById(
+    "scanNumber"
+  ).textContent = scanCount;
+
+
+  const selectedPair =
+    pairSelect.value;
+
+  document.getElementById(
+    "resPair"
+  ).textContent =
+    selectedPair;
+
+
+  document.getElementById(
+    "resBroker"
+  ).textContent =
+    brokerSelect.value;
+
+
+  document.getElementById(
+    "resTimer"
+  ).textContent =
+    timerSelect.value;
+
+
+  const result =
+    generateLocalAnalysis();
+
+
+  signalDirection.textContent =
+    result.signal;
+
+
+  signalMessage.textContent =
+    result.message;
+
+
+  document.getElementById(
+    "resRsi"
+  ).textContent =
+    result.rsi;
+
+
+  document.getElementById(
+    "resMomentum"
+  ).textContent =
+    result.momentum;
+
+
+  document.getElementById(
+    "resTrend"
+  ).textContent =
+    result.trend;
+
+
+  document.getElementById(
+    "resStrength"
+  ).textContent =
+    result.strength;
+
+
+  /*
+    Keep original orange design.
+    Only signal text changes color.
+  */
+
+  if (result.signal === "CALL ▲") {
+
+    signalDirection.className =
+      "font-black text-5xl tracking-widest text-emerald-400 signal-pulse";
+
+    signalMessage.className =
+      "text-sm font-black text-emerald-400 uppercase";
+
+  }
+
+  else if (result.signal === "PUT ▼") {
+
+    signalDirection.className =
+      "font-black text-5xl tracking-widest text-red-400 signal-pulse";
+
+    signalMessage.className =
+      "text-sm font-black text-red-400 uppercase";
+
+  }
+
+  else {
+
+    signalDirection.className =
+      "font-black text-4xl tracking-widest text-orange-400";
+
+    signalMessage.className =
+      "text-sm font-black text-orange-400 uppercase";
+
+  }
+
+}
+
+
+/* =========================
+   COUNTDOWN
+========================= */
+
+function startCountdown() {
+
+  clearInterval(countdownTimer);
+
+  secondsLeft =
+    SCAN_INTERVAL;
+
+  countdown.textContent =
+    secondsLeft;
+
+  progressBar.style.width =
+    "100%";
+
+
+  countdownTimer =
+    setInterval(() => {
+
+      if (
+        !scannerRunning ||
+        scannerPaused
+      ) {
+
+        return;
+
       }
-    });
 
-    function populatePairs() {
-      const selectedMarket = marketSelect.value;
-      const pairs = TRADING_PAIRS[selectedMarket] || [];
-      pairSelect.innerHTML = pairs.map(p => `<option value="${p}">${p}</option>`).join('');
+
+      secondsLeft--;
+
+      countdown.textContent =
+        secondsLeft;
+
+
+      const percent =
+        (secondsLeft /
+          SCAN_INTERVAL) *
+        100;
+
+      progressBar.style.width =
+        percent + "%";
+
+
+      if (secondsLeft <= 0) {
+
+        showSignal();
+
+        secondsLeft =
+          SCAN_INTERVAL;
+
+        countdown.textContent =
+          SCAN_INTERVAL;
+
+        progressBar.style.width =
+          "100%";
+
+      }
+
+    }, 1000);
+
+}
+
+
+/* =========================
+   START SCANNER
+========================= */
+
+document.getElementById(
+  "startBtn"
+).addEventListener(
+  "click",
+  () => {
+
+    controlPanel.classList.add("hidden");
+
+    scannerView.classList.remove("hidden");
+
+    scannerRunning = true;
+
+    scannerPaused = false;
+
+    scannerStatus.textContent =
+      "ACTIVE";
+
+    scannerStatus.className =
+      "text-emerald-400 font-black";
+
+
+    /*
+      First signal immediately.
+    */
+
+    showSignal();
+
+    startCountdown();
+
+  }
+);
+
+
+/* =========================
+   PAUSE
+========================= */
+
+document.getElementById(
+  "pauseBtn"
+).addEventListener(
+  "click",
+  () => {
+
+    if (!scannerRunning) {
+      return;
     }
 
-    marketSelect.addEventListener('change', populatePairs);
-    populatePairs();
 
-    // Signal Generation Logic
-    document.getElementById('generateBtn').addEventListener('click', () => {
-      const selectedPair = pairSelect.value;
-      const selectedTimer = timerSelect.value;
-      
-      loadingMeta.textContent = `${selectedPair} • ${selectedTimer} • ${brokerSelect.value}`;
-      controlPanel.classList.add('hidden');
-      loadingView.classList.remove('hidden');
+    scannerPaused =
+      !scannerPaused;
 
-      // Animated multi-stage analysis steps
-      setTimeout(() => { analysisStep.textContent = "Calculating Bollinger Bands & RSI..."; }, 800);
-      setTimeout(() => { analysisStep.textContent = "Scanning MACD & Price Action Volume..."; }, 1700);
-      setTimeout(() => { analysisStep.textContent = "Finalizing High-Precision AI Signal..."; }, 2400);
 
-      setTimeout(() => {
-        const isUp = Math.random() > 0.5;
-        const accuracyVal = (94.5 + Math.random() * 4.8).toFixed(1) + '%';
-        const strengthVal = (92.0 + Math.random() * 7.5).toFixed(1) + '%';
-        const signalId = `#CSA${Math.floor(1000 + Math.random() * 9000)}`;
+    const button =
+      document.getElementById(
+        "pauseBtn"
+      );
 
-        document.getElementById('resPair').textContent = `PAIR: ${selectedPair}`;
-        document.getElementById('resId').textContent = `ID: ${signalId}`;
-        document.getElementById('resBroker').textContent = brokerSelect.value;
-        document.getElementById('resTimer').textContent = selectedTimer;
-        document.getElementById('resAccuracy').textContent = accuracyVal;
-        document.getElementById('resStrength').textContent = strengthVal;
 
-        const resDir = document.getElementById('resDirection');
-        const resType = document.getElementById('resType');
-        const resRsi = document.getElementById('resRsi');
-        const resMacd = document.getElementById('resMacd');
-        const resTrend = document.getElementById('resTrend');
+    if (scannerPaused) {
 
-        if (isUp) {
-          resDir.textContent = 'CALL ▲';
-          resDir.className = 'font-black text-5xl tracking-widest animate-pulse text-emerald-400';
-          resType.textContent = 'STRONG BUY SIGNAL (CALL)';
-          resType.className = 'text-sm font-black tracking-wider text-emerald-400';
-          
-          resRsi.textContent = `${(22 + Math.random() * 12).toFixed(1)} (Oversold Reversal)`;
-          resMacd.textContent = `+0.00${Math.floor(10 + Math.random() * 80)} Bullish Crossover`;
-          resTrend.textContent = 'Strong Upward Momentum';
-          resTrend.className = 'font-bold text-emerald-400';
-        } else {
-          resDir.textContent = 'PUT ▼';
-          resDir.className = 'font-black text-5xl tracking-widest animate-pulse text-red-400';
-          resType.textContent = 'STRONG SELL SIGNAL (PUT)';
-          resType.className = 'text-sm font-black tracking-wider text-red-400';
-          
-          resRsi.textContent = `${(68 + Math.random() * 12).toFixed(1)} (Overbought Reversal)`;
-          resMacd.textContent = `-0.00${Math.floor(10 + Math.random() * 80)} Bearish Crossover`;
-          resTrend.textContent = 'Strong Downward Momentum';
-          resTrend.className = 'font-bold text-red-400';
-        }
+      button.textContent =
+        "▶ Resume Scanner";
 
-        loadingView.classList.add('hidden');
-        resultView.classList.remove('hidden');
-      }, 3200);
-    });
+      scannerStatus.textContent =
+        "PAUSED";
 
-    document.getElementById('resetBtn').addEventListener('click', () => {
-      resultView.classList.add('hidden');
-      controlPanel.classList.remove('hidden');
-    });
-  </script>
+      scannerStatus.className =
+        "text-amber-400 font-black";
+
+    }
+
+    else {
+
+      button.textContent =
+        "⏸ Pause Scanner";
+
+      scannerStatus.textContent =
+        "ACTIVE";
+
+      scannerStatus.className =
+        "text-emerald-400 font-black";
+
+    }
+
+  }
+);
+
+
+/* =========================
+   STOP
+========================= */
+
+document.getElementById(
+  "stopBtn"
+).addEventListener(
+  "click",
+  () => {
+
+    scannerRunning = false;
+
+    scannerPaused = false;
+
+    clearInterval(countdownTimer);
+
+    scannerView.classList.add("hidden");
+
+    controlPanel.classList.remove("hidden");
+
+    scannerStatus.textContent =
+      "STOPPED";
+
+    scanCount = 0;
+
+  }
+);
+
+
+/* =========================
+   ENTER KEY
+========================= */
+
+activationKeyInput.addEventListener(
+  "keydown",
+  event => {
+
+    if (event.key === "Enter") {
+
+      activateBtn.click();
+
+    }
+
+  }
+);
+
+</script>
+
 </body>
 </html>
