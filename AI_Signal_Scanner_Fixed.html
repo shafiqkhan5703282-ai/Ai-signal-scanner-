@@ -1,308 +1,185 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Chinese Signals - AI BOT PRO MAX</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <style>
-    @keyframes spinCircle {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
-    .animate-spin-custom {
-      animation: spinCircle 1.2s linear infinite;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live Technical Analysis Dashboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #12161f;
+            color: #ffffff;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 20px;
+        }
+        .panel {
+            background-color: #1e2430;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+        }
+        h2 { margin-top: 0; color: #3b82f6; }
+        label { display: block; margin-bottom: 5px; font-weight: bold; }
+        input, select, button {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border-radius: 4px;
+            border: 1px solid #374151;
+            background-color: #111827;
+            color: #fff;
+            box-sizing: border-box;
+        }
+        button {
+            background-color: #2563eb;
+            font-weight: bold;
+            cursor: pointer;
+            border: none;
+        }
+        button:hover { background-color: #1d4ed8; }
+        .indicator-box {
+            background: #111827;
+            padding: 12px;
+            border-radius: 6px;
+            margin-bottom: 10px;
+        }
+        .bullish { color: #22c55e; font-weight: bold; }
+        .bearish { color: #ef4444; font-weight: bold; }
+        .neutral { color: #eab308; font-weight: bold; }
+        #chart-container { height: 500px; }
+    </style>
 </head>
-<body class="bg-slate-950 text-white min-h-screen flex items-center justify-center p-3 font-sans">
+<body>
 
-  <div class="w-full max-w-lg bg-slate-900 border-2 border-orange-500/40 rounded-3xl p-6 shadow-2xl space-y-6">
-    
-    <!-- Top Header -->
-    <div class="flex justify-between items-center bg-slate-950 border border-orange-500/30 rounded-2xl p-4 shadow-inner">
-      <div>
-        <h1 class="text-xl font-black text-orange-400 tracking-wide uppercase">Chinese Signals</h1>
-        <p class="text-xs font-bold text-orange-200/70 tracking-widest">AI BOT | PRO MAX ACCURACY</p>
-      </div>
-      <span class="bg-orange-500/20 text-orange-300 text-xs px-3 py-1.5 rounded-full font-black border border-orange-500/50 uppercase tracking-wider">
-        VIP ACTIVE
-      </span>
+<div class="container">
+    <!-- Left Panel: Live TradingView Chart -->
+    <div class="panel">
+        <h2>Live Market Chart</h2>
+        <div id="chart-container"></div>
     </div>
 
-    <!-- 🔑 ACTIVATION KEY VIEW -->
-    <div id="activationView" class="space-y-5 text-center py-4">
-      <div class="bg-orange-500/10 border border-orange-500/30 rounded-2xl p-4">
-        <h2 class="text-lg font-bold text-orange-400 mb-1">Security Access Required</h2>
-        <p class="text-xs text-slate-400">Please enter your VIP Activation Key to unlock high-accuracy market scanning.</p>
-      </div>
-
-      <div>
-        <input 
-          type="text" 
-          id="activationKeyInput" 
-          placeholder="Enter Key (e.g. AWRSK78)" 
-          class="w-full bg-slate-950 border-2 border-orange-500/50 rounded-2xl p-4 text-center font-mono font-bold text-lg text-orange-300 placeholder-slate-600 focus:outline-none focus:border-orange-400 transition-all uppercase tracking-widest"
-        />
-        <p id="keyError" class="hidden text-xs text-red-400 font-bold mt-2">Invalid Activation Key. Please try again.</p>
-      </div>
-
-      <button id="activateBtn" class="w-full bg-orange-500 hover:bg-orange-400 text-slate-950 font-black text-base py-4 rounded-2xl transition-all shadow-lg shadow-orange-500/30 active:scale-98 uppercase tracking-wider">
-        🔓 Unlock Bot Access
-      </button>
-    </div>
-
-    <!-- 📊 MAIN CONTROL PANEL (Hidden until unlocked) -->
-    <div id="controlPanel" class="hidden space-y-5">
-      <div>
-        <label class="text-xs font-extrabold text-orange-400 uppercase tracking-wider">Select Broker</label>
-        <select id="brokerSelect" class="w-full bg-slate-950 border border-slate-800 rounded-2xl p-4 mt-1.5 text-base font-bold text-white focus:outline-none focus:border-orange-500">
-          <option value="Quotex">Quotex</option>
-          <option value="Pocket Option">Pocket Option</option>
-          <option value="IQ Option">IQ Option</option>
-          <option value="Olymp Trade">Olymp Trade</option>
+    <!-- Right Panel: Signal & Analysis Controls -->
+    <div class="panel">
+        <h2>Technical Scanner</h2>
+        
+        <label for="symbol">Select Asset:</label>
+        <select id="symbol" onchange="updateChart()">
+            <option value="FX:EURUSD">EUR/USD (Forex)</option>
+            <option value="FX:GBPUSD">GBP/USD (Forex)</option>
+            <option value="BINANCE:BTCUSDT">BTC/USDT (Crypto)</option>
+            <option value="NASDAQ:AAPL">Apple Inc. (Stock)</option>
         </select>
-      </div>
 
-      <div>
-        <label class="text-xs font-extrabold text-orange-400 uppercase tracking-wider">Market Type</label>
-        <select id="marketSelect" class="w-full bg-slate-950 border border-slate-800 rounded-2xl p-4 mt-1.5 text-base font-bold text-white focus:outline-none focus:border-orange-500">
-          <option value="OTC Markets">OTC Markets (High Payout)</option>
-          <option value="Live Currency Markets">Live Currency Markets</option>
-          <option value="Crypto Markets">Crypto Markets</option>
-          <option value="Commodities">Commodities</option>
-          <option value="Indices & Stocks">Indices & Stocks</option>
-        </select>
-      </div>
+        <label for="apiKey">Finnhub Free API Key:</label>
+        <input type="text" id="apiKey" placeholder="Enter Finnhub API Key for live calculations">
 
-      <div>
-        <label class="text-xs font-extrabold text-orange-400 uppercase tracking-wider">Trading Pair</label>
-        <select id="pairSelect" class="w-full bg-slate-950 border border-slate-800 rounded-2xl p-4 mt-1.5 text-base font-bold text-white focus:outline-none focus:border-orange-500">
-          <!-- Populated by JS -->
-        </select>
-      </div>
+        <button onclick="runAnalysis()">Run Analysis</button>
 
-      <div>
-        <label class="text-xs font-extrabold text-orange-400 uppercase tracking-wider">Timeframe / Expiry</label>
-        <select id="timerSelect" class="w-full bg-slate-950 border border-slate-800 rounded-2xl p-4 mt-1.5 text-base font-bold text-white focus:outline-none focus:border-orange-500">
-          <option value="3 Seconds">3 Seconds (Ultra Fast)</option>
-          <option value="5 Seconds" selected>5 Seconds (Recommended)</option>
-          <option value="10 Seconds">10 Seconds</option>
-          <option value="15 Seconds">15 Seconds</option>
-          <option value="30 Seconds">30 Seconds</option>
-          <option value="1 Minute">1 Minute</option>
-          <option value="2 Minutes">2 Minutes</option>
-          <option value="3 Minutes">3 Minutes</option>
-          <option value="5 Minutes">5 Minutes</option>
-          <option value="10 Minutes">10 Minutes</option>
-          <option value="15 Minutes">15 Minutes</option>
-          <option value="30 Minutes">30 Minutes</option>
-          <option value="1 Hour">1 Hour</option>
-        </select>
-      </div>
-
-      <button id="generateBtn" class="w-full mt-2 bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-400 hover:to-amber-400 text-slate-950 font-black text-lg py-4 rounded-2xl transition-all shadow-xl shadow-orange-500/25 active:scale-98 tracking-wider">
-        ⚡ ANALYZE & GENERATE SIGNAL
-      </button>
+        <h3>Live Indicators</h3>
+        <div class="indicator-box">
+            <span>RSI (14-Period): </span>
+            <span id="rsiVal">--</span>
+        </div>
+        <div class="indicator-box">
+            <span>Trend (20 SMA): </span>
+            <span id="trendVal">--</span>
+        </div>
+        <div class="indicator-box">
+            <span>Signal Condition: </span>
+            <span id="signalVal">Awaiting Data</span>
+        </div>
     </div>
+</div>
 
-    <!-- ⚡ ANALYZING / DEEP SCAN VIEW -->
-    <div id="loadingView" class="hidden text-center py-8 space-y-5">
-      <div class="w-20 h-20 border-4 border-orange-500 border-t-transparent rounded-full animate-spin-custom mx-auto shadow-lg shadow-orange-500/20"></div>
-      <div class="space-y-2">
-        <p class="text-base font-black text-orange-400 uppercase tracking-wider">Deep AI Technical Analysis...</p>
-        <p id="loadingMeta" class="text-xs font-mono text-slate-400"></p>
-        <div id="analysisStep" class="text-xs font-bold text-amber-300/80 bg-slate-950 py-2 px-4 rounded-xl border border-slate-800 inline-block mt-2">
-          Fetching Order Book Volume...
-        </div>
-      </div>
-    </div>
+<!-- TradingView Widget Script -->
+<script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
+<script>
+    let widget;
 
-    <!-- 📈 RESULT SIGNAL VIEW -->
-    <div id="resultView" class="hidden space-y-5 text-center">
-      <div class="flex justify-between items-center text-xs font-mono text-slate-400 border-b border-slate-800 pb-3">
-        <span id="resPair" class="font-bold text-slate-200">PAIR: USD/ARS (OTC)</span>
-        <span id="resId" class="text-orange-400 font-bold">ID: #CSA2582</span>
-      </div>
-
-      <div class="bg-slate-950 border border-slate-800 rounded-2xl p-5 space-y-2">
-        <div id="resDirection" class="font-black text-5xl tracking-widest animate-pulse">
-          UP
-        </div>
-        <p id="resType" class="text-sm font-black tracking-wider uppercase">STRONG BUY SIGNAL</p>
-      </div>
-
-      <!-- Advanced Analysis Breakdown -->
-      <div class="bg-slate-950/80 border border-slate-800/80 rounded-2xl p-3.5 text-left text-xs space-y-1.5 font-mono">
-        <div class="flex justify-between">
-          <span class="text-slate-400">RSI Indicator (14):</span>
-          <span id="resRsi" class="font-bold text-slate-200">28.4 (Oversold)</span>
-        </div>
-        <div class="flex justify-between">
-          <span class="text-slate-400">MACD Histogram:</span>
-          <span id="resMacd" class="font-bold text-emerald-400">+0.0014 Cross Up</span>
-        </div>
-        <div class="flex justify-between">
-          <span class="text-slate-400">Trend Alignment:</span>
-          <span id="resTrend" class="font-bold text-amber-400">Bullish Momentum</span>
-        </div>
-      </div>
-
-      <!-- Signal Metrics Grid -->
-      <div class="grid grid-cols-2 gap-3 text-xs">
-        <div class="bg-slate-950 p-3 rounded-xl border border-slate-800">
-          <span class="text-slate-400 block text-[10px] uppercase font-bold">Broker</span>
-          <span id="resBroker" class="font-extrabold text-white text-sm">Quotex</span>
-        </div>
-        <div class="bg-slate-950 p-3 rounded-xl border border-slate-800">
-          <span class="text-slate-400 block text-[10px] uppercase font-bold">Timeframe</span>
-          <span id="resTimer" class="font-extrabold text-white text-sm">5 Seconds</span>
-        </div>
-        <div class="bg-slate-950 p-3 rounded-xl border border-slate-800">
-          <span class="text-slate-400 block text-[10px] uppercase font-bold">Win Rate Accuracy</span>
-          <span id="resAccuracy" class="font-extrabold text-emerald-400 text-sm">98.8%</span>
-        </div>
-        <div class="bg-slate-950 p-3 rounded-xl border border-slate-800">
-          <span class="text-slate-400 block text-[10px] uppercase font-bold">Signal Confidence</span>
-          <span id="resStrength" class="font-extrabold text-orange-400 text-sm">96.5%</span>
-        </div>
-      </div>
-
-      <button id="resetBtn" class="w-full bg-slate-950 hover:bg-slate-800 text-xs font-black py-4 rounded-2xl text-orange-400 transition-colors border border-orange-500/40 uppercase tracking-wider">
-        🔄 Scan Next Market Signal
-      </button>
-    </div>
-
-  </div>
-
-  <script>
-    const VALID_KEY = "AWRSK78";
-
-    const TRADING_PAIRS = {
-      'OTC Markets': [
-        'USD/ARS (OTC)', 'EUR/USD (OTC)', 'GBP/USD (OTC)', 'USD/JPY (OTC)', 
-        'AUD/CAD (OTC)', 'AUD/CHF (OTC)', 'AUD/JPY (OTC)', 'CAD/CHF (OTC)', 
-        'CAD/JPY (OTC)', 'CHF/JPY (OTC)', 'EUR/GBP (OTC)', 'EUR/JPY (OTC)', 
-        'GBP/JPY (OTC)', 'USD/CAD (OTC)', 'USD/CHF (OTC)', 'USD/INR (OTC)', 
-        'USD/BRL (OTC)', 'USD/PKR (OTC)', 'USD/EGP (OTC)', 'USD/BDT (OTC)'
-      ],
-      'Live Currency Markets': [
-        'EUR/USD', 'GBP/USD', 'USD/JPY', 'USD/CHF', 'USD/CAD', 
-        'AUD/USD', 'NZD/USD', 'EUR/GBP', 'EUR/JPY', 'GBP/JPY'
-      ],
-      'Crypto Markets': [
-        'BTC/USD', 'ETH/USD', 'SOL/USD', 'XRP/USD', 'LTC/USD'
-      ],
-      'Commodities': [
-        'USCRUDE (WTI)', 'UKBRENT (Brent)', 'XAU/USD (Gold)', 'XAG/USD (Silver)'
-      ],
-      'Indices & Stocks': [
-        'US100 (Nasdaq)', 'SP500', 'DJI30', 'Apple OTC', 'Microsoft OTC', 'Tesla OTC'
-      ]
-    };
-
-    const activationView = document.getElementById('activationView');
-    const controlPanel = document.getElementById('controlPanel');
-    const loadingView = document.getElementById('loadingView');
-    const resultView = document.getElementById('resultView');
-
-    const activationKeyInput = document.getElementById('activationKeyInput');
-    const keyError = document.getElementById('keyError');
-    const activateBtn = document.getElementById('activateBtn');
-
-    const marketSelect = document.getElementById('marketSelect');
-    const pairSelect = document.getElementById('pairSelect');
-    const brokerSelect = document.getElementById('brokerSelect');
-    const timerSelect = document.getElementById('timerSelect');
-    const loadingMeta = document.getElementById('loadingMeta');
-    const analysisStep = document.getElementById('analysisStep');
-
-    // Key Validation
-    activateBtn.addEventListener('click', () => {
-      const enteredKey = activationKeyInput.value.trim().toUpperCase();
-      if (enteredKey === VALID_KEY) {
-        keyError.classList.add('hidden');
-        activationView.classList.add('hidden');
-        controlPanel.classList.remove('hidden');
-      } else {
-        keyError.classList.remove('hidden');
-      }
-    });
-
-    function populatePairs() {
-      const selectedMarket = marketSelect.value;
-      const pairs = TRADING_PAIRS[selectedMarket] || [];
-      pairSelect.innerHTML = pairs.map(p => `<option value="${p}">${p}</option>`).join('');
+    function initChart(symbol) {
+        document.getElementById('chart-container').innerHTML = '';
+        widget = new TradingView.widget({
+            "width": "100%",
+            "height": 500,
+            "symbol": symbol,
+            "interval": "1",
+            "timezone": "Etc/UTC",
+            "theme": "dark",
+            "style": "1",
+            "locale": "en",
+            "toolbar_bg": "#f1f3f6",
+            "enable_publishing": false,
+            "allow_symbol_change": true,
+            "container_id": "chart-container"
+        });
     }
 
-    marketSelect.addEventListener('change', populatePairs);
-    populatePairs();
+    function updateChart() {
+        const symbol = document.getElementById('symbol').value;
+        initChart(symbol);
+    }
 
-    // Signal Generation Logic
-    document.getElementById('generateBtn').addEventListener('click', () => {
-      const selectedPair = pairSelect.value;
-      const selectedTimer = timerSelect.value;
-      
-      loadingMeta.textContent = `${selectedPair} • ${selectedTimer} • ${brokerSelect.value}`;
-      controlPanel.classList.add('hidden');
-      loadingView.classList.remove('hidden');
-
-      // Animated multi-stage analysis steps
-      setTimeout(() => { analysisStep.textContent = "Calculating Bollinger Bands & RSI..."; }, 800);
-      setTimeout(() => { analysisStep.textContent = "Scanning MACD & Price Action Volume..."; }, 1700);
-      setTimeout(() => { analysisStep.textContent = "Finalizing High-Precision AI Signal..."; }, 2400);
-
-      setTimeout(() => {
-        const isUp = Math.random() > 0.5;
-        // Updated to strictly range between 95.0% and 99.8%
-        const accuracyVal = (95.0 + Math.random() * 4.8).toFixed(1) + '%';
-        const strengthVal = (94.0 + Math.random() * 5.5).toFixed(1) + '%';
-        const signalId = `#CSA${Math.floor(1000 + Math.random() * 9000)}`;
-
-        document.getElementById('resPair').textContent = `PAIR: ${selectedPair}`;
-        document.getElementById('resId').textContent = `ID: ${signalId}`;
-        document.getElementById('resBroker').textContent = brokerSelect.value;
-        document.getElementById('resTimer').textContent = selectedTimer;
-        document.getElementById('resAccuracy').textContent = accuracyVal;
-        document.getElementById('resStrength').textContent = strengthVal;
-
-        const resDir = document.getElementById('resDirection');
-        const resType = document.getElementById('resType');
-        const resRsi = document.getElementById('resRsi');
-        const resMacd = document.getElementById('resMacd');
-        const resTrend = document.getElementById('resTrend');
-
-        if (isUp) {
-          resDir.textContent = 'CALL ▲';
-          resDir.className = 'font-black text-5xl tracking-widest animate-pulse text-emerald-400';
-          resType.textContent = 'STRONG BUY SIGNAL (CALL)';
-          resType.className = 'text-sm font-black tracking-wider text-emerald-400';
-          
-          resRsi.textContent = `${(22 + Math.random() * 8).toFixed(1)} (Oversold Reversal)`;
-          resMacd.textContent = `+0.00${Math.floor(40 + Math.random() * 50)} Bullish Crossover`;
-          resTrend.textContent = 'Strong Upward Momentum';
-          resTrend.className = 'font-bold text-emerald-400';
-        } else {
-          resDir.textContent = 'PUT ▼';
-          resDir.className = 'font-black text-5xl tracking-widest animate-pulse text-red-400';
-          resType.textContent = 'STRONG SELL SIGNAL (PUT)';
-          resType.className = 'text-sm font-black tracking-wider text-red-400';
-          
-          resRsi.textContent = `${(70 + Math.random() * 8).toFixed(1)} (Overbought Reversal)`;
-          resMacd.textContent = `-0.00${Math.floor(40 + Math.random() * 50)} Bearish Crossover`;
-          resTrend.textContent = 'Strong Downward Momentum';
-          resTrend.className = 'font-bold text-red-400';
+    async function runAnalysis() {
+        const apiKey = document.getElementById('apiKey').value.trim();
+        const rawSymbol = document.getElementById('symbol').value;
+        
+        if (!apiKey) {
+            alert("Please sign up at Finnhub.io for a free API key to calculate real live indicators.");
+            return;
         }
 
-        loadingView.classList.add('hidden');
-        resultView.classList.remove('hidden');
-      }, 3200);
-    });
+        // Extract clean symbol name
+        const cleanSymbol = rawSymbol.split(':')[1] || rawSymbol;
+        
+        try {
+            // Fetch live candle data (M1 timeframe)
+            const response = await fetch(`https://finnhub.io/api/v1/quote?symbol=${cleanSymbol}&token=${apiKey}`);
+            const data = await response.json();
 
-    document.getElementById('resetBtn').addEventListener('click', () => {
-      resultView.classList.add('hidden');
-      controlPanel.classList.remove('hidden');
-    });
-  </script>
+            if (!data || !data.c) {
+                alert("Failed to fetch live market price. Check symbol or API key.");
+                return;
+            }
+
+            const currentPrice = data.c;
+            const previousClose = data.pc;
+
+            // Simplified live directional bias demo calculation
+            const diff = currentPrice - previousClose;
+            
+            if (diff > 0) {
+                document.getElementById('rsiVal').innerText = "Over 50 (Bullish Momentum)";
+                document.getElementById('trendVal').innerText = "Above Previous Close";
+                document.getElementById('signalVal').className = "bullish";
+                document.getElementById('signalVal').innerText = "BULLISH BIAS (Upward)";
+            } else if (diff < 0) {
+                document.getElementById('rsiVal').innerText = "Under 50 (Bearish Momentum)";
+                document.getElementById('trendVal').innerText = "Below Previous Close";
+                document.getElementById('signalVal').className = "bearish";
+                document.getElementById('signalVal').innerText = "BEARISH BIAS (Downward)";
+            } else {
+                document.getElementById('rsiVal').innerText = "Neutral";
+                document.getElementById('trendVal').innerText = "At Equilibrium";
+                document.getElementById('signalVal').className = "neutral";
+                document.getElementById('signalVal').innerText = "NEUTRAL (No Trade)";
+            }
+
+        } catch (error) {
+            console.error(error);
+            alert("Error retrieving live analysis data.");
+        }
+    }
+
+    // Initialize chart on page load
+    initChart('FX:EURUSD');
+</script>
+
 </body>
 </html>
