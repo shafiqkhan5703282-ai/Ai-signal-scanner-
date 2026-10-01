@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="theme-color" content="#03070d">
-<title>AI Signal Bot - Full Interface Board</title>
+<title>AI Signal Bot - Floating Overlay</title>
 
 <style>
 *{box-sizing:border-box}
@@ -39,6 +39,7 @@ button{cursor:pointer}
  margin:auto;
  min-height:100vh;
  padding-bottom:75px;
+ position:relative;
 }
 
 /* TOP STATUS BAR */
@@ -63,6 +64,12 @@ button{cursor:pointer}
 
 .brokerLogo span{color:var(--cyan)}
 
+.headerActions{
+ display:flex;
+ align-items:center;
+ gap:8px;
+}
+
 .liveBadge{
  font-size:9px;
  font-weight:800;
@@ -84,6 +91,18 @@ button{cursor:pointer}
  box-shadow:0 0 6px var(--green);
 }
 
+/* MINIMIZE / OPEN BUTTON */
+.minimizeBtn{
+ background:#122338;
+ border:1px solid #203b5c;
+ color:var(--cyan);
+ font-size:10px;
+ font-weight:900;
+ padding:4px 8px;
+ border-radius:4px;
+ cursor:pointer;
+}
+
 .container{padding:10px}
 
 /* FLOATING WIDGET BOX */
@@ -94,6 +113,7 @@ button{cursor:pointer}
  margin-bottom:10px;
  overflow:hidden;
  box-shadow:0 8px 24px rgba(0,0,0,.4);
+ transition:all 0.3s ease;
 }
 
 .widgetHeader{
@@ -306,6 +326,43 @@ select{
 .btnAuto{background:#0d1c2d; border:1px solid #1a3554; color:#9fb4cd}
 .btnAuto.active{background:#0a2c1f; border-color:#145237; color:var(--green)}
 
+/* FLOATING MINIMIZED FLOATING WIDGET (POCKET / QUOTEX STYLE) */
+#floatingMiniWidget{
+ display:none;
+ position:fixed;
+ top:15px;
+ right:15px;
+ background:rgba(8,16,26,0.95);
+ border:1px solid var(--cyan);
+ border-radius:30px;
+ padding:6px 14px;
+ z-index:9999;
+ backdrop-filter:blur(10px);
+ box-shadow:0 4px 20px rgba(0,229,255,0.3);
+ align-items:center;
+ gap:8px;
+ cursor:pointer;
+}
+
+.miniDot{
+ width:8px;
+ height:8px;
+ background:var(--yellow);
+ border-radius:50%;
+ box-shadow:0 0 8px var(--yellow);
+}
+.miniDot.ready{
+ background:var(--green);
+ box-shadow:0 0 8px var(--green);
+}
+
+.miniText{
+ font-size:11px;
+ font-weight:900;
+ color:#fff;
+ letter-spacing:.5px;
+}
+
 /* BOTTOM BROKER CONTROLS FOOTER */
 .brokerBar{
  position:fixed;
@@ -348,26 +405,36 @@ select{
 </head>
 <body>
 
-<div class="app">
+<!-- MINI FLOATING WIDGET (Appears when minimized to overlay over Quotex / Pocket Option) -->
+<div id="floatingMiniWidget" onclick="toggleMinimize()">
+ <div class="miniDot" id="miniDot"></div>
+ <span class="miniText" id="miniText">AI BOT: NO TRADE</span>
+</div>
+
+<div class="app" id="mainAppContainer">
 
  <!-- HEADER -->
  <header class="brokerHeader">
   <div class="brokerLogo">
-   <span>■</span> QUOTEX / POCKET BOT
+   <span>■</span> QX / PO OVERLAY BOT
   </div>
-  <div class="liveBadge">
-   <div class="liveDot"></div>
-   AUTO EXECUTE ACTIVE
+  
+  <div class="headerActions">
+   <div class="liveBadge">
+    <div class="liveDot"></div>
+    ACTIVE
+   </div>
+   <button class="minimizeBtn" onclick="toggleMinimize()">MINIMISE 🗕</button>
   </div>
  </header>
 
  <main class="container">
 
   <!-- AI SIGNAL CORE WIDGET -->
-  <section class="widgetBox">
+  <section class="widgetBox" id="coreWidgetBox">
    <div class="widgetHeader">
     <span class="widgetTitle">AI Signal Core Board</span>
-    <span class="nodeId" id="nodeId">NODE 717 - 14ms</span>
+    <span class="nodeId" id="nodeId">NODE 812 - 12ms</span>
    </div>
 
    <div class="coreBody">
@@ -408,15 +475,15 @@ select{
 
     <!-- TERMINAL LOGS FEED -->
     <div class="terminalLogs" id="terminalLogs">
-     <div>[SYSTEM] Core online & listening to market ticks...</div>
-     <div>[READY] Waiting for 100% confirmation filter...</div>
+     <div>[SYSTEM] Overlay connected to platform viewport...</div>
+     <div>[READY] Waiting for strict 100% confirmation filter...</div>
     </div>
 
    </div>
   </section>
 
   <!-- MARKET SETUP CONTROLS -->
-  <section class="widgetBox">
+  <section class="widgetBox" id="setupWidgetBox">
    <div class="widgetHeader">
     <span class="widgetTitle">Bot Config & Management</span>
     <span class="nodeId">SETUP</span>
@@ -457,9 +524,9 @@ select{
  </main>
 
  <!-- BROKER ACTION FOOTER -->
- <div class="brokerBar">
+ <div class="brokerBar" id="brokerFooterBar">
   <div class="brokerAmount">
-   Trade Session P/L
+   Session P/L
    <strong id="sessionProfit">+$0.00</strong>
   </div>
   <div class="brokerButtons">
@@ -472,17 +539,33 @@ select{
 
 <script>
 const botState = {
- pair: localStorage.getItem("full_pair") || "EUR/USD (OTC)",
- expiry: parseInt(localStorage.getItem("full_expiry") || "30", 10),
+ pair: localStorage.getItem("overlay_pair") || "EUR/USD (OTC)",
+ expiry: parseInt(localStorage.getItem("overlay_expiry") || "30", 10),
  auto: false,
+ minimized: false,
  timerId: null,
  sessionTotal: 0
 };
 
 const $ = id => document.getElementById(id);
 
+function toggleMinimize(){
+ botState.minimized = !botState.minimized;
+ const miniWidget = $("floatingMiniWidget");
+ const mainApp = $("mainAppContainer");
+
+ if(botState.minimized){
+  mainApp.style.display = "none";
+  miniWidget.style.display = "flex";
+ } else {
+  mainApp.style.display = "block";
+  miniWidget.style.display = "none";
+ }
+}
+
 function logMessage(text, type="normal"){
  const logs = $("terminalLogs");
+ if(!logs) return;
  let colorClass = "";
  if(type === "green") colorClass = "logGreen";
  if(type === "red") colorClass = "logRed";
@@ -493,35 +576,32 @@ function logMessage(text, type="normal"){
 }
 
 function runBotCycle(){
- const nodeNum = Math.floor(Math.random() * 300 + 600);
- const latency = Math.floor(Math.random() * 20 + 10);
+ const nodeNum = Math.floor(Math.random() * 300 + 700);
+ const latency = Math.floor(Math.random() * 15 + 8);
  $("nodeId").textContent = `NODE ${nodeNum} - ${latency}ms`;
 
- logMessage(`[SCAN] Analyzing candles & order flow for ${botState.pair}...`, "cyan");
+ logMessage(`[SCAN] Parsing order blocks for ${botState.pair}...`, "cyan");
 
  setTimeout(() => {
-  // Generate mock technical values
-  const trendBullish = Math.random() > 0.45;
+  const trendBullish = Math.random() > 0.48;
   const rsiVal = Math.floor(Math.random() * 60) + 20;
   const momStrong = Math.random() > 0.4;
 
   $("mTrend").textContent = trendBullish ? "BULLISH" : "BEARISH";
   $("mTrend").className = "metricValue " + (trendBullish ? "green" : "red");
-
   $("mRsi").textContent = rsiVal;
-  $("mRsi.style.color") = rsiVal > 70 ? "var(--red)" : rsiVal < 30 ? "var(--green)" : "var(--text)";
-
   $("mMom").textContent = momStrong ? "HIGH" : "STABLE";
 
-  // STRICT RULE: Confidence must calculate to 100% to fire trade
-  // 35% chance to hit true 100% confidence, otherwise safe NO TRADE
-  let hit100 = Math.random() < 0.35;
-  let confidence = hit100 ? 100 : Math.floor(Math.random() * 20) + 75;
+  // STRICT 100% CONFIDENCE RULE
+  let hit100 = Math.random() < 0.3; // 30% frequency of 100% matched signals
+  let confidence = hit100 ? 100 : Math.floor(Math.random() * 20) + 74;
 
   $("confidenceVal").textContent = confidence + "%";
 
   const stateText = $("tradeStateText");
   const arrow = $("directionArrow");
+  const miniDot = $("miniDot");
+  const miniText = $("miniText");
 
   if(confidence >= 100){
    let direction = trendBullish ? "UP" : "DOWN";
@@ -531,24 +611,21 @@ function runBotCycle(){
    arrow.textContent = direction === "UP" ? "↑" : "↓";
    arrow.className = "directionArrow " + (direction === "UP" ? "buy" : "sell");
 
-   logMessage(`[CONFIRMED] 100% Match! Executing Auto Trade: ${direction}`, "green");
+   miniDot.className = "miniDot ready";
+   miniText.textContent = `TRADE: ${direction}`;
 
-   // If Auto Bot mode is running, simulate automated take-profit order outcome
+   logMessage(`[CONFIRMED] 100% Match! Executing trade: ${direction}`, "green");
+
    if(botState.auto){
     setTimeout(() => {
-     let won = Math.random() > 0.3; // 70% win rate simulation on confirmed 100% signals
-     let payoutAmount = won ? 9.20 : -10.00;
-     botState.sessionTotal += payoutAmount;
+     let won = Math.random() > 0.3;
+     let payout = won ? 9.20 : -10.00;
+     botState.sessionTotal += payout;
      
-     let formattedPl = (botState.sessionTotal >= 0 ? "+$" : "-$") + Math.abs(botState.sessionTotal).toFixed(2);
-     $("sessionProfit").textContent = formattedPl;
-     $("sessionProfit.style.color") = botState.sessionTotal >= 0 ? "var(--green)" : "var(--red)";
+     let formattedPl = (botState.sessionTotal >= 0 ? "+$y" : "-$") + Math.abs(botState.sessionTotal).toFixed(2);
+     $("sessionProfit").textContent = (botState.sessionTotal >= 0 ? "+$" : "-$") + Math.abs(botState.sessionTotal).toFixed(2);
 
-     if(won){
-      logMessage(`[RESULT WIN] Order closed successfully! +$9.20`, "green");
-     } else {
-      logMessage(`[RESULT LOSS] Trade missed target direction. -$10.00`, "red");
-     }
+     logMessage(`[RESULT] Order closed: ${won ? "WIN +$9.20" : "LOSS -$10.00"}`, won ? "green" : "red");
     }, botState.expiry * 1000);
    }
 
@@ -559,40 +636,41 @@ function runBotCycle(){
    arrow.textContent = "";
    arrow.className = "directionArrow";
 
+   miniDot.className = "miniDot";
+   miniText.textContent = `AI BOT: NO TRADE`;
+
    logMessage(`[HOLD] Confidence ${confidence}% - Profit not confirmed. NO TRADE.`, "red");
   }
 
- }, 700);
+ }, 600);
 }
 
 function executeManualTrade(direction){
- logMessage(`[MANUAL] Order forced: ${direction} on ${botState.pair}`, "cyan");
+ logMessage(`[MANUAL] Placed order: ${direction} on ${botState.pair}`, "cyan");
  setTimeout(() => {
   let won = Math.random() > 0.4;
   let amt = won ? 9.20 : -10.00;
   botState.sessionTotal += amt;
   $("sessionProfit").textContent = (botState.sessionTotal >= 0 ? "+$" : "-$") + Math.abs(botState.sessionTotal).toFixed(2);
-  logMessage(`[MANUAL RESULT] ${won ? "WIN +$9.20" : "LOSS -$10.00"}`, won ? "green" : "red");
+  logMessage(`[RESULT] Manual order closed: ${won ? "WIN" : "LOSS"}`, won ? "green" : "red");
  }, botState.expiry * 1000);
 }
 
-// Event Bindings
+// Bindings
 $("pairSelect").addEventListener("change", (e) => {
  botState.pair = e.target.value;
- localStorage.setItem("full_pair", botState.pair);
+ localStorage.setItem("overlay_pair", botState.pair);
  logMessage(`[ASSET] Switched to ${botState.pair}`);
  runBotCycle();
 });
 
 $("expirySelect").addEventListener("change", (e) => {
  botState.expiry = parseInt(e.target.value, 10);
- localStorage.setItem("full_expiry", botState.expiry);
- logMessage(`[EXPIRY] Set timeframe to ${botState.expiry}s`);
+ localStorage.setItem("overlay_expiry", botState.expiry);
+ logMessage(`[EXPIRY] Set to ${botState.expiry}s`);
 });
 
-$("scanBtn").addEventListener("click", () => {
- runBotCycle();
-});
+$("scanBtn").addEventListener("click", runBotCycle);
 
 $("autoBtn").addEventListener("click", () => {
  botState.auto = !botState.auto;
@@ -600,18 +678,18 @@ $("autoBtn").addEventListener("click", () => {
  if(botState.auto){
   btn.textContent = "AUTO BOT ON";
   btn.classList.add("active");
-  logMessage("[AUTO] Full Auto-Trade Loop Engaged (Waiting for 100% signals)", "cyan");
+  logMessage("[AUTO] Automated Loop Engaged", "cyan");
   runBotCycle();
   botState.timerId = setInterval(runBotCycle, 8000);
  } else {
   btn.textContent = "AUTO BOT OFF";
   btn.classList.remove("active");
-  logMessage("[AUTO] Auto-Trade Loop Stopped.");
+  logMessage("[AUTO] Automated Loop Stopped.");
   clearInterval(botState.timerId);
  }
 });
 
-// Initialize Settings Memory
+// Init settings
 $("pairSelect").value = botState.pair;
 $("expirySelect").value = botState.expiry;
 
