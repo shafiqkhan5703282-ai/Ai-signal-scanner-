@@ -129,12 +129,10 @@
 
         <p id="loadingMeta" class="text-xs font-mono text-slate-400"></p>
 
-        <!-- Temporary UP/DOWN + 5 TO 1 COUNTDOWN -->
+        <!-- ONLY COUNTDOWN 5 TO 1 -->
         <div class="bg-slate-950 border border-red-500/50 rounded-2xl p-5 mt-4">
 
-          <div id="preSignal" class="text-5xl font-black text-red-500 animate-pulse">
-            UP
-          </div>
+          <div id="preSignal" class="hidden"></div>
 
           <div class="mt-3 text-xs font-bold text-slate-400 uppercase tracking-wider">
             Signal countdown
@@ -322,24 +320,9 @@
       loadingView.classList.remove('hidden');
 
 
-      // Temporary UP/DOWN during analysis
-      const preSignal =
-        document.getElementById('preSignal');
-
+      // COUNTDOWN ONLY
       const countdownNumber =
         document.getElementById('countdownNumber');
-
-      const analysisIsUp =
-        Math.random() > 0.5;
-
-      preSignal.textContent =
-        analysisIsUp ? 'UP' : 'DOWN';
-
-      // UP = GREEN / DOWN = RED
-      preSignal.className =
-        analysisIsUp
-          ? 'text-5xl font-black text-emerald-400 animate-pulse'
-          : 'text-5xl font-black text-red-500 animate-pulse';
 
 
       // COUNTDOWN 5 → 4 → 3 → 2 → 1
