@@ -2,401 +2,894 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Chinese Signals - AI BOT PRO MAX</title>
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0,
+      maximum-scale=1.0,user-scalable=no">
+
+<title>INDIAN BOT - AI Signal Board</title>
 
 <script src="https://cdn.tailwindcss.com"></script>
 
 <style>
-@keyframes spinCircle {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+
+*{
+  box-sizing:border-box;
+  -webkit-tap-highlight-color:transparent;
 }
 
-.animate-spin-custom {
-  animation: spinCircle 1.2s linear infinite;
+body{
+  margin:0;
+  background:#020817;
+  color:white;
+  font-family:Arial,Helvetica,sans-serif;
 }
 
-@keyframes signalPulse {
-  0%,100% { opacity:1; transform:scale(1); }
-  50% { opacity:.72; transform:scale(1.025); }
+.app{
+  width:100%;
+  max-width:480px;
+  min-height:100vh;
+  margin:auto;
+  background:
+    radial-gradient(circle at 50% 20%,#101c36 0%,#030817 42%,#020612 100%);
+  position:relative;
+  overflow:hidden;
 }
 
-.signal-pulse {
-  animation:signalPulse 1s infinite;
+/* TOP BAR */
+
+.topbar{
+  height:68px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 18px;
+  border-bottom:1px solid rgba(255,255,255,.08);
+  background:rgba(3,8,23,.92);
 }
 
-.progress-bar {
-  transition:width .25s linear;
+.logo{
+  font-size:18px;
+  font-weight:900;
+  letter-spacing:.5px;
 }
+
+.live{
+  color:#19ff9a;
+  font-size:12px;
+  font-weight:900;
+}
+
+.live-dot{
+  display:inline-block;
+  width:8px;
+  height:8px;
+  background:#19ff9a;
+  border-radius:50%;
+  margin-right:5px;
+  box-shadow:0 0 10px #19ff9a;
+}
+
+/* CONTENT */
+
+.content{
+  padding:20px 18px 110px;
+  text-align:center;
+}
+
+.back{
+  text-align:left;
+  color:#19ff9a;
+  font-size:27px;
+  margin-bottom:22px;
+}
+
+.signal-for{
+  font-size:19px;
+  font-weight:900;
+}
+
+.signal-pair{
+  color:#19ff9a;
+}
+
+.timeframe{
+  margin-top:7px;
+  color:#ff77e8;
+  font-weight:800;
+  font-size:13px;
+}
+
+/* SIGNAL CIRCLE */
+
+.signal-circle{
+  width:205px;
+  height:205px;
+  border-radius:50%;
+  margin:32px auto 20px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  position:relative;
+  transition:.35s;
+}
+
+.signal-circle::before{
+  content:"";
+  position:absolute;
+  inset:8px;
+  border:2px solid rgba(255,255,255,.55);
+  border-radius:50%;
+}
+
+.signal-circle.call{
+  background:radial-gradient(
+    circle,
+    #38ffad 0%,
+    #12dc91 35%,
+    #087d5d 72%,
+    #031c18 100%
+  );
+
+  box-shadow:
+    0 0 25px #00ff9d,
+    0 0 65px rgba(0,255,157,.7),
+    0 0 120px rgba(0,255,157,.3);
+}
+
+.signal-circle.put{
+  background:radial-gradient(
+    circle,
+    #ff3333 0%,
+    #e90000 35%,
+    #760000 72%,
+    #220000 100%
+  );
+
+  box-shadow:
+    0 0 25px #ff1717,
+    0 0 65px rgba(255,0,0,.65),
+    0 0 120px rgba(255,0,0,.3);
+}
+
+.signal-circle.none{
+  background:radial-gradient(
+    circle,
+    #25334a 0%,
+    #101827 60%,
+    #050a14 100%
+  );
+
+  box-shadow:0 0 35px rgba(120,150,190,.25);
+}
+
+.signal-icon{
+  font-size:76px;
+  font-weight:900;
+  z-index:2;
+}
+
+.call .signal-icon{
+  color:white;
+}
+
+.put .signal-icon{
+  color:white;
+}
+
+.none .signal-icon{
+  color:#8d9aad;
+  font-size:52px;
+}
+
+/* SIGNAL TEXT */
+
+.direction-label{
+  display:inline-block;
+  padding:8px 20px;
+  border-radius:30px;
+  font-size:13px;
+  font-weight:900;
+  margin-bottom:8px;
+}
+
+.direction-call{
+  background:#0b7657;
+  color:#7dffca;
+}
+
+.direction-put{
+  background:#8c0808;
+  color:#ffaaaa;
+}
+
+.direction-none{
+  background:#263247;
+  color:#aeb9ca;
+}
+
+.main-signal{
+  font-size:35px;
+  font-weight:1000;
+  letter-spacing:1px;
+  margin-bottom:25px;
+}
+
+.call-text{
+  color:#20ff9e;
+  text-shadow:0 0 20px rgba(0,255,157,.45);
+}
+
+.put-text{
+  color:#ff2929;
+  text-shadow:0 0 20px rgba(255,0,0,.4);
+}
+
+.none-text{
+  color:#aab4c3;
+}
+
+/* CARDS */
+
+.cards{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12px;
+}
+
+.card{
+  min-height:105px;
+  padding:17px 12px;
+  border-radius:16px;
+  background:rgba(24,35,57,.72);
+  border:1px solid rgba(85,116,160,.35);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.03);
+}
+
+.card-title{
+  font-size:11px;
+  color:#aab6c8;
+  font-weight:900;
+  letter-spacing:.7px;
+}
+
+.card-value{
+  margin-top:12px;
+  font-size:22px;
+  font-weight:1000;
+}
+
+/* STRENGTH */
+
+.strength-dots{
+  display:flex;
+  justify-content:center;
+  gap:5px;
+  margin-top:12px;
+}
+
+.dot{
+  width:19px;
+  height:19px;
+  border-radius:50%;
+  background:#17284a;
+  border:1px solid #253c68;
+}
+
+.dot.active-call{
+  background:#19efa0;
+  box-shadow:0 0 10px #19efa0;
+  border-color:#19efa0;
+}
+
+.dot.active-put{
+  background:#ff2525;
+  box-shadow:0 0 10px #ff2525;
+  border-color:#ff2525;
+}
+
+.strength-number{
+  margin-top:7px;
+  font-size:14px;
+  font-weight:900;
+}
+
+/* INFO */
+
+.info-box{
+  margin-top:13px;
+  padding:15px;
+  border-radius:15px;
+  background:rgba(19,31,53,.75);
+  border:1px solid rgba(80,110,150,.3);
+}
+
+.info-row{
+  display:flex;
+  justify-content:space-between;
+  padding:6px 0;
+  font-size:12px;
+}
+
+.info-label{
+  color:#8795a9;
+}
+
+.info-value{
+  font-weight:900;
+}
+
+/* PROCESSING */
+
+.processing{
+  margin-top:13px;
+  padding:16px;
+  border-radius:15px;
+  border:1px solid rgba(30,255,165,.18);
+  background:rgba(10,40,38,.45);
+  color:#22ffa1;
+  font-size:13px;
+  font-weight:900;
+}
+
+.processing-dot{
+  display:inline-block;
+  width:8px;
+  height:8px;
+  border-radius:50%;
+  background:#22ffa1;
+  box-shadow:0 0 12px #22ffa1;
+  margin-right:6px;
+}
+
+/* TIMER */
+
+.next-scan{
+  margin-top:12px;
+  color:#7f8da2;
+  font-size:11px;
+}
+
+.next-scan strong{
+  color:#ffad3d;
+  font-size:15px;
+}
+
+/* START BUTTON */
+
+.start-button{
+  width:100%;
+  margin-top:15px;
+  padding:17px;
+  border:0;
+  border-radius:16px;
+  background:linear-gradient(
+    90deg,
+    #13e99b,
+    #28f0a9
+  );
+  color:#02271a;
+  font-size:16px;
+  font-weight:1000;
+  cursor:pointer;
+  box-shadow:0 0 25px rgba(20,255,165,.2);
+}
+
+.stop-button{
+  width:100%;
+  margin-top:10px;
+  padding:13px;
+  border-radius:15px;
+  background:#111c30;
+  border:1px solid #334866;
+  color:#ff7777;
+  font-weight:900;
+}
+
+/* SETTINGS */
+
+.settings{
+  margin-top:16px;
+  text-align:left;
+  background:#0a1222;
+  padding:15px;
+  border-radius:16px;
+  border:1px solid #20304b;
+}
+
+.settings label{
+  display:block;
+  margin-bottom:6px;
+  color:#91a0b5;
+  font-size:11px;
+  font-weight:900;
+}
+
+.settings select{
+  width:100%;
+  background:#050b17;
+  color:white;
+  border:1px solid #2b3d5b;
+  padding:13px;
+  border-radius:12px;
+  margin-bottom:12px;
+  font-weight:800;
+}
+
+/* NAV */
+
+.bottom-nav{
+  position:fixed;
+  bottom:0;
+  left:50%;
+  transform:translateX(-50%);
+  width:100%;
+  max-width:480px;
+  height:78px;
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  background:rgba(5,12,27,.97);
+  border-top:1px solid #1e2d47;
+  backdrop-filter:blur(15px);
+  z-index:20;
+}
+
+.nav-item{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  color:#8794a8;
+  font-size:11px;
+  font-weight:900;
+  gap:5px;
+}
+
+.nav-item.active{
+  color:#20ffa2;
+}
+
+.nav-icon{
+  font-size:25px;
+}
+
+/* HIDDEN */
+
+.hidden{
+  display:none!important;
+}
+
+/* ANIMATION */
+
+.pulse{
+  animation:pulse 1.2s infinite;
+}
+
+@keyframes pulse{
+  0%,100%{
+    transform:scale(1);
+  }
+
+  50%{
+    transform:scale(1.025);
+  }
+}
+
 </style>
 </head>
 
-<body class="bg-slate-950 text-white min-h-screen flex items-center justify-center p-3 font-sans">
 
-<div class="w-full max-w-lg bg-slate-900 border-2 border-orange-500/40 rounded-3xl p-6 shadow-2xl space-y-6">
+<body>
 
-<!-- HEADER -->
-<div class="flex justify-between items-center bg-slate-950 border border-orange-500/30 rounded-2xl p-4 shadow-inner">
+<div class="app">
 
-  <div>
-    <h1 class="text-xl font-black text-orange-400 tracking-wide uppercase">
-      Chinese Signals
-    </h1>
+  <!-- TOP -->
+  <div class="topbar">
 
-    <p class="text-xs font-bold text-orange-200/70 tracking-widest">
-      AI BOT | PRO MAX
-    </p>
-  </div>
-
-  <span class="bg-orange-500/20 text-orange-300 text-xs px-3 py-1.5 rounded-full font-black border border-orange-500/50 uppercase tracking-wider">
-    VIP ACTIVE
-  </span>
-
-</div>
-
-
-<!-- ACTIVATION -->
-<div id="activationView" class="space-y-5 text-center py-4">
-
-  <div class="bg-orange-500/10 border border-orange-500/30 rounded-2xl p-4">
-
-    <h2 class="text-lg font-bold text-orange-400 mb-1">
-      Security Access Required
-    </h2>
-
-    <p class="text-xs text-slate-400">
-      Enter your VIP Activation Key to unlock the scanner.
-    </p>
-
-  </div>
-
-  <div>
-
-    <input
-      id="activationKeyInput"
-      type="text"
-      placeholder="Enter Key (e.g. AWRSK78)"
-      class="w-full bg-slate-950 border-2 border-orange-500/50 rounded-2xl p-4 text-center font-mono font-bold text-lg text-orange-300 placeholder-slate-600 focus:outline-none focus:border-orange-400 uppercase tracking-widest"
-    >
-
-    <p id="keyError"
-       class="hidden text-xs text-red-400 font-bold mt-2">
-      Invalid Activation Key.
-    </p>
-
-  </div>
-
-  <button
-    id="activateBtn"
-    class="w-full bg-orange-500 hover:bg-orange-400 text-slate-950 font-black text-base py-4 rounded-2xl transition-all shadow-lg shadow-orange-500/30 uppercase tracking-wider">
-    🔓 Unlock Bot Access
-  </button>
-
-</div>
-
-
-<!-- CONTROL PANEL -->
-<div id="controlPanel" class="hidden space-y-5">
-
-  <div>
-    <label class="text-xs font-extrabold text-orange-400 uppercase tracking-wider">
-      Select Broker
-    </label>
-
-    <select id="brokerSelect"
-      class="w-full bg-slate-950 border border-slate-800 rounded-2xl p-4 mt-1.5 text-base font-bold text-white focus:outline-none focus:border-orange-500">
-
-      <option value="Quotex">Quotex</option>
-      <option value="Pocket Option">Pocket Option</option>
-      <option value="IQ Option">IQ Option</option>
-      <option value="Olymp Trade">Olymp Trade</option>
-
-    </select>
-  </div>
-
-
-  <div>
-    <label class="text-xs font-extrabold text-orange-400 uppercase tracking-wider">
-      Market Type
-    </label>
-
-    <select id="marketSelect"
-      class="w-full bg-slate-950 border border-slate-800 rounded-2xl p-4 mt-1.5 text-base font-bold text-white focus:outline-none focus:border-orange-500">
-
-      <option value="OTC Markets">OTC Markets (High Payout)</option>
-      <option value="Live Currency Markets">Live Currency Markets</option>
-      <option value="Crypto Markets">Crypto Markets</option>
-      <option value="Commodities">Commodities</option>
-      <option value="Indices & Stocks">Indices & Stocks</option>
-
-    </select>
-  </div>
-
-
-  <div>
-    <label class="text-xs font-extrabold text-orange-400 uppercase tracking-wider">
-      Trading Pair
-    </label>
-
-    <select id="pairSelect"
-      class="w-full bg-slate-950 border border-slate-800 rounded-2xl p-4 mt-1.5 text-base font-bold text-white focus:outline-none focus:border-orange-500">
-    </select>
-  </div>
-
-
-  <div>
-    <label class="text-xs font-extrabold text-orange-400 uppercase tracking-wider">
-      Timeframe / Expiry
-    </label>
-
-    <select id="timerSelect"
-      class="w-full bg-slate-950 border border-slate-800 rounded-2xl p-4 mt-1.5 text-base font-bold text-white focus:outline-none focus:border-orange-500">
-
-      <option value="3 Seconds" data-ms="3000">3 Seconds</option>
-      <option value="5 Seconds" data-ms="5000" selected>5 Seconds</option>
-      <option value="10 Seconds" data-ms="10000">10 Seconds</option>
-      <option value="15 Seconds" data-ms="15000">15 Seconds</option>
-      <option value="30 Seconds" data-ms="30000">30 Seconds</option>
-
-      <option value="1 Minute" data-ms="60000">1 Minute</option>
-      <option value="2 Minutes" data-ms="120000">2 Minutes</option>
-      <option value="3 Minutes" data-ms="180000">3 Minutes</option>
-      <option value="5 Minutes" data-ms="300000">5 Minutes</option>
-      <option value="10 Minutes" data-ms="600000">10 Minutes</option>
-      <option value="15 Minutes" data-ms="900000">15 Minutes</option>
-      <option value="30 Minutes" data-ms="1800000">30 Minutes</option>
-      <option value="1 Hour" data-ms="3600000">1 Hour</option>
-
-    </select>
-
-    <p class="text-[10px] text-slate-500 mt-2">
-      For 2 minutes–1 hour, a new market scan is performed every 60 seconds.
-    </p>
-
-  </div>
-
-
-  <button
-    id="startBtn"
-    class="w-full bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-400 hover:to-amber-400 text-slate-950 font-black text-lg py-4 rounded-2xl transition-all shadow-xl shadow-orange-500/25 uppercase tracking-wider">
-
-    ⚡ START AUTO SCANNER
-
-  </button>
-
-</div>
-
-
-<!-- SCANNER -->
-<div id="scannerView" class="hidden space-y-5 text-center">
-
-  <!-- TIMER -->
-  <div class="bg-slate-950 border border-orange-500/30 rounded-2xl p-4">
-
-    <div class="flex justify-between text-xs">
-
-      <span class="text-slate-400 font-bold">
-        AUTOMATIC SCANNER
-      </span>
-
-      <span id="scannerStatus"
-        class="text-emerald-400 font-black">
-        ACTIVE
-      </span>
-
+    <div class="logo">
+      🤖 INDIAN BOT
     </div>
 
-    <div class="mt-3 h-2 bg-slate-800 rounded-full overflow-hidden">
+    <div class="live">
+      <span class="live-dot"></span>
+      LIVE AI
+    </div>
 
-      <div id="progressBar"
-        class="progress-bar h-full bg-orange-500"
-        style="width:100%">
+  </div>
+
+
+  <!-- MAIN -->
+  <main class="content">
+
+    <div class="back">
+      ←
+    </div>
+
+
+    <!-- SETUP -->
+    <div id="setup">
+
+      <div class="signal-for">
+        Signal for:
+        <span id="setupPair"
+              class="signal-pair">
+          EUR/USD (OTC)
+        </span>
       </div>
 
+      <div class="timeframe">
+        Timeframe:
+        <span id="setupTime">
+          30 SEC
+        </span>
+      </div>
+
+
+      <div class="settings">
+
+        <label>BROKER</label>
+
+        <select id="broker">
+
+          <option>Quotex</option>
+          <option>Pocket Option</option>
+          <option>IQ Option</option>
+          <option>Olymp Trade</option>
+
+        </select>
+
+
+        <label>MARKET</label>
+
+        <select id="market">
+
+          <option value="OTC">OTC Markets</option>
+          <option value="LIVE">Live Currency Markets</option>
+          <option value="CRYPTO">Crypto Markets</option>
+          <option value="COMMODITY">Commodities</option>
+          <option value="INDEX">Indices & Stocks</option>
+
+        </select>
+
+
+        <label>TRADING PAIR</label>
+
+        <select id="pair"></select>
+
+
+        <label>EXPIRY / TIMEFRAME</label>
+
+        <select id="expiry">
+
+          <option value="3000">3 Seconds</option>
+          <option value="5000">5 Seconds</option>
+          <option value="10000">10 Seconds</option>
+          <option value="15000">15 Seconds</option>
+          <option value="30000">30 Seconds</option>
+
+          <option value="60000">1 Minute</option>
+          <option value="120000">2 Minutes</option>
+          <option value="180000">3 Minutes</option>
+          <option value="300000">5 Minutes</option>
+          <option value="600000">10 Minutes</option>
+          <option value="900000">15 Minutes</option>
+          <option value="1800000">30 Minutes</option>
+          <option value="3600000">1 Hour</option>
+
+        </select>
+
+      </div>
+
+
+      <button
+        id="start"
+        class="start-button">
+
+        ⚡ START AUTO SIGNAL
+
+      </button>
+
     </div>
 
-    <p class="text-xs text-slate-500 mt-2">
-      Next scan in
-      <span id="countdown"
-        class="text-orange-400 font-black">
-        5
-      </span>
-      seconds
-    </p>
 
-  </div>
+    <!-- SIGNAL BOARD -->
+    <div id="board" class="hidden">
+
+      <div class="signal-for">
+
+        Signal for:
+        <span id="boardPair"
+              class="signal-pair">
+          EUR/USD (OTC)
+        </span>
+
+      </div>
 
 
-  <!-- MAIN SIGNAL -->
-  <div class="bg-slate-950 border border-slate-800 rounded-2xl p-6 space-y-3">
+      <div class="timeframe">
 
-    <p class="text-xs text-slate-400 uppercase font-bold tracking-widest">
-      SIGNAL
-    </p>
+        Timeframe:
+        <span id="boardTime">
+          30 SEC
+        </span>
 
-    <div id="signalDirection"
-      class="font-black text-5xl tracking-widest text-orange-400">
-      SCANNING
+      </div>
+
+
+      <!-- BIG SIGNAL -->
+      <div id="circle"
+           class="signal-circle none">
+
+        <div id="icon"
+             class="signal-icon">
+          •••
+        </div>
+
+      </div>
+
+
+      <div id="direction"
+           class="direction-label direction-none">
+
+        WAITING
+
+      </div>
+
+
+      <div id="mainSignal"
+           class="main-signal none-text">
+
+        SCANNING
+
+      </div>
+
+
+      <!-- TWO CARDS -->
+      <div class="cards">
+
+        <div class="card">
+
+          <div class="card-title">
+            SIGNAL STRENGTH
+          </div>
+
+          <div id="dots"
+               class="strength-dots">
+
+            <span class="dot"></span>
+            <span class="dot"></span>
+            <span class="dot"></span>
+            <span class="dot"></span>
+            <span class="dot"></span>
+
+          </div>
+
+          <div id="strengthNumber"
+               class="strength-number">
+
+            0/5
+
+          </div>
+
+        </div>
+
+
+        <div class="card">
+
+          <div class="card-title">
+            SIGNAL STATUS
+          </div>
+
+          <div id="status"
+               class="card-value">
+
+            WAIT
+
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <!-- DETAILS -->
+      <div class="info-box">
+
+        <div class="info-row">
+
+          <span class="info-label">
+            Pair
+          </span>
+
+          <span id="infoPair"
+                class="info-value">
+            -
+          </span>
+
+        </div>
+
+
+        <div class="info-row">
+
+          <span class="info-label">
+            Broker
+          </span>
+
+          <span id="infoBroker"
+                class="info-value">
+            -
+          </span>
+
+        </div>
+
+
+        <div class="info-row">
+
+          <span class="info-label">
+            Expiry
+          </span>
+
+          <span id="infoExpiry"
+                class="info-value">
+            -
+          </span>
+
+        </div>
+
+
+        <div class="info-row">
+
+          <span class="info-label">
+            Scan
+          </span>
+
+          <span id="infoScan"
+                class="info-value">
+            #0
+          </span>
+
+        </div>
+
+      </div>
+
+
+      <!-- ANALYSIS -->
+      <div class="info-box">
+
+        <div class="info-row">
+
+          <span class="info-label">
+            RSI
+          </span>
+
+          <span id="rsi"
+                class="info-value">
+            --
+          </span>
+
+        </div>
+
+
+        <div class="info-row">
+
+          <span class="info-label">
+            Momentum
+          </span>
+
+          <span id="momentum"
+                class="info-value">
+            --
+          </span>
+
+        </div>
+
+
+        <div class="info-row">
+
+          <span class="info-label">
+            Trend
+          </span>
+
+          <span id="trend"
+                class="info-value">
+            --
+          </span>
+
+        </div>
+
+
+        <div class="info-row">
+
+          <span class="info-label">
+            Signal Strength
+          </span>
+
+          <span id="strength"
+                class="info-value">
+            --
+          </span>
+
+        </div>
+
+      </div>
+
+
+      <!-- AI STATUS -->
+      <div class="processing">
+
+        <span class="processing-dot"></span>
+
+        <span id="processing">
+          AI PROCESSING...
+        </span>
+
+      </div>
+
+
+      <!-- NEXT SCAN -->
+      <div class="next-scan">
+
+        Next scan in
+        <strong id="countdown">
+          --
+        </strong>
+
+      </div>
+
+
+      <button
+        id="stop"
+        class="stop-button">
+
+        ⛔ STOP SCANNER
+
+      </button>
+
     </div>
 
-    <div id="tradeDecision"
-      class="font-black text-4xl tracking-widest text-orange-400">
-      WAIT
+  </main>
+
+
+  <!-- BOTTOM NAV -->
+  <nav class="bottom-nav">
+
+    <div class="nav-item active">
+
+      <div class="nav-icon">
+        ↗
+      </div>
+
+      TRADE
+
     </div>
 
-  </div>
 
+    <div class="nav-item">
 
-  <!-- DETAILS -->
-  <div class="bg-slate-950/80 border border-slate-800 rounded-2xl p-4 text-left text-xs space-y-3 font-mono">
+      <div class="nav-icon">
+        ♙
+      </div>
 
-    <div class="flex justify-between">
-      <span class="text-slate-400">Pair</span>
-      <span id="resPair" class="font-bold text-white">-</span>
+      PROFILE
+
     </div>
 
-    <div class="flex justify-between">
-      <span class="text-slate-400">Broker</span>
-      <span id="resBroker" class="font-bold text-white">-</span>
-    </div>
-
-    <div class="flex justify-between">
-      <span class="text-slate-400">Expiry</span>
-      <span id="resTimer" class="font-bold text-white">-</span>
-    </div>
-
-    <div class="flex justify-between">
-      <span class="text-slate-400">Scan</span>
-      <span id="scanNumber" class="font-bold text-orange-400">0</span>
-    </div>
-
-  </div>
-
-
-  <!-- ANALYSIS -->
-  <div class="bg-slate-950/80 border border-slate-800 rounded-2xl p-4 text-left text-xs space-y-3 font-mono">
-
-    <div class="flex justify-between">
-      <span class="text-slate-400">RSI</span>
-      <span id="resRsi" class="font-bold text-white">Waiting</span>
-    </div>
-
-    <div class="flex justify-between">
-      <span class="text-slate-400">Momentum</span>
-      <span id="resMomentum" class="font-bold text-white">Waiting</span>
-    </div>
-
-    <div class="flex justify-between">
-      <span class="text-slate-400">Trend</span>
-      <span id="resTrend" class="font-bold text-white">Waiting</span>
-    </div>
-
-    <div class="flex justify-between">
-      <span class="text-slate-400">Signal Strength</span>
-      <span id="resStrength" class="font-bold text-orange-400">-</span>
-    </div>
-
-  </div>
-
-
-  <!-- CONTROLS -->
-  <div class="grid grid-cols-2 gap-3">
-
-    <button
-      id="pauseBtn"
-      class="bg-slate-950 hover:bg-slate-800 text-xs font-black py-4 rounded-2xl text-orange-400 border border-orange-500/40 uppercase">
-      ⏸ Pause
-    </button>
-
-    <button
-      id="stopBtn"
-      class="bg-slate-950 hover:bg-slate-800 text-xs font-black py-4 rounded-2xl text-red-400 border border-red-500/40 uppercase">
-      ⛔ Stop
-    </button>
-
-  </div>
-
-
-  <p class="text-[10px] text-slate-500 leading-relaxed">
-    Local/demo analysis only. No algorithm can guarantee a profitable trade.
-    Real signals require verified live market data.
-  </p>
-
-</div>
+  </nav>
 
 </div>
 
 
 <script>
 
-const VALID_KEY = "AWRSK78";
-
-const activationView =
-  document.getElementById("activationView");
-
-const controlPanel =
-  document.getElementById("controlPanel");
-
-const scannerView =
-  document.getElementById("scannerView");
-
-const activationKeyInput =
-  document.getElementById("activationKeyInput");
-
-const keyError =
-  document.getElementById("keyError");
-
-const activateBtn =
-  document.getElementById("activateBtn");
-
-const brokerSelect =
-  document.getElementById("brokerSelect");
-
-const marketSelect =
-  document.getElementById("marketSelect");
-
-const pairSelect =
-  document.getElementById("pairSelect");
-
-const timerSelect =
-  document.getElementById("timerSelect");
-
-const signalDirection =
-  document.getElementById("signalDirection");
-
-const tradeDecision =
-  document.getElementById("tradeDecision");
-
-const countdown =
-  document.getElementById("countdown");
-
-const progressBar =
-  document.getElementById("progressBar");
-
-const scannerStatus =
-  document.getElementById("scannerStatus");
-
-let scannerRunning = false;
-let scannerPaused = false;
-
-let scanTimer = null;
-let countdownTimer = null;
-
-let scanNumber = 0;
-
-let scanIntervalMs = 5000;
-
-
-/* ================================
+/* =====================================
    PAIRS
-================================ */
+===================================== */
 
-const TRADING_PAIRS = {
+const pairs = {
 
-  "OTC Markets": [
-    "USD/ARS (OTC)",
+  OTC:[
     "EUR/USD (OTC)",
+    "USD/BRL (OTC)",
+    "USD/ARS (OTC)",
     "GBP/USD (OTC)",
     "USD/JPY (OTC)",
     "AUD/CAD (OTC)",
@@ -411,13 +904,12 @@ const TRADING_PAIRS = {
     "USD/CAD (OTC)",
     "USD/CHF (OTC)",
     "USD/INR (OTC)",
-    "USD/BRL (OTC)",
     "USD/PKR (OTC)",
     "USD/EGP (OTC)",
     "USD/BDT (OTC)"
   ],
 
-  "Live Currency Markets": [
+  LIVE:[
     "EUR/USD",
     "GBP/USD",
     "USD/JPY",
@@ -430,7 +922,7 @@ const TRADING_PAIRS = {
     "GBP/JPY"
   ],
 
-  "Crypto Markets": [
+  CRYPTO:[
     "BTC/USD",
     "ETH/USD",
     "SOL/USD",
@@ -438,14 +930,14 @@ const TRADING_PAIRS = {
     "LTC/USD"
   ],
 
-  "Commodities": [
+  COMMODITY:[
     "USCRUDE (WTI)",
     "UKBRENT (Brent)",
     "XAU/USD (Gold)",
     "XAG/USD (Silver)"
   ],
 
-  "Indices & Stocks": [
+  INDEX:[
     "US100 (Nasdaq)",
     "SP500",
     "DJI30",
@@ -457,104 +949,104 @@ const TRADING_PAIRS = {
 };
 
 
-/* ================================
-   ACTIVATION
-================================ */
+const market =
+document.getElementById("market");
 
-activateBtn.addEventListener("click", () => {
-
-  const entered =
-    activationKeyInput.value
-      .trim()
-      .toUpperCase();
-
-  if (entered === VALID_KEY) {
-
-    keyError.classList.add("hidden");
-
-    activationView.classList.add("hidden");
-
-    controlPanel.classList.remove("hidden");
-
-  } else {
-
-    keyError.classList.remove("hidden");
-
-  }
-
-});
+const pair =
+document.getElementById("pair");
 
 
-activationKeyInput.addEventListener("keydown", e => {
+function populatePairs(){
 
-  if (e.key === "Enter") {
-    activateBtn.click();
-  }
+  pair.innerHTML="";
 
-});
-
-
-/* ================================
-   POPULATE PAIRS
-================================ */
-
-function populatePairs() {
-
-  const market =
-    marketSelect.value;
-
-  const pairs =
-    TRADING_PAIRS[market] || [];
-
-  pairSelect.innerHTML = "";
-
-  pairs.forEach(pair => {
+  pairs[market.value].forEach(p=>{
 
     const option =
-      document.createElement("option");
+    document.createElement("option");
 
-    option.value = pair;
-    option.textContent = pair;
+    option.value=p;
+    option.textContent=p;
 
-    pairSelect.appendChild(option);
+    pair.appendChild(option);
 
   });
 
+  updateSetup();
+
 }
 
-marketSelect.addEventListener(
+
+market.addEventListener(
   "change",
   populatePairs
 );
 
+
+pair.addEventListener(
+  "change",
+  updateSetup
+);
+
+
+document.getElementById(
+  "expiry"
+).addEventListener(
+  "change",
+  updateSetup
+);
+
+
+function updateSetup(){
+
+  document.getElementById(
+    "setupPair"
+  ).textContent=pair.value;
+
+
+  const selected =
+  document.getElementById("expiry");
+
+  const text =
+  selected.options[
+    selected.selectedIndex
+  ].text;
+
+  document.getElementById(
+    "setupTime"
+  ).textContent=text.toUpperCase();
+
+}
+
+
 populatePairs();
 
 
-/* ================================
-   GET SCAN INTERVAL
-================================ */
+/* =====================================
+   TIMER RULE
+===================================== */
 
-function getScanInterval() {
+function getScanInterval(){
 
-  const selected =
-    timerSelect.options[
-      timerSelect.selectedIndex
-    ];
+  const expiry =
+  Number(
+    document.getElementById(
+      "expiry"
+    ).value
+  );
 
-  const expiryMs =
-    Number(selected.dataset.ms);
 
   /*
-    3–30 seconds:
-    scan using same selected time.
+    Below 1 minute:
+    scan at selected expiry.
 
-    1 minute–1 hour:
+    1 minute and above:
     scan every 60 seconds.
   */
 
-  if (expiryMs < 60000) {
+  if(expiry < 60000){
 
-    return expiryMs;
+    return expiry;
 
   }
 
@@ -563,23 +1055,55 @@ function getScanInterval() {
 }
 
 
-/* ================================
-   DEMO SIGNAL ENGINE
-================================ */
+/* =====================================
+   VARIABLES
+===================================== */
 
-function analyzeMarket() {
+let running=false;
+
+let scanTimer=null;
+
+let countdownTimer=null;
+
+let scanCount=0;
+
+let remaining=0;
+
+let intervalMs=5000;
+
+
+/* =====================================
+   FORMAT
+===================================== */
+
+function formatTime(seconds){
+
+  if(seconds < 60){
+
+    return seconds+"s";
+
+  }
+
+  return Math.floor(seconds/60)+"m";
+
+}
+
+
+/* =====================================
+   SIGNAL ENGINE
+===================================== */
+
+function generateSignal(){
 
   /*
-    IMPORTANT:
-    This function is a local demonstration
-    because no live candle feed is connected.
+    Standalone demo engine.
 
-    It deliberately does NOT claim
-    100% accuracy.
+    A real signal requires live
+    market candles/price data.
   */
 
   const rsi =
-    25 + Math.random() * 50;
+    25 + Math.random()*50;
 
   const momentumValue =
     Math.random();
@@ -588,63 +1112,58 @@ function analyzeMarket() {
     Math.random();
 
   const strength =
-    Math.round(
-      55 + Math.random() * 44
+    1 + Math.floor(
+      Math.random()*5
     );
 
 
   let momentum =
-    momentumValue >= 0.5
+    momentumValue > .5
       ? "Positive"
       : "Negative";
 
+
   let trend =
-    trendValue >= 0.5
+    trendValue > .5
       ? "Bullish"
       : "Bearish";
 
 
   /*
-    Strong agreement requirement.
+    Require agreement before
+    allowing TRADE.
   */
 
   const bullish =
-    momentum === "Positive" &&
-    trend === "Bullish";
+    momentum==="Positive" &&
+    trend==="Bullish";
 
   const bearish =
-    momentum === "Negative" &&
-    trend === "Bearish";
+    momentum==="Negative" &&
+    trend==="Bearish";
 
 
-  /*
-    Only generate a trade when
-    analysis is sufficiently strong.
-  */
-
-  if (
-    strength >= 75 &&
+  if(
+    strength>=4 &&
     (bullish || bearish)
-  ) {
+  ){
 
     return {
 
-      trade: true,
+      trade:true,
 
       signal:
         bullish
           ? "CALL"
           : "PUT",
 
-      rsi:
-        rsi.toFixed(1),
+      strength,
+
+      rsi:rsi.toFixed(1),
 
       momentum,
 
-      trend,
-
-      strength:
-        strength + "%"
+      trend
 
     };
 
@@ -653,277 +1172,393 @@ function analyzeMarket() {
 
   return {
 
-    trade: false,
+    trade:false,
 
-    signal: "NO SIGNAL",
+    signal:"NO TRADE",
 
-    rsi:
-      rsi.toFixed(1),
+    strength,
+
+    rsi:rsi.toFixed(1),
 
     momentum,
 
-    trend,
-
-    strength:
-      strength + "%"
+    trend
 
   };
 
 }
 
 
-/* ================================
-   DISPLAY SIGNAL
-================================ */
+/* =====================================
+   DOTS
+===================================== */
 
-function showNewScan() {
+function setStrength(
+  strength,
+  type
+){
 
-  scanNumber++;
-
-  document.getElementById(
-    "scanNumber"
-  ).textContent =
-    scanNumber;
-
-
-  document.getElementById(
-    "resPair"
-  ).textContent =
-    pairSelect.value;
+  const dots =
+  document.querySelectorAll(
+    ".dot"
+  );
 
 
-  document.getElementById(
-    "resBroker"
-  ).textContent =
-    brokerSelect.value;
+  dots.forEach((dot,i)=>{
 
+    dot.className="dot";
 
-  document.getElementById(
-    "resTimer"
-  ).textContent =
-    timerSelect.value;
+    if(i < strength){
 
-
-  const result =
-    analyzeMarket();
-
-
-  document.getElementById(
-    "resRsi"
-  ).textContent =
-    result.rsi;
-
-
-  document.getElementById(
-    "resMomentum"
-  ).textContent =
-    result.momentum;
-
-
-  document.getElementById(
-    "resTrend"
-  ).textContent =
-    result.trend;
-
-
-  document.getElementById(
-    "resStrength"
-  ).textContent =
-    result.strength;
-
-
-  if (result.trade) {
-
-    signalDirection.textContent =
-      result.signal;
-
-
-    tradeDecision.textContent =
-      "TRADE";
-
-
-    if (result.signal === "CALL") {
-
-      signalDirection.className =
-        "font-black text-5xl tracking-widest text-emerald-400 signal-pulse";
-
-    } else {
-
-      signalDirection.className =
-        "font-black text-5xl tracking-widest text-red-400 signal-pulse";
+      dot.classList.add(
+        type==="CALL"
+          ? "active-call"
+          : type==="PUT"
+            ? "active-put"
+            : "active-call"
+      );
 
     }
 
+  });
 
-    tradeDecision.className =
-      "font-black text-4xl tracking-widest text-orange-400 signal-pulse";
+
+  document.getElementById(
+    "strengthNumber"
+  ).textContent =
+    strength+"/5";
+
+}
+
+
+/* =====================================
+   DISPLAY SIGNAL
+===================================== */
+
+function displaySignal(){
+
+  scanCount++;
+
+
+  const result =
+  generateSignal();
+
+
+  const circle =
+  document.getElementById(
+    "circle"
+  );
+
+  const icon =
+  document.getElementById(
+    "icon"
+  );
+
+  const direction =
+  document.getElementById(
+    "direction"
+  );
+
+  const mainSignal =
+  document.getElementById(
+    "mainSignal"
+  );
+
+  const status =
+  document.getElementById(
+    "status"
+  );
+
+
+  /* DETAILS */
+
+  document.getElementById(
+    "boardPair"
+  ).textContent=pair.value;
+
+
+  document.getElementById(
+    "boardTime"
+  ).textContent=
+  document.getElementById(
+    "expiry"
+  ).options[
+    document.getElementById(
+      "expiry"
+    ).selectedIndex
+  ].text.toUpperCase();
+
+
+  document.getElementById(
+    "infoPair"
+  ).textContent=pair.value;
+
+
+  document.getElementById(
+    "infoBroker"
+  ).textContent=
+  document.getElementById(
+    "broker"
+  ).value;
+
+
+  document.getElementById(
+    "infoExpiry"
+  ).textContent=
+  document.getElementById(
+    "expiry"
+  ).options[
+    document.getElementById(
+      "expiry"
+    ).selectedIndex
+  ].text;
+
+
+  document.getElementById(
+    "infoScan"
+  ).textContent=
+  "#"+scanCount;
+
+
+  /* ANALYSIS */
+
+  document.getElementById(
+    "rsi"
+  ).textContent=result.rsi;
+
+
+  document.getElementById(
+    "momentum"
+  ).textContent=
+  result.momentum;
+
+
+  document.getElementById(
+    "trend"
+  ).textContent=
+  result.trend;
+
+
+  document.getElementById(
+    "strength"
+  ).textContent=
+  result.strength+"/5";
+
+
+  /* SIGNAL */
+
+  circle.className=
+    "signal-circle";
+
+
+  direction.className=
+    "direction-label";
+
+
+  mainSignal.className=
+    "main-signal";
+
+
+  if(result.signal==="CALL"){
+
+    circle.classList.add(
+      "call",
+      "pulse"
+    );
+
+    icon.textContent="↗";
+
+    direction.textContent=
+      "CALL";
+
+    direction.classList.add(
+      "direction-call"
+    );
+
+    mainSignal.textContent=
+      "TRADE";
+
+    mainSignal.classList.add(
+      "call-text"
+    );
+
+    status.textContent=
+      "TRADE";
+
+
+    setStrength(
+      result.strength,
+      "CALL"
+    );
 
   }
 
-  else {
+  else if(result.signal==="PUT"){
 
-    signalDirection.textContent =
+    circle.classList.add(
+      "put",
+      "pulse"
+    );
+
+    icon.textContent="↘";
+
+    direction.textContent=
+      "PUT";
+
+    direction.classList.add(
+      "direction-put"
+    );
+
+    mainSignal.textContent=
+      "TRADE";
+
+    mainSignal.classList.add(
+      "put-text"
+    );
+
+    status.textContent=
+      "TRADE";
+
+
+    setStrength(
+      result.strength,
+      "PUT"
+    );
+
+  }
+
+  else{
+
+    circle.classList.add(
+      "none"
+    );
+
+    icon.textContent="—";
+
+    direction.textContent=
       "NO SIGNAL";
 
+    direction.classList.add(
+      "direction-none"
+    );
 
-    tradeDecision.textContent =
+    mainSignal.textContent=
+      "NO TRADE";
+
+    mainSignal.classList.add(
+      "none-text"
+    );
+
+    status.textContent=
       "NO TRADE";
 
 
-    signalDirection.className =
-      "font-black text-4xl tracking-widest text-orange-400";
-
-
-    tradeDecision.className =
-      "font-black text-4xl tracking-widest text-orange-400";
+    setStrength(
+      result.strength,
+      "NONE"
+    );
 
   }
+
+
+  document.getElementById(
+    "processing"
+  ).textContent=
+    "AI PROCESSING...";
 
 }
 
 
-/* ================================
+/* =====================================
    COUNTDOWN
-================================ */
+===================================== */
 
-function startCountdown() {
+function startCountdown(){
 
-  clearInterval(countdownTimer);
-
-  const interval =
-    scanIntervalMs / 1000;
-
-  let remaining =
-    interval;
+  clearInterval(
+    countdownTimer
+  );
 
 
-  countdown.textContent =
-    formatSeconds(remaining);
+  remaining =
+    intervalMs/1000;
 
 
-  progressBar.style.width =
-    "100%";
+  document.getElementById(
+    "countdown"
+  ).textContent=
+    formatTime(remaining);
 
 
   countdownTimer =
-    setInterval(() => {
+  setInterval(()=>{
 
-      if (
-        !scannerRunning ||
-        scannerPaused
-      ) {
-        return;
-      }
+    if(!running)
+      return;
 
 
-      remaining--;
+    remaining--;
 
 
-      countdown.textContent =
-        formatSeconds(remaining);
+    document.getElementById(
+      "countdown"
+    ).textContent=
+      formatTime(
+        Math.max(
+          0,
+          remaining
+        )
+      );
 
 
-      progressBar.style.width =
-        ((remaining / interval) * 100) + "%";
+    if(remaining<=0){
 
+      displaySignal();
 
-      if (remaining <= 0) {
+      remaining =
+        intervalMs/1000;
 
-        showNewScan();
+    }
 
-        remaining =
-          interval;
-
-        countdown.textContent =
-          formatSeconds(remaining);
-
-        progressBar.style.width =
-          "100%";
-
-      }
-
-    }, 1000);
+  },1000);
 
 }
 
 
-function formatSeconds(seconds) {
-
-  if (seconds < 60) {
-
-    return seconds + "s";
-
-  }
-
-  return Math.floor(seconds / 60) + "m";
-
-}
-
-
-/* ================================
+/* =====================================
    START
-================================ */
+===================================== */
 
 document.getElementById(
-  "startBtn"
+  "start"
 ).addEventListener(
   "click",
-  () => {
+  ()=>{
 
-    clearInterval(scanTimer);
-    clearInterval(countdownTimer);
+    running=true;
+
+    scanCount=0;
 
 
-    scanIntervalMs =
+    intervalMs =
       getScanInterval();
 
 
-    scannerRunning = true;
-    scannerPaused = false;
-
-    scanNumber = 0;
-
-
-    controlPanel.classList.add("hidden");
-
-    scannerView.classList.remove("hidden");
+    document.getElementById(
+      "setup"
+    ).classList.add(
+      "hidden"
+    );
 
 
-    scannerStatus.textContent =
-      "ACTIVE";
-
-    scannerStatus.className =
-      "text-emerald-400 font-black";
-
-
-    /*
-      First scan immediately.
-    */
-
-    showNewScan();
+    document.getElementById(
+      "board"
+    ).classList.remove(
+      "hidden"
+    );
 
 
-    /*
-      Repeated automatic scanning.
-    */
-
-    scanTimer =
-      setInterval(
-        () => {
-
-          if (
-            scannerRunning &&
-            !scannerPaused
-          ) {
-
-            showNewScan();
-
-          }
-
-        },
-        scanIntervalMs
-      );
-
+    displaySignal();
 
     startCountdown();
 
@@ -931,95 +1566,35 @@ document.getElementById(
 );
 
 
-/* ================================
-   PAUSE / RESUME
-================================ */
-
-document.getElementById(
-  "pauseBtn"
-).addEventListener(
-  "click",
-  () => {
-
-    if (!scannerRunning) {
-      return;
-    }
-
-
-    scannerPaused =
-      !scannerPaused;
-
-
-    const button =
-      document.getElementById(
-        "pauseBtn"
-      );
-
-
-    if (scannerPaused) {
-
-      button.textContent =
-        "▶ Resume";
-
-      scannerStatus.textContent =
-        "PAUSED";
-
-      scannerStatus.className =
-        "text-amber-400 font-black";
-
-    }
-
-    else {
-
-      button.textContent =
-        "⏸ Pause";
-
-      scannerStatus.textContent =
-        "ACTIVE";
-
-      scannerStatus.className =
-        "text-emerald-400 font-black";
-
-    }
-
-  }
-);
-
-
-/* ================================
+/* =====================================
    STOP
-================================ */
+===================================== */
 
 document.getElementById(
-  "stopBtn"
+  "stop"
 ).addEventListener(
   "click",
-  () => {
+  ()=>{
 
-    scannerRunning = false;
+    running=false;
 
-    scannerPaused = false;
-
-    clearInterval(scanTimer);
-    clearInterval(countdownTimer);
-
-
-    scannerView.classList.add("hidden");
-
-    controlPanel.classList.remove("hidden");
-
-
-    scannerStatus.textContent =
-      "STOPPED";
+    clearInterval(
+      countdownTimer
+    );
 
 
     document.getElementById(
-      "pauseBtn"
-    ).textContent =
-      "⏸ Pause";
+      "board"
+    ).classList.add(
+      "hidden"
+    );
 
 
-    scanNumber = 0;
+    document.getElementById(
+      "setup"
+    ).classList.remove(
+      "hidden"
+    );
 
   }
 );
