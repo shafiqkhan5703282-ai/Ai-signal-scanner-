@@ -853,7 +853,7 @@ input:checked+.slider:before{
      <option value="5">5 Seconds</option>
      <option value="10">10 Seconds</option>
      <option value="15">15 Seconds</option>
-     <option value="30" selected>30 Seconds</option>
+     <option value="30">30 Seconds</option>
      <option value="60">1 Minute</option>
      <option value="120">2 Minutes</option>
      <option value="300">5 Minutes</option>
@@ -1062,13 +1062,13 @@ input:checked+.slider:before{
 ========================================= */
 
 const state={
- pair:"EUR/USD",
- expiry:30,
- auto:false,
- timer:30,
- timerId:null,
- autoId:null,
- history:[]
+ pair: localStorage.getItem("bot_pair") || "EUR/USD",
+ expiry: parseInt(localStorage.getItem("bot_expiry") || "30", 10),
+ auto: false,
+ timer: parseInt(localStorage.getItem("bot_expiry") || "30", 10),
+ timerId: null,
+ autoId: null,
+ history: []
 };
 
 const $=id=>document.getElementById(id);
@@ -1173,7 +1173,6 @@ function calculateAnalysis(){
   rsiScore = clamp(50 + (50 - rsi) * 0.7, 0, 100);
  }
 
- // Triple Confluence Multiplier via MACD Alignment
  let macdBoost = (macdVal > 0 && trend > 50) ? 12 : (macdVal < 0 && trend < 50) ? 12 : 0;
 
  const confirmation = (trend * 0.28) + (momentum * 0.24) + (priceAction * 0.24) + (rsiScore * 0.24);
@@ -1283,7 +1282,6 @@ function runScan(){
  const analysis = calculateAnalysis();
  updateUI(analysis);
  addHistory(analysis);
- resetTimer();
 }
 
 function addHistory(a){
@@ -1381,20 +1379,23 @@ $("autoBtn").addEventListener("click", toggleAuto);
 
 $("pairSelect").addEventListener("change", e=>{
  state.pair = e.target.value;
+ localStorage.setItem("bot_pair", state.pair);
  runScan();
 });
 
 $("expirySelect").addEventListener("change", e=>{
  state.expiry = parseInt(e.target.value, 10);
+ localStorage.setItem("bot_expiry", state.expiry);
  resetTimer();
  if(state.auto) startAuto();
 });
 
 $("strongOnly").addEventListener("change", runScan);
 
-// Initialize
-state.pair = $("pairSelect").value;
-state.expiry = parseInt($("expirySelect").value, 10);
+// Initialize settings from saved memory
+$("pairSelect").value = state.pair;
+$("expirySelect").value = state.expiry;
+
 runScan();
 startTimer();
 
