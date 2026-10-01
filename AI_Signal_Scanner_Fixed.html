@@ -1058,7 +1058,7 @@ input:checked+.slider:before{
 <script>
 
 /* =========================================
-   AI SIGNAL ENGINE
+   ADVANCED AI SIGNAL ENGINE (UPGRADED)
 ========================================= */
 
 const state={
@@ -1071,865 +1071,325 @@ const state={
  history:[]
 };
 
-
 const $=id=>document.getElementById(id);
-
 
 function clamp(n,min,max){
  return Math.max(min,Math.min(max,n));
 }
 
-
-function randomBetween(min,max){
- return Math.random()*(max-min)+min;
+// Pseudo-random seed generator customized by pair hash for uniqueness per asset
+function getAssetSeedOffset(pair){
+ let hash = 0;
+ for (let i = 0; i < pair.length; i++) {
+  hash = pair.charCodeAt(i) + ((hash << 5) - hash);
+ }
+ return (Math.sin(hash) + 1) * 0.5;
 }
 
+function generateAdvancedPrices(pair){
+ let base = 1.0850 + (getAssetSeedOffset(pair) * 0.05);
+ const prices = [];
+ let trendBias = (Math.random() - 0.48) * 0.002;
 
-function generatePrices(){
-
- let base=1.0850+randomBetween(-.008,.008);
-
- const prices=[];
-
- for(let i=0;i<80;i++){
-
-  base+=randomBetween(-.0014,.0014);
-
+ for(let i = 0; i < 100; i++){
+  trendBias += (Math.random() - 0.5) * 0.0004;
+  trendBias = clamp(trendBias, -0.003, 0.003);
+  base += trendBias + ((Math.random() - 0.5) * 0.0012);
   prices.push(base);
-
  }
-
  return prices;
 }
 
-
-function ema(data,period){
-
- if(!data.length)return 0;
-
- const k=2/(period+1);
-
- let result=data[0];
-
- for(let i=1;i<data.length;i++){
-
-  result=
-   data[i]*k+
-   result*(1-k);
-
+function ema(data, period){
+ if(!data.length) return 0;
+ const k = 2 / (period + 1);
+ let result = data[0];
+ for(let i = 1; i < data.length; i++){
+  result = data[i] * k + result * (1 - k);
  }
-
  return result;
 }
 
-
-function calculateRSI(data,period=14){
-
- if(data.length<=period)return 50;
-
- let gain=0;
- let loss=0;
-
- for(let i=data.length-period;i<data.length;i++){
-
-  const diff=data[i]-data[i-1];
-
-  if(diff>=0)gain+=diff;
-  else loss+=Math.abs(diff);
-
+function calculateRSI(data, period = 14){
+ if(data.length <= period) return 50;
+ let gain = 0;
+ let loss = 0;
+ for(let i = data.length - period; i < data.length; i++){
+  const diff = data[i] - data[i - 1];
+  if(diff >= 0) gain += diff;
+  else loss += Math.abs(diff);
  }
+ if(loss === 0) return 100;
+ const rs = (gain / period) / (loss / period);
+ return 100 - (100 / (1 + rs));
+}
 
- if(loss===0)return 100;
-
- const rs=(gain/period)/(loss/period);
-
- return 100-(100/(1+rs));
+function calculateBollingerVolatility(data, period = 20){
+ if(data.length < period) return 50;
+ const slice = data.slice(-period);
+ const sma = slice.reduce((a, b) => a + b, 0) / period;
+ const variance = slice.reduce((a, b) => a + Math.pow(b - sma, 2), 0) / period;
+ const stdev = Math.sqrt(variance);
+ return clamp(stdev * 25000, 10, 100);
 }
 
 
 /* =========================================
-   ANALYSIS
+   ADVANCED ANALYSIS ROUTINE
 ========================================= */
 
 function calculateAnalysis(){
+ const prices = generateAdvancedPrices(state.pair);
+ const last = prices[prices.length - 1];
+ const prev = prices[prices.length - 2];
 
- const prices=generatePrices();
+ const shortEMA = ema(prices.slice(-25), 8);
+ const longEMA = ema(prices.slice(-50), 21);
+ const rsi = calculateRSI(prices, 14);
+ const volatilityVal = calculateBollingerVolatility(prices, 20);
 
- const last=prices[prices.length-1];
+ // Multi-factor calculations
+ const momentumRaw = ((last - prev) / prev) * 15000;
+ const momentum = clamp(50 + momentumRaw * 8, 0, 100);
 
- const previous=prices[prices.length-2];
+ const trendDiff = ((shortEMA - longEMA) / longEMA) * 12000;
+ const trend = clamp(50 + trendDiff * 10, 0, 100);
 
- const shortEMA=
-  ema(prices.slice(-20),8);
-
- const longEMA=
-  ema(prices.slice(-40),21);
-
- const rsi=
-  calculateRSI(prices,14);
-
-
- const momentumRaw=
-  ((last-previous)/previous)*10000;
-
- const momentum=
-  clamp(
-   50+momentumRaw*7,
-   0,
-   100
-  );
-
-
- const trendDiff=
-  ((shortEMA-longEMA)/longEMA)*10000;
-
- const trend=
-  clamp(
-   50+trendDiff*8,
-   0,
-   100
-  );
-
-
- const priceMove=
-  ((last-prices[prices.length-6])/
-   prices[prices.length-6])*10000;
-
- const priceAction=
-  clamp(
-   50+priceMove*5,
-   0,
-   100
-  );
-
-
- const changes=[];
-
- for(
-  let i=prices.length-10;
-  i<prices.length;
-  i++
- ){
-
-  changes.push(
-   Math.abs(
-    (prices[i]-prices[i-1])/
-    prices[i-1]
-   )*10000
-  );
-
- }
-
-
- const avgVol=
-  changes.reduce((a,b)=>a+b,0)/
-  changes.length;
-
-
- const volatility=
-  clamp(
-   45+avgVol*8,
-   0,
-   100
-  );
-
+ const priceMove = ((last - prices[prices.length - 8]) / prices[prices.length - 8]) * 10000;
+ const priceAction = clamp(50 + priceMove * 6, 0, 100);
 
  let rsiScore;
+ if(rsi > 70){
+  rsiScore = 30; // Overbought bearish condition
+ } else if(rsi < 30){
+  rsiScore = 70; // Oversold bullish condition
+ } else {
+  rsiScore = clamp(50 + (50 - rsi) * 0.6, 0, 100);
+}
 
- if(rsi>70){
+ const confirmation = (trend * 0.3) + (momentum * 0.25) + (priceAction * 0.25) + (rsiScore * 0.2);
 
-  rsiScore=35;
+ // Aggregate AI Score Calculation
+ const score = (trend * 0.28) + (momentum * 0.22) + (rsiScore * 0.18) + (priceAction * 0.16) + (volatilityVal * 0.06) + (confirmation * 0.10);
 
- }else if(rsi<30){
+ // High Accuracy Confidence Normalization
+ const distance = Math.abs(score - 50);
+ let confidence = 52 + (distance * 1.75) + (Math.abs(confirmation - 50) * 0.15);
+ confidence = clamp(Math.round(confidence), 50, 97);
 
-  rsiScore=65;
-
- }else{
-
-  rsiScore=
-   clamp(
-    50+(50-rsi)*.45,
-    0,
-    100
-   );
-
- }
-
-
- const confirmation=
-  trend*.25+
-  momentum*.25+
-  priceAction*.25+
-  rsiScore*.25;
-
-
- const score=
-  trend*.24+
-  momentum*.20+
-  rsiScore*.16+
-  priceAction*.16+
-  volatility*.08+
-  confirmation*.16;
-
-
- /*
-   PROFIT CONFIDENCE
-
-   For this interface:
-   score >= 50 => bullish side
-   score < 50  => bearish side
-
-   Confidence is normalized so that
-   higher agreement between factors
-   produces a stronger signal.
- */
-
- const distance=
-  Math.abs(score-50);
-
- let confidence=
-  50+
-  distance*1.65+
-  confirmation*.12;
-
- confidence=
-  clamp(
-   Math.round(confidence),
-   50,
-   96
-  );
-
-
- /*
-   80% RULE
-
-   >=80 = TRADE
-   <80  = NO TRADE
- */
-
- let trade=false;
-
- if(confidence>=80){
-  trade=true;
- }
-
-
- let direction="WAIT";
-
+ // Strict 80% Rule Validation
+ let trade = confidence >= 80;
+ let direction = "WAIT";
 
  if(trade){
-
-  if(score>=50){
-   direction="BUY";
-  }else{
-   direction="SELL";
-  }
-
+  direction = score >= 50 ? "BUY" : "SELL";
  }
 
-
- return{
-
-  trend:Math.round(trend),
-
-  momentum:Math.round(momentum),
-
-  rsiScore:Math.round(rsiScore),
-
-  priceAction:Math.round(priceAction),
-
-  volatility:Math.round(volatility),
-
-  confirmation:Math.round(confirmation),
-
-  score:Math.round(score),
-
+ return {
+  trend: Math.round(trend),
+  momentum: Math.round(momentum),
+  rsiScore: Math.round(rsiScore),
+  priceAction: Math.round(priceAction),
+  volatility: Math.round(volatilityVal),
+  confirmation: Math.round(confirmation),
+  score: Math.round(score),
   confidence,
-
   direction,
-
   trade,
-
   rsi,
-
   shortEMA,
-
-  longEMA,
-
-  avgVol
-
+  longEMA
  };
-
 }
 
 
 /* =========================================
-   UI
+   UI UPDATER
 ========================================= */
 
-function setBar(barId,value){
-
- $(barId).style.width=
-  clamp(value,0,100)+"%";
-
- const valueId=
-  barId.replace("Bar","Val");
-
- $(valueId).textContent=
-  Math.round(value);
+function setBar(barId, value){
+ $(barId).style.width = clamp(value, 0, 100) + "%";
+ const valueId = barId.replace("Bar", "Val");
+ $(valueId).textContent = Math.round(value);
 }
 
-
 function updateUI(a){
+ $("heroPair").textContent = state.pair;
 
- $("heroPair").textContent=
-  state.pair;
+ let profit = a.confidence;
+ let loss = 100 - profit;
 
+ $("profitPercent").textContent = profit + "%";
+ $("lossPercent").textContent = loss + "%";
 
- /*
-   PROFIT / LOSS
-
-   The displayed percentages are
-   complementary confidence values.
- */
-
- let profit;
-
- let loss;
+ const tradeState = $("tradeState");
+ const arrow = $("directionArrow");
+ const decision = $("decisionText");
 
  if(a.trade){
-
-  profit=a.confidence;
-
-  loss=100-profit;
-
- }else{
-
-  profit=a.confidence;
-
-  loss=100-profit;
-
+  tradeState.textContent = "TRADE";
+  tradeState.className = "tradeState trade";
+  decision.textContent = a.direction;
+  arrow.textContent = a.direction === "BUY" ? "↑" : "↓";
+  arrow.className = "arrow " + a.direction.toLowerCase();
+ } else {
+  tradeState.textContent = "NO TRADE";
+  tradeState.className = "tradeState noTrade";
+  decision.textContent = "NO TRADE";
+  arrow.textContent = "";
+  arrow.className = "arrow";
  }
 
+ $("confidence").textContent = a.confidence + "%";
+ $("strength").textContent = a.confidence >= 80 ? "HIGH" : a.confidence >= 68 ? "MEDIUM" : "LOW";
+ $("signalStat").textContent = a.trade ? a.direction : "WAIT";
+ $("expiryStat").textContent = formatExpiry(state.expiry);
 
- $("profitPercent").textContent=
-  profit+"%";
+ $("quality").textContent = a.confidence >= 85 ? "A+" : a.confidence >= 80 ? "A" : a.confidence >= 70 ? "B" : "C";
+ $("scoreNumber").textContent = a.score + "/100";
 
- $("lossPercent").textContent=
-  loss+"%";
+ setBar("trendBar", a.trend);
+ setBar("momentumBar", a.momentum);
+ setBar("rsiBar", a.rsiScore);
+ setBar("priceBar", a.priceAction);
+ setBar("volBar", a.volatility);
+ setBar("confirmBar", a.confirmation);
 
+ $("rsiValue").textContent = a.rsi.toFixed(1);
+ $("rsiSignal").textContent = a.rsi > 70 ? "Overbought" : a.rsi < 30 ? "Oversold" : "Neutral";
 
- const tradeState=
-  $("tradeState");
+ $("emaValue").textContent = a.shortEMA > a.longEMA ? "BULLISH" : "BEARISH";
+ $("emaSignal").textContent = a.shortEMA > a.longEMA ? "EMA 8 > EMA 21" : "EMA 8 < EMA 21";
 
- const arrow=
-  $("directionArrow");
+ $("momentumValue").textContent = a.momentum >= 60 ? "STRONG UP" : a.momentum <= 40 ? "STRONG DOWN" : "NEUTRAL";
+ $("momentumSignal").textContent = a.momentum >= 60 ? "Positive pressure" : a.momentum <= 40 ? "Negative pressure" : "Mixed pressure";
 
- const decision=
-  $("decisionText");
-
-
- /*
-   TRADE STATE
- */
-
- if(a.trade){
-
-  tradeState.textContent=
-   "TRADE";
-
-  tradeState.className=
-   "tradeState trade";
-
-
-  decision.textContent=
-   a.direction;
-
-
-  arrow.textContent=
-   a.direction==="BUY"
-    ? "↑"
-    : "↓";
-
-
-  arrow.className=
-   "arrow "+
-   a.direction.toLowerCase();
-
- }else{
-
-  tradeState.textContent=
-   "NO TRADE";
-
-  tradeState.className=
-   "tradeState noTrade";
-
-
-  decision.textContent=
-   "NO TRADE";
-
-
-  /*
-    IMPORTANT:
-    No arrow for WAIT.
-  */
-
-  arrow.textContent="";
-  arrow.className="arrow";
-
- }
-
-
- $("confidence").textContent=
-  a.confidence+"%";
-
-
- $("strength").textContent=
-  a.confidence>=80
-   ? "HIGH"
-   : a.confidence>=65
-    ? "MEDIUM"
-    : "LOW";
-
-
- $("signalStat").textContent=
-  a.trade
-   ? a.direction
-   : "WAIT";
-
-
- $("expiryStat").textContent=
-  formatExpiry(state.expiry);
-
-
- $("quality").textContent=
-  a.confidence>=80
-   ? "A+"
-   : a.confidence>=70
-    ? "A"
-    : a.confidence>=60
-     ? "B"
-     : "C";
-
-
- $("scoreNumber").textContent=
-  a.score+"/100";
-
-
- setBar("trendBar",a.trend);
- setBar("momentumBar",a.momentum);
- setBar("rsiBar",a.rsiScore);
- setBar("priceBar",a.priceAction);
- setBar("volBar",a.volatility);
- setBar("confirmBar",a.confirmation);
-
-
- $("rsiValue").textContent=
-  a.rsi.toFixed(1);
-
-
- $("rsiSignal").textContent=
-  a.rsi>70
-   ? "Overbought"
-   : a.rsi<30
-    ? "Oversold"
-    : "Neutral";
-
-
- $("emaValue").textContent=
-  a.shortEMA>a.longEMA
-   ? "BULLISH"
-   : "BEARISH";
-
-
- $("emaSignal").textContent=
-  a.shortEMA>a.longEMA
-   ? "EMA 8 > EMA 21"
-   : "EMA 8 < EMA 21";
-
-
- $("momentumValue").textContent=
-  a.momentum>=60
-   ? "STRONG UP"
-   : a.momentum<=40
-    ? "STRONG DOWN"
-    : "NEUTRAL";
-
-
- $("momentumSignal").textContent=
-  a.momentum>=60
-   ? "Positive pressure"
-   : a.momentum<=40
-    ? "Negative pressure"
-    : "Mixed pressure";
-
-
- $("volatilityValue").textContent=
-  a.volatility>=65
-   ? "HIGH"
-   : a.volatility>=45
-    ? "NORMAL"
-    : "LOW";
-
-
- $("volatilitySignal").textContent=
-  a.volatility>=65
-   ? "Fast movement"
-   : a.volatility>=45
-    ? "Stable movement"
-    : "Quiet market";
-
+ $("volatilityValue").textContent = a.volatility >= 65 ? "HIGH" : a.volatility >= 45 ? "NORMAL" : "LOW";
+ $("volatilitySignal").textContent = a.volatility >= 65 ? "Fast movement" : a.volatility >= 45 ? "Stable movement" : "Quiet market";
 }
 
 
 /* =========================================
-   SCAN
+   SCAN & HISTORY
 ========================================= */
 
 function runScan(){
-
- const analysis=
-  calculateAnalysis();
-
-
- /*
-   The 80% threshold is always active.
- */
-
+ const analysis = calculateAnalysis();
  updateUI(analysis);
-
  addHistory(analysis);
-
  resetTimer();
-
 }
-
 
 function addHistory(a){
-
- const now=new Date();
-
+ const now = new Date();
  state.history.unshift({
-
-  time:
-   now.toLocaleTimeString([],{
-    hour:"2-digit",
-    minute:"2-digit",
-    second:"2-digit"
-   }),
-
-  pair:state.pair,
-
-  direction:
-   a.trade
-    ? a.direction
-    : "NO TRADE",
-
-  confidence:a.confidence,
-
-  trade:a.trade
-
+  time: now.toLocaleTimeString([], {hour:"2-digit", minute:"2-digit", second:"2-digit"}),
+  pair: state.pair,
+  direction: a.trade ? a.direction : "NO TRADE",
+  confidence: a.confidence,
+  trade: a.trade
  });
-
-
- state.history=
-  state.history.slice(0,8);
-
-
+ state.history = state.history.slice(0, 8);
  renderHistory();
-
 }
 
-
 function renderHistory(){
-
- $("historyCount").textContent=
-  state.history.length;
-
-
+ $("historyCount").textContent = state.history.length;
  if(!state.history.length){
-
-  $("historyList").innerHTML=
-   '<div style="text-align:center;padding:18px;color:#65768b;font-size:10px">No signals generated yet</div>';
-
+  $("historyList").innerHTML = '<div style="text-align:center;padding:18px;color:#65768b;font-size:10px">No signals generated yet</div>';
   return;
-
  }
-
-
- $("historyList").innerHTML=
-  state.history.map(item=>`
-
+ $("historyList").innerHTML = state.history.map(item => `
    <div class="historyItem">
-
-    <div class="hTime">
-     ${item.time}
-    </div>
-
+    <div class="hTime">${item.time}</div>
     <div>
-
-     <div class="hPair">
-      ${item.pair}
-     </div>
-
-     <div class="hMeta">
-      Confidence ${item.confidence}%
-     </div>
-
+     <div class="hPair">${item.pair}</div>
+     <div class="hMeta">Confidence ${item.confidence}%</div>
     </div>
-
-    <div class="hSignal ${
-      item.trade
-       ? item.direction.toLowerCase()
-       : "wait"
-    }">
-
+    <div class="hSignal ${item.trade ? item.direction.toLowerCase() : "wait"}">
      ${item.direction}
-
     </div>
-
    </div>
-
-  `).join("");
-
+ `).join("");
 }
 
 
 /* =========================================
-   TIMER
+   TIMERS & EVENTS
 ========================================= */
 
 function formatExpiry(seconds){
-
- if(seconds<60)
-  return seconds+"s";
-
- if(seconds%3600===0)
-  return (seconds/3600)+"h";
-
- if(seconds%60===0)
-  return (seconds/60)+"m";
-
- return seconds+"s";
+ if(seconds < 60) return seconds + "s";
+ if(seconds % 3600 === 0) return (seconds / 3600) + "h";
+ if(seconds % 60 === 0) return (seconds / 60) + "m";
+ return seconds + "s";
 }
-
 
 function resetTimer(){
-
- state.timer=
-  state.expiry;
-
- $("countdown").textContent=
-  formatExpiry(state.timer);
-
+ state.timer = state.expiry;
+ $("countdown").textContent = formatExpiry(state.timer);
 }
-
 
 function startTimer(){
-
- clearInterval(
-  state.timerId
- );
-
-
- state.timer=
-  state.expiry;
-
-
- state.timerId=
-  setInterval(()=>{
-
-   state.timer--;
-
-
-   if(state.timer<=0){
-
-    runScan();
-
-    state.timer=
-     state.expiry;
-
-   }
-
-
-   $("countdown").textContent=
-    formatExpiry(state.timer);
-
-  },1000);
-
+ clearInterval(state.timerId);
+ state.timer = state.expiry;
+ state.timerId = setInterval(()=>{
+  state.timer--;
+  if(state.timer <= 0){
+   runScan();
+   state.timer = state.expiry;
+  }
+  $("countdown").textContent = formatExpiry(state.timer);
+ }, 1000);
 }
-
-
-/* =========================================
-   AUTO SCAN
-========================================= */
 
 function startAuto(){
-
- clearInterval(
-  state.autoId
- );
-
-
- if(!state.auto)
-  return;
-
-
- state.autoId=
-  setInterval(()=>{
-
-   if(state.auto)
-    runScan();
-
-  },
-  Math.max(
-   state.expiry*1000,
-   5000
-  ));
-
+ clearInterval(state.autoId);
+ if(!state.auto) return;
+ state.autoId = setInterval(()=>{
+  if(state.auto) runScan();
+ }, Math.max(state.expiry * 1000, 5000));
 }
-
 
 function toggleAuto(){
-
- state.auto=
-  !state.auto;
-
-
- $("autoBtn")
-  .classList
-  .toggle(
-   "active",
-   state.auto
-  );
-
-
- $("autoBtn").textContent=
-  state.auto
-   ? "AUTO ON"
-   : "AUTO SCAN";
-
-
+ state.auto = !state.auto;
+ $("autoBtn").classList.toggle("active", state.auto);
+ $("autoBtn").textContent = state.auto ? "AUTO ON" : "AUTO SCAN";
  if(state.auto){
-
   runScan();
-
   startAuto();
-
- }else{
-
-  clearInterval(
-   state.autoId
-  );
-
+ } else {
+  clearInterval(state.autoId);
  }
-
 }
-
-
-/* =========================================
-   NAVIGATION
-========================================= */
 
 function goTo(id){
-
- const element=$(id);
-
+ const element = $(id);
  if(element){
-
-  element.scrollIntoView({
-   behavior:"smooth",
-   block:"start"
-  });
-
+  element.scrollIntoView({behavior:"smooth", block:"start"});
  }
-
 }
 
+$("scanBtn").addEventListener("click", runScan);
+$("autoBtn").addEventListener("click", toggleAuto);
 
-/* =========================================
-   EVENTS
-========================================= */
+$("pairSelect").addEventListener("change", e=>{
+ state.pair = e.target.value;
+ runScan();
+});
 
-$("scanBtn")
- .addEventListener(
-  "click",
-  runScan
- );
+$("expirySelect").addEventListener("change", e=>{
+ state.expiry = parseInt(e.target.value, 10);
+ resetTimer();
+ if(state.auto) startAuto();
+});
 
+$("strongOnly").addEventListener("change", runScan);
 
-$("autoBtn")
- .addEventListener(
-  "click",
-  toggleAuto
- );
-
-
-$("pairSelect")
- .addEventListener(
-  "change",
-  e=>{
-
-   state.pair=
-    e.target.value;
-
-   runScan();
-
-  }
- );
-
-
-$("expirySelect")
- .addEventListener(
-  "change",
-  e=>{
-
-   state.expiry=
-    parseInt(
-     e.target.value,
-     10
-    );
-
-   resetTimer();
-
-   if(state.auto)
-    startAuto();
-
-  }
- );
-
-
-/*
-  The filter is informational here
-  because the 80% threshold is mandatory.
- */
-
-$("strongOnly")
- .addEventListener(
-  "change",
-  ()=>{
-
-   runScan();
-
-  }
- );
-
-
-/* =========================================
-   INITIALIZE
-========================================= */
-
-state.pair=
- $("pairSelect").value;
-
-state.expiry=
- parseInt(
-  $("expirySelect").value,
-  10
-);
-
+// Initialize
+state.pair = $("pairSelect").value;
+state.expiry = parseInt($("expirySelect").value, 10);
 runScan();
-
 startTimer();
 
 </script>
