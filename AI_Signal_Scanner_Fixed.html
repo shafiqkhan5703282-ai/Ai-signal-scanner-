@@ -254,8 +254,9 @@
 
       setTimeout(() => {
         const isUp = Math.random() > 0.5;
-        const accuracyVal = (94.5 + Math.random() * 4.8).toFixed(1) + '%';
-        const strengthVal = (92.0 + Math.random() * 7.5).toFixed(1) + '%';
+        // Updated to strictly range between 95.0% and 99.8%
+        const accuracyVal = (95.0 + Math.random() * 4.8).toFixed(1) + '%';
+        const strengthVal = (94.0 + Math.random() * 5.5).toFixed(1) + '%';
         const signalId = `#CSA${Math.floor(1000 + Math.random() * 9000)}`;
 
         document.getElementById('resPair').textContent = `PAIR: ${selectedPair}`;
@@ -277,8 +278,8 @@
           resType.textContent = 'STRONG BUY SIGNAL (CALL)';
           resType.className = 'text-sm font-black tracking-wider text-emerald-400';
           
-          resRsi.textContent = `${(22 + Math.random() * 12).toFixed(1)} (Oversold Reversal)`;
-          resMacd.textContent = `+0.00${Math.floor(10 + Math.random() * 80)} Bullish Crossover`;
+          resRsi.textContent = `${(22 + Math.random() * 8).toFixed(1)} (Oversold Reversal)`;
+          resMacd.textContent = `+0.00${Math.floor(40 + Math.random() * 50)} Bullish Crossover`;
           resTrend.textContent = 'Strong Upward Momentum';
           resTrend.className = 'font-bold text-emerald-400';
         } else {
@@ -287,8 +288,8 @@
           resType.textContent = 'STRONG SELL SIGNAL (PUT)';
           resType.className = 'text-sm font-black tracking-wider text-red-400';
           
-          resRsi.textContent = `${(68 + Math.random() * 12).toFixed(1)} (Overbought Reversal)`;
-          resMacd.textContent = `-0.00${Math.floor(10 + Math.random() * 80)} Bearish Crossover`;
+          resRsi.textContent = `${(70 + Math.random() * 8).toFixed(1)} (Overbought Reversal)`;
+          resMacd.textContent = `-0.00${Math.floor(40 + Math.random() * 50)} Bearish Crossover`;
           resTrend.textContent = 'Strong Downward Momentum';
           resTrend.className = 'font-bold text-red-400';
         }
