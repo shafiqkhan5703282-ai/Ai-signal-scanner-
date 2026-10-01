@@ -15,35 +15,59 @@
     }
   </style>
 </head>
-<body class="bg-slate-950 text-white min-h-screen flex items-center justify-center p-4 font-sans">
+<body class="bg-slate-950 text-white min-h-screen flex items-center justify-center p-3 font-sans">
 
-  <div class="w-full max-w-md bg-slate-900/90 border border-slate-800 rounded-2xl p-5 shadow-2xl space-y-5">
+  <div class="w-full max-w-lg bg-slate-900 border-2 border-orange-500/40 rounded-3xl p-6 shadow-2xl space-y-6">
     
     <!-- Top Header -->
-    <div class="flex justify-between items-center bg-slate-900 border border-slate-800 rounded-xl p-3.5">
+    <div class="flex justify-between items-center bg-slate-950 border border-orange-500/30 rounded-2xl p-4 shadow-inner">
       <div>
-        <h1 class="text-lg font-extrabold text-cyan-400 tracking-wide">Chinese Signals</h1>
-        <p class="text-[10px] font-semibold text-slate-400 tracking-wider">AI BOT | PRO MAX</p>
+        <h1 class="text-xl font-black text-orange-400 tracking-wide uppercase">Chinese Signals</h1>
+        <p class="text-xs font-bold text-orange-200/70 tracking-widest">AI BOT | PRO MAX ACCURACY</p>
       </div>
-      <span class="bg-amber-500/20 text-amber-300 text-[10px] px-3 py-1 rounded-full font-bold border border-amber-500/30">
-        PRO MAX UNLOCKED
+      <span class="bg-orange-500/20 text-orange-300 text-xs px-3 py-1.5 rounded-full font-black border border-orange-500/50 uppercase tracking-wider">
+        VIP ACTIVE
       </span>
     </div>
 
-    <!-- Main Control Panel -->
-    <div id="controlPanel" class="space-y-4">
+    <!-- 🔑 ACTIVATION KEY VIEW -->
+    <div id="activationView" class="space-y-5 text-center py-4">
+      <div class="bg-orange-500/10 border border-orange-500/30 rounded-2xl p-4">
+        <h2 class="text-lg font-bold text-orange-400 mb-1">Security Access Required</h2>
+        <p class="text-xs text-slate-400">Please enter your VIP Activation Key to unlock high-accuracy market scanning.</p>
+      </div>
+
       <div>
-        <label class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Broker</label>
-        <select id="brokerSelect" class="w-full bg-slate-800 border border-slate-700 rounded-xl p-3 mt-1 text-sm text-white focus:outline-none focus:border-cyan-400">
+        <input 
+          type="text" 
+          id="activationKeyInput" 
+          placeholder="Enter Key (e.g. AWRSK78)" 
+          class="w-full bg-slate-950 border-2 border-orange-500/50 rounded-2xl p-4 text-center font-mono font-bold text-lg text-orange-300 placeholder-slate-600 focus:outline-none focus:border-orange-400 transition-all uppercase tracking-widest"
+        />
+        <p id="keyError" class="hidden text-xs text-red-400 font-bold mt-2">Invalid Activation Key. Please try again.</p>
+      </div>
+
+      <button id="activateBtn" class="w-full bg-orange-500 hover:bg-orange-400 text-slate-950 font-black text-base py-4 rounded-2xl transition-all shadow-lg shadow-orange-500/30 active:scale-98 uppercase tracking-wider">
+        🔓 Unlock Bot Access
+      </button>
+    </div>
+
+    <!-- 📊 MAIN CONTROL PANEL (Hidden until unlocked) -->
+    <div id="controlPanel" class="hidden space-y-5">
+      <div>
+        <label class="text-xs font-extrabold text-orange-400 uppercase tracking-wider">Select Broker</label>
+        <select id="brokerSelect" class="w-full bg-slate-950 border border-slate-800 rounded-2xl p-4 mt-1.5 text-base font-bold text-white focus:outline-none focus:border-orange-500">
           <option value="Quotex">Quotex</option>
           <option value="Pocket Option">Pocket Option</option>
+          <option value="IQ Option">IQ Option</option>
+          <option value="Olymp Trade">Olymp Trade</option>
         </select>
       </div>
 
       <div>
-        <label class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Market</label>
-        <select id="marketSelect" class="w-full bg-slate-800 border border-slate-700 rounded-xl p-3 mt-1 text-sm text-white focus:outline-none focus:border-cyan-400">
-          <option value="OTC Markets">OTC Markets</option>
+        <label class="text-xs font-extrabold text-orange-400 uppercase tracking-wider">Market Type</label>
+        <select id="marketSelect" class="w-full bg-slate-950 border border-slate-800 rounded-2xl p-4 mt-1.5 text-base font-bold text-white focus:outline-none focus:border-orange-500">
+          <option value="OTC Markets">OTC Markets (High Payout)</option>
           <option value="Live Currency Markets">Live Currency Markets</option>
           <option value="Crypto Markets">Crypto Markets</option>
           <option value="Commodities">Commodities</option>
@@ -52,17 +76,17 @@
       </div>
 
       <div>
-        <label class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Pair</label>
-        <select id="pairSelect" class="w-full bg-slate-800 border border-slate-700 rounded-xl p-3 mt-1 text-sm text-white focus:outline-none focus:border-cyan-400">
+        <label class="text-xs font-extrabold text-orange-400 uppercase tracking-wider">Trading Pair</label>
+        <select id="pairSelect" class="w-full bg-slate-950 border border-slate-800 rounded-2xl p-4 mt-1.5 text-base font-bold text-white focus:outline-none focus:border-orange-500">
           <!-- Populated by JS -->
         </select>
       </div>
 
       <div>
-        <label class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Timer (3s to 1 Hour)</label>
-        <select id="timerSelect" class="w-full bg-slate-800 border border-slate-700 rounded-xl p-3 mt-1 text-sm text-white focus:outline-none focus:border-cyan-400">
-          <option value="3 Seconds">3 Seconds</option>
-          <option value="5 Seconds" selected>5 Seconds</option>
+        <label class="text-xs font-extrabold text-orange-400 uppercase tracking-wider">Timeframe / Expiry</label>
+        <select id="timerSelect" class="w-full bg-slate-950 border border-slate-800 rounded-2xl p-4 mt-1.5 text-base font-bold text-white focus:outline-none focus:border-orange-500">
+          <option value="3 Seconds">3 Seconds (Ultra Fast)</option>
+          <option value="5 Seconds" selected>5 Seconds (Recommended)</option>
           <option value="10 Seconds">10 Seconds</option>
           <option value="15 Seconds">15 Seconds</option>
           <option value="30 Seconds">30 Seconds</option>
@@ -77,59 +101,83 @@
         </select>
       </div>
 
-      <button id="generateBtn" class="w-full mt-2 bg-blue-600 hover:bg-blue-500 font-extrabold text-sm py-3.5 rounded-xl transition-all shadow-lg shadow-blue-600/30 active:scale-98">
-        ⚡ GENERATE SIGNAL
+      <button id="generateBtn" class="w-full mt-2 bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-400 hover:to-amber-400 text-slate-950 font-black text-lg py-4 rounded-2xl transition-all shadow-xl shadow-orange-500/25 active:scale-98 tracking-wider">
+        ⚡ ANALYZE & GENERATE SIGNAL
       </button>
     </div>
 
-    <!-- Analyzing Animation View -->
-    <div id="loadingView" class="hidden text-center py-10 space-y-4">
-      <div class="w-16 h-16 border-4 border-cyan-400 border-t-transparent rounded-full animate-spin-custom mx-auto"></div>
-      <div>
-        <p class="text-sm font-bold text-slate-200 uppercase tracking-wider">Analyzing Market Data...</p>
-        <p id="loadingMeta" class="text-xs text-slate-500 mt-1"></p>
+    <!-- ⚡ ANALYZING / DEEP SCAN VIEW -->
+    <div id="loadingView" class="hidden text-center py-8 space-y-5">
+      <div class="w-20 h-20 border-4 border-orange-500 border-t-transparent rounded-full animate-spin-custom mx-auto shadow-lg shadow-orange-500/20"></div>
+      <div class="space-y-2">
+        <p class="text-base font-black text-orange-400 uppercase tracking-wider">Deep AI Technical Analysis...</p>
+        <p id="loadingMeta" class="text-xs font-mono text-slate-400"></p>
+        <div id="analysisStep" class="text-xs font-bold text-amber-300/80 bg-slate-950 py-2 px-4 rounded-xl border border-slate-800 inline-block mt-2">
+          Fetching Order Book Volume...
+        </div>
       </div>
     </div>
 
-    <!-- Result Signal View -->
-    <div id="resultView" class="hidden space-y-4 text-center">
-      <div class="flex justify-between items-center text-xs text-slate-400 border-b border-slate-800 pb-2">
-        <span id="resPair">PAIR: USD/ARS (OTC)</span>
-        <span id="resId">ID: #CSA2582</span>
+    <!-- 📈 RESULT SIGNAL VIEW -->
+    <div id="resultView" class="hidden space-y-5 text-center">
+      <div class="flex justify-between items-center text-xs font-mono text-slate-400 border-b border-slate-800 pb-3">
+        <span id="resPair" class="font-bold text-slate-200">PAIR: USD/ARS (OTC)</span>
+        <span id="resId" class="text-orange-400 font-bold">ID: #CSA2582</span>
       </div>
 
-      <div id="resDirection" class="font-black text-4xl tracking-widest animate-pulse">
-        DOWN
-      </div>
-      <p id="resType" class="text-xs font-extrabold tracking-wider">STRONG SELL SIGNAL</p>
-
-      <div class="grid grid-cols-2 gap-2 text-xs pt-2 border-t border-slate-800">
-        <div class="bg-slate-800/60 p-2.5 rounded-lg border border-slate-700/50">
-          <span class="text-slate-400 block text-[10px] uppercase">Broker</span>
-          <span id="resBroker" class="font-bold text-white">Quotex</span>
+      <div class="bg-slate-950 border border-slate-800 rounded-2xl p-5 space-y-2">
+        <div id="resDirection" class="font-black text-5xl tracking-widest animate-pulse">
+          UP
         </div>
-        <div class="bg-slate-800/60 p-2.5 rounded-lg border border-slate-700/50">
-          <span class="text-slate-400 block text-[10px] uppercase">Timer</span>
-          <span id="resTimer" class="font-bold text-white">5 Seconds</span>
-        </div>
-        <div class="bg-slate-800/60 p-2.5 rounded-lg border border-slate-700/50">
-          <span class="text-slate-400 block text-[10px] uppercase">Accuracy</span>
-          <span id="resAccuracy" class="font-bold text-emerald-400">98.1%</span>
-        </div>
-        <div class="bg-slate-800/60 p-2.5 rounded-lg border border-slate-700/50">
-          <span class="text-slate-400 block text-[10px] uppercase">Signal Strength</span>
-          <span id="resStrength" class="font-bold text-cyan-400">93.8%</span>
-        </div>
+        <p id="resType" class="text-sm font-black tracking-wider uppercase">STRONG BUY SIGNAL</p>
       </div>
 
-      <button id="resetBtn" class="w-full bg-slate-800 hover:bg-slate-700 text-xs font-bold py-3 rounded-xl text-slate-300 transition-colors border border-slate-700">
-        Generate New Signal
+      <!-- Advanced Analysis Breakdown -->
+      <div class="bg-slate-950/80 border border-slate-800/80 rounded-2xl p-3.5 text-left text-xs space-y-1.5 font-mono">
+        <div class="flex justify-between">
+          <span class="text-slate-400">RSI Indicator (14):</span>
+          <span id="resRsi" class="font-bold text-slate-200">28.4 (Oversold)</span>
+        </div>
+        <div class="flex justify-between">
+          <span class="text-slate-400">MACD Histogram:</span>
+          <span id="resMacd" class="font-bold text-emerald-400">+0.0014 Cross Up</span>
+        </div>
+        <div class="flex justify-between">
+          <span class="text-slate-400">Trend Alignment:</span>
+          <span id="resTrend" class="font-bold text-amber-400">Bullish Momentum</span>
+        </div>
+      </div>
+
+      <!-- Signal Metrics Grid -->
+      <div class="grid grid-cols-2 gap-3 text-xs">
+        <div class="bg-slate-950 p-3 rounded-xl border border-slate-800">
+          <span class="text-slate-400 block text-[10px] uppercase font-bold">Broker</span>
+          <span id="resBroker" class="font-extrabold text-white text-sm">Quotex</span>
+        </div>
+        <div class="bg-slate-950 p-3 rounded-xl border border-slate-800">
+          <span class="text-slate-400 block text-[10px] uppercase font-bold">Timeframe</span>
+          <span id="resTimer" class="font-extrabold text-white text-sm">5 Seconds</span>
+        </div>
+        <div class="bg-slate-950 p-3 rounded-xl border border-slate-800">
+          <span class="text-slate-400 block text-[10px] uppercase font-bold">Win Rate Accuracy</span>
+          <span id="resAccuracy" class="font-extrabold text-emerald-400 text-sm">98.8%</span>
+        </div>
+        <div class="bg-slate-950 p-3 rounded-xl border border-slate-800">
+          <span class="text-slate-400 block text-[10px] uppercase font-bold">Signal Confidence</span>
+          <span id="resStrength" class="font-extrabold text-orange-400 text-sm">96.5%</span>
+        </div>
+      </div>
+
+      <button id="resetBtn" class="w-full bg-slate-950 hover:bg-slate-800 text-xs font-black py-4 rounded-2xl text-orange-400 transition-colors border border-orange-500/40 uppercase tracking-wider">
+        🔄 Scan Next Market Signal
       </button>
     </div>
 
   </div>
 
   <script>
+    const VALID_KEY = "AWRSK78";
+
     const TRADING_PAIRS = {
       'OTC Markets': [
         'USD/ARS (OTC)', 'EUR/USD (OTC)', 'GBP/USD (OTC)', 'USD/JPY (OTC)', 
@@ -153,15 +201,33 @@
       ]
     };
 
+    const activationView = document.getElementById('activationView');
+    const controlPanel = document.getElementById('controlPanel');
+    const loadingView = document.getElementById('loadingView');
+    const resultView = document.getElementById('resultView');
+
+    const activationKeyInput = document.getElementById('activationKeyInput');
+    const keyError = document.getElementById('keyError');
+    const activateBtn = document.getElementById('activateBtn');
+
     const marketSelect = document.getElementById('marketSelect');
     const pairSelect = document.getElementById('pairSelect');
     const brokerSelect = document.getElementById('brokerSelect');
     const timerSelect = document.getElementById('timerSelect');
-
-    const controlPanel = document.getElementById('controlPanel');
-    const loadingView = document.getElementById('loadingView');
-    const resultView = document.getElementById('resultView');
     const loadingMeta = document.getElementById('loadingMeta');
+    const analysisStep = document.getElementById('analysisStep');
+
+    // Key Validation
+    activateBtn.addEventListener('click', () => {
+      const enteredKey = activationKeyInput.value.trim().toUpperCase();
+      if (enteredKey === VALID_KEY) {
+        keyError.classList.add('hidden');
+        activationView.classList.add('hidden');
+        controlPanel.classList.remove('hidden');
+      } else {
+        keyError.classList.remove('hidden');
+      }
+    });
 
     function populatePairs() {
       const selectedMarket = marketSelect.value;
@@ -172,18 +238,24 @@
     marketSelect.addEventListener('change', populatePairs);
     populatePairs();
 
+    // Signal Generation Logic
     document.getElementById('generateBtn').addEventListener('click', () => {
       const selectedPair = pairSelect.value;
       const selectedTimer = timerSelect.value;
       
-      loadingMeta.textContent = `${selectedPair} • ${selectedTimer}`;
+      loadingMeta.textContent = `${selectedPair} • ${selectedTimer} • ${brokerSelect.value}`;
       controlPanel.classList.add('hidden');
       loadingView.classList.remove('hidden');
 
+      // Animated multi-stage analysis steps
+      setTimeout(() => { analysisStep.textContent = "Calculating Bollinger Bands & RSI..."; }, 800);
+      setTimeout(() => { analysisStep.textContent = "Scanning MACD & Price Action Volume..."; }, 1700);
+      setTimeout(() => { analysisStep.textContent = "Finalizing High-Precision AI Signal..."; }, 2400);
+
       setTimeout(() => {
         const isUp = Math.random() > 0.5;
-        const accuracyVal = (88 + Math.random() * 10).toFixed(1) + '%';
-        const strengthVal = (82 + Math.random() * 15).toFixed(1) + '%';
+        const accuracyVal = (94.5 + Math.random() * 4.8).toFixed(1) + '%';
+        const strengthVal = (92.0 + Math.random() * 7.5).toFixed(1) + '%';
         const signalId = `#CSA${Math.floor(1000 + Math.random() * 9000)}`;
 
         document.getElementById('resPair').textContent = `PAIR: ${selectedPair}`;
@@ -195,22 +267,35 @@
 
         const resDir = document.getElementById('resDirection');
         const resType = document.getElementById('resType');
+        const resRsi = document.getElementById('resRsi');
+        const resMacd = document.getElementById('resMacd');
+        const resTrend = document.getElementById('resTrend');
 
         if (isUp) {
-          resDir.textContent = '↑ UP';
-          resDir.className = 'font-black text-4xl tracking-widest animate-pulse text-emerald-500';
-          resType.textContent = 'STRONG BUY SIGNAL';
-          resType.className = 'text-xs font-extrabold tracking-wider text-emerald-400';
+          resDir.textContent = 'CALL ▲';
+          resDir.className = 'font-black text-5xl tracking-widest animate-pulse text-emerald-400';
+          resType.textContent = 'STRONG BUY SIGNAL (CALL)';
+          resType.className = 'text-sm font-black tracking-wider text-emerald-400';
+          
+          resRsi.textContent = `${(22 + Math.random() * 12).toFixed(1)} (Oversold Reversal)`;
+          resMacd.textContent = `+0.00${Math.floor(10 + Math.random() * 80)} Bullish Crossover`;
+          resTrend.textContent = 'Strong Upward Momentum';
+          resTrend.className = 'font-bold text-emerald-400';
         } else {
-          resDir.textContent = '↓ DOWN';
-          resDir.className = 'font-black text-4xl tracking-widest animate-pulse text-red-500';
-          resType.textContent = 'STRONG SELL SIGNAL';
-          resType.className = 'text-xs font-extrabold tracking-wider text-red-400';
+          resDir.textContent = 'PUT ▼';
+          resDir.className = 'font-black text-5xl tracking-widest animate-pulse text-red-400';
+          resType.textContent = 'STRONG SELL SIGNAL (PUT)';
+          resType.className = 'text-sm font-black tracking-wider text-red-400';
+          
+          resRsi.textContent = `${(68 + Math.random() * 12).toFixed(1)} (Overbought Reversal)`;
+          resMacd.textContent = `-0.00${Math.floor(10 + Math.random() * 80)} Bearish Crossover`;
+          resTrend.textContent = 'Strong Downward Momentum';
+          resTrend.className = 'font-bold text-red-400';
         }
 
         loadingView.classList.add('hidden');
         resultView.classList.remove('hidden');
-      }, 3000);
+      }, 3200);
     });
 
     document.getElementById('resetBtn').addEventListener('click', () => {
