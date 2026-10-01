@@ -322,21 +322,28 @@
       loadingView.classList.remove('hidden');
 
 
-      // Temporary red UP/DOWN
+      // Temporary UP/DOWN during analysis
       const preSignal =
         document.getElementById('preSignal');
 
       const countdownNumber =
         document.getElementById('countdownNumber');
 
-      preSignal.textContent =
-        Math.random() > 0.5 ? 'UP' : 'DOWN';
+      const analysisIsUp =
+        Math.random() > 0.5;
 
+      preSignal.textContent =
+        analysisIsUp ? 'UP' : 'DOWN';
+
+      // UP = GREEN / DOWN = RED
       preSignal.className =
-        'text-5xl font-black text-red-500 animate-pulse';
+        analysisIsUp
+          ? 'text-5xl font-black text-emerald-400 animate-pulse'
+          : 'text-5xl font-black text-red-500 animate-pulse';
 
 
       // COUNTDOWN 5 → 4 → 3 → 2 → 1
+      // Countdown number stays RED
       let count = 5;
 
       countdownNumber.textContent = count;
@@ -437,6 +444,7 @@
           resDir.textContent =
             'CALL ▲';
 
+          // FINAL UP = GREEN
           resDir.className =
             'font-black text-5xl tracking-widest animate-pulse text-emerald-400';
 
@@ -463,6 +471,7 @@
           resDir.textContent =
             'PUT ▼';
 
+          // FINAL DOWN = RED
           resDir.className =
             'font-black text-5xl tracking-widest animate-pulse text-red-400';
 
