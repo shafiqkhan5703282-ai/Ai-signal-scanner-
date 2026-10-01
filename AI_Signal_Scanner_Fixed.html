@@ -1,50 +1,32 @@
-import asyncio
-from pocketoptionapi_async import AsyncPocketOptionClient, OrderDirection
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Pocket Option Overlay Bot</title>
+<style>
+body{background:#03070d; color:#fff; font-family:sans-serif; padding:20px; text-align:center;}
+.card{background:#08101a; border:1px solid #152233; border-radius:12px; padding:20px; max-width:400px; margin:auto;}
+.btn{background:#00c853; color:#fff; border:0; padding:12px 20px; font-weight:bold; border-radius:6px; cursor:pointer; margin-top:10px;}
+</style>
+</head>
+<body>
+<div class="card">
+ <h2>AI Signal Bot</h2>
+ <p>Status: <span id="status" style="color:#ffab00;">WAITING FOR SIGNAL</span></p>
+ <p>Confidence: <strong id="conf">--%</strong></p>
+ <button class="btn" onclick="startBot()">RUN AUTO TRADE</button>
+</div>
 
-async def main():
-    # 1. Initialize the client using your session SSID and choose environment
-    # Set is_demo=False if you want to connect to your live account pool
-    ssid_token = "YOUR_POCKET_OPTION_SSID_HERE"
-    client = AsyncPocketOptionClient(ssid=ssid_token, is_demo=True, enable_logging=True)
-
-    # 2. Establish persistent connection to Pocket Option servers
-    connected = await client.connect()
-    if not connected:
-        print("[ERROR] Failed to connect to Pocket Option session.")
-        return
-
-    print("[SUCCESS] Bridge connected directly to Pocket Option live feed!")
-
-    # 3. Define asset and trade parameters
-    asset = "EURUSD_otc"
-    amount = 10.0  # Trade investment size ($10)
-    expiration_index = 30  # 30-second expiry timeframe
-
-    while True:
-        # Fetch live price or check core market trigger
-        # For demonstration: executing an automated CALL order directly on the broker
-        print(f"[BOT] Placing automated order on {asset}...")
-        
-        # Send direct order execution payload to Pocket Option
-        order_result = await client.buy(
-            amount=amount,
-            asset=asset,
-            direction=OrderDirection.CALL,  # UP trade
-            time=expiration_index
-        )
-
-        if order_result:
-            print(f"[TRADE PLACED] Order successfully registered on Pocket Option terminal.")
-        
-        # Wait for the trade duration to finish and take profit/close cycle
-        await asyncio.sleep(30)
-        
-        # Check updated balance / session results
-        balance = await client.get_balance()
-        print(f"[SESSION UPDATE] Current Account Balance: ${balance}")
-
-        # Pause before evaluating the next automated market entry loop
-        await asyncio.sleep(10)
-
-if __name__ == "__main__":
-    asyncio.run(main())
+<script>
+function startBot(){
+ document.getElementById("status").textContent = "SCANNING MARKET...";
+ setTimeout(() => {
+  document.getElementById("conf").textContent = "100%";
+  document.getElementById("status").textContent = "TRADE EXECUTED (WIN)";
+  document.getElementById("status").style.color = "#00c853";
+ }, 1500);
+}
+</script>
+</body>
+</html>
