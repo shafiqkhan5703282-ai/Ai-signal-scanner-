@@ -653,7 +653,7 @@ input:checked+.slider:before{
    <div class="sub">Multi-factor signal analysis</div>
   </div>
 
-  <div class="badge">80% RULE</div>
+  <div class="badge">100% RULE</div>
  </div>
 
  <div class="pairLine">
@@ -692,7 +692,7 @@ input:checked+.slider:before{
 
  <div class="decisionBox">
 
-  <!-- Arrow is only visible for BUY/SELL -->
+  <!-- Arrow is only visible for 100% confirmed BUY/SELL -->
   <div class="arrow" id="directionArrow"></div>
 
   <div class="decision" id="decisionText">
@@ -961,8 +961,8 @@ input:checked+.slider:before{
   <div class="filterLine">
 
    <div class="filterInfo">
-    <strong>80% Trade Threshold</strong>
-    <span>Trade signal only when confidence is 80% or higher</span>
+    <strong>100% Strict Threshold</strong>
+    <span>Trade signal shows only when calculated confidence is 100%</span>
    </div>
 
    <label class="switch">
@@ -1016,10 +1016,7 @@ input:checked+.slider:before{
  <div class="notice">
 
   <b>Important:</b>
-  The percentage shown is the strategy's calculated signal confidence,
-  not a guaranteed win percentage. An 80% threshold means the interface
-  will classify the signal as TRADE when its calculated confidence reaches
-  80% or above. It does not guarantee a profitable outcome.
+  The bot is now configured to strictly display <b>TRADE</b> only when confidence reaches 100%. Otherwise, it will safely show <b>NO TRADE</b>.
 
  </div>
 
@@ -1181,9 +1178,10 @@ function calculateAnalysis(){
 
  const distance = Math.abs(score - 50);
  let confidence = 54 + (distance * 1.85) + macdBoost;
- confidence = clamp(Math.round(confidence), 50, 98);
+ confidence = clamp(Math.round(confidence), 50, 100);
 
- let trade = confidence >= 80;
+ // STRICT REQUIREMENT: Only trigger trade if confidence hits exactly 100%
+ let trade = confidence >= 100;
  let direction = "WAIT";
 
  if(trade){
@@ -1246,11 +1244,11 @@ function updateUI(a){
  }
 
  $("confidence").textContent = a.confidence + "%";
- $("strength").textContent = a.confidence >= 82 ? "HIGH" : a.confidence >= 68 ? "MEDIUM" : "LOW";
+ $("strength").textContent = a.confidence >= 100 ? "MAX" : a.confidence >= 80 ? "HIGH" : "MODERATE";
  $("signalStat").textContent = a.trade ? a.direction : "WAIT";
  $("expiryStat").textContent = formatExpiry(state.expiry);
 
- $("quality").textContent = a.confidence >= 88 ? "A+" : a.confidence >= 80 ? "A" : a.confidence >= 70 ? "B" : "C";
+ $("quality").textContent = a.confidence >= 100 ? "A+" : a.confidence >= 80 ? "A" : "B";
  $("scoreNumber").textContent = a.score + "/100";
 
  setBar("trendBar", a.trend);
