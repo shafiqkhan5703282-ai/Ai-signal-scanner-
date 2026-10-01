@@ -622,8 +622,6 @@ button,select{
     SIMULATED SIGNALS — LIVE BROKER DATA NOT CONNECTED
   </div>
 
-  <!-- PLATFORM / PAIR / TIMEFRAME -->
-
   <div class="card">
 
     <div class="controlFull">
@@ -735,12 +733,19 @@ button,select{
 
           <option value="3">3 seconds</option>
           <option value="5" selected>5 seconds</option>
+          <option value="7">7 seconds</option>
           <option value="10">10 seconds</option>
+          <option value="12">12 seconds</option>
           <option value="15">15 seconds</option>
+          <option value="17">17 seconds</option>
+          <option value="20">20 seconds</option>
+          <option value="25">25 seconds</option>
           <option value="30">30 seconds</option>
           <option value="60">1 minute</option>
           <option value="120">2 minutes</option>
+          <option value="180">3 minutes</option>
           <option value="300">5 minutes</option>
+          <option value="600">10 minutes</option>
           <option value="900">15 minutes</option>
           <option value="1800">30 minutes</option>
           <option value="3600">1 hour</option>
@@ -752,8 +757,6 @@ button,select{
     </div>
 
   </div>
-
-  <!-- SIGNAL -->
 
   <div class="card mainSignal">
 
@@ -889,8 +892,6 @@ button,select{
 
   </div>
 
-  <!-- CONTROLS -->
-
   <div class="card">
 
     <div class="tools">
@@ -954,8 +955,6 @@ button,select{
     </div>
 
   </div>
-
-  <!-- HISTORY -->
 
   <div class="card">
 
@@ -1044,10 +1043,6 @@ let seq = 1;
 let touchLock = 0;
 
 
-/* ---------------------------
-   PAIRS
----------------------------- */
-
 const pairs = [
 
 "EUR/USD",
@@ -1105,10 +1100,6 @@ const pairs = [
 $("pairCount").textContent = pairs.length;
 
 
-/* ---------------------------
-   CANDLE DEMO DATA
----------------------------- */
-
 function seed(){
 
   candles = [];
@@ -1126,10 +1117,6 @@ function seed(){
 }
 
 
-/* ---------------------------
-   TIME
----------------------------- */
-
 function now(){
 
   return new Date().toLocaleTimeString(
@@ -1141,10 +1128,6 @@ function now(){
 
 }
 
-
-/* ---------------------------
-   ANALYSIS
----------------------------- */
 
 function analyze(){
 
@@ -1229,10 +1212,6 @@ function analyze(){
 
 }
 
-
-/* ---------------------------
-   ORB
----------------------------- */
 
 function setOrb(sig){
 
@@ -1330,10 +1309,6 @@ function setOrb(sig){
 }
 
 
-/* ---------------------------
-   SUGGESTION
----------------------------- */
-
 function renderSuggestion(sig){
 
   const box =
@@ -1372,10 +1347,6 @@ function renderSuggestion(sig){
 
 }
 
-
-/* ---------------------------
-   HISTORY
----------------------------- */
 
 function addHistory(sig){
 
@@ -1464,10 +1435,6 @@ function renderHistory(){
 
 }
 
-
-/* ---------------------------
-   SCAN
----------------------------- */
 
 function scan(){
 
@@ -1595,10 +1562,6 @@ function scan(){
 }
 
 
-/* ---------------------------
-   FORMAT TIME
----------------------------- */
-
 function formatDuration(seconds){
 
   seconds =
@@ -1646,10 +1609,6 @@ function formatDuration(seconds){
 }
 
 
-/* ---------------------------
-   START
----------------------------- */
-
 function start(){
 
   if(running)
@@ -1694,10 +1653,6 @@ function start(){
 }
 
 
-/* ---------------------------
-   STOP
----------------------------- */
-
 function stop(){
 
   running =
@@ -1733,10 +1688,6 @@ function stop(){
 
 }
 
-
-/* ---------------------------
-   TIMER
----------------------------- */
 
 function tick(){
 
@@ -1789,20 +1740,12 @@ function tick(){
 }
 
 
-/* ---------------------------
-   GENERATE
----------------------------- */
-
 function generate(){
 
   scan();
 
 }
 
-
-/* ---------------------------
-   CLEAR
----------------------------- */
 
 function clearHistory(){
 
@@ -1813,10 +1756,6 @@ function clearHistory(){
 
 }
 
-
-/* ---------------------------
-   BUTTON TOUCH SUPPORT
----------------------------- */
 
 function tap(el,fn){
 
@@ -1881,10 +1820,6 @@ function tap(el,fn){
 }
 
 
-/* ---------------------------
-   PLATFORM
----------------------------- */
-
 $("platform")
 .addEventListener(
   "change",
@@ -1911,10 +1846,6 @@ $("platform")
   }
 );
 
-
-/* ---------------------------
-   PAIR
----------------------------- */
 
 $("pair")
 .addEventListener(
@@ -1957,10 +1888,6 @@ $("pair")
 );
 
 
-/* ---------------------------
-   TIMEFRAME
----------------------------- */
-
 $("expiry")
 .addEventListener(
   "change",
@@ -1999,10 +1926,6 @@ $("expiry")
   }
 );
 
-
-/* ---------------------------
-   BUTTONS
----------------------------- */
 
 seed();
 
@@ -2057,10 +1980,6 @@ tap(
     : start()
 );
 
-
-/* ---------------------------
-   INITIAL DISPLAY
----------------------------- */
 
 $("pairCount").textContent =
   pairs.length;
