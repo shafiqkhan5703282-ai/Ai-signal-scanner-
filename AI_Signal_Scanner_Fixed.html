@@ -17,13 +17,13 @@
   animation: spinCircle 1.2s linear infinite;
 }
 
-@keyframes pulseSignal {
+@keyframes signalPulse {
   0%,100% { opacity:1; transform:scale(1); }
-  50% { opacity:.65; transform:scale(1.02); }
+  50% { opacity:.72; transform:scale(1.025); }
 }
 
 .signal-pulse {
-  animation:pulseSignal 1.2s infinite;
+  animation:signalPulse 1s infinite;
 }
 
 .progress-bar {
@@ -74,15 +74,15 @@
   <div>
 
     <input
-      type="text"
       id="activationKeyInput"
+      type="text"
       placeholder="Enter Key (e.g. AWRSK78)"
       class="w-full bg-slate-950 border-2 border-orange-500/50 rounded-2xl p-4 text-center font-mono font-bold text-lg text-orange-300 placeholder-slate-600 focus:outline-none focus:border-orange-400 uppercase tracking-widest"
     >
 
     <p id="keyError"
        class="hidden text-xs text-red-400 font-bold mt-2">
-       Invalid Activation Key.
+      Invalid Activation Key.
     </p>
 
   </div>
@@ -100,33 +100,28 @@
 <div id="controlPanel" class="hidden space-y-5">
 
   <div>
-
     <label class="text-xs font-extrabold text-orange-400 uppercase tracking-wider">
       Select Broker
     </label>
 
-    <select
-      id="brokerSelect"
+    <select id="brokerSelect"
       class="w-full bg-slate-950 border border-slate-800 rounded-2xl p-4 mt-1.5 text-base font-bold text-white focus:outline-none focus:border-orange-500">
 
-      <option>Quotex</option>
-      <option>Pocket Option</option>
-      <option>IQ Option</option>
-      <option>Olymp Trade</option>
+      <option value="Quotex">Quotex</option>
+      <option value="Pocket Option">Pocket Option</option>
+      <option value="IQ Option">IQ Option</option>
+      <option value="Olymp Trade">Olymp Trade</option>
 
     </select>
-
   </div>
 
 
   <div>
-
     <label class="text-xs font-extrabold text-orange-400 uppercase tracking-wider">
       Market Type
     </label>
 
-    <select
-      id="marketSelect"
+    <select id="marketSelect"
       class="w-full bg-slate-950 border border-slate-800 rounded-2xl p-4 mt-1.5 text-base font-bold text-white focus:outline-none focus:border-orange-500">
 
       <option value="OTC Markets">OTC Markets (High Payout)</option>
@@ -136,49 +131,48 @@
       <option value="Indices & Stocks">Indices & Stocks</option>
 
     </select>
-
   </div>
 
 
   <div>
-
     <label class="text-xs font-extrabold text-orange-400 uppercase tracking-wider">
       Trading Pair
     </label>
 
-    <select
-      id="pairSelect"
+    <select id="pairSelect"
       class="w-full bg-slate-950 border border-slate-800 rounded-2xl p-4 mt-1.5 text-base font-bold text-white focus:outline-none focus:border-orange-500">
     </select>
-
   </div>
 
 
   <div>
-
     <label class="text-xs font-extrabold text-orange-400 uppercase tracking-wider">
       Timeframe / Expiry
     </label>
 
-    <select
-      id="timerSelect"
+    <select id="timerSelect"
       class="w-full bg-slate-950 border border-slate-800 rounded-2xl p-4 mt-1.5 text-base font-bold text-white focus:outline-none focus:border-orange-500">
 
-      <option value="3 Seconds">3 Seconds</option>
-      <option value="5 Seconds" selected>5 Seconds</option>
-      <option value="10 Seconds">10 Seconds</option>
-      <option value="15 Seconds">15 Seconds</option>
-      <option value="30 Seconds">30 Seconds</option>
-      <option value="1 Minute">1 Minute</option>
-      <option value="2 Minutes">2 Minutes</option>
-      <option value="3 Minutes">3 Minutes</option>
-      <option value="5 Minutes">5 Minutes</option>
-      <option value="10 Minutes">10 Minutes</option>
-      <option value="15 Minutes">15 Minutes</option>
-      <option value="30 Minutes">30 Minutes</option>
-      <option value="1 Hour">1 Hour</option>
+      <option value="3 Seconds" data-ms="3000">3 Seconds</option>
+      <option value="5 Seconds" data-ms="5000" selected>5 Seconds</option>
+      <option value="10 Seconds" data-ms="10000">10 Seconds</option>
+      <option value="15 Seconds" data-ms="15000">15 Seconds</option>
+      <option value="30 Seconds" data-ms="30000">30 Seconds</option>
+
+      <option value="1 Minute" data-ms="60000">1 Minute</option>
+      <option value="2 Minutes" data-ms="120000">2 Minutes</option>
+      <option value="3 Minutes" data-ms="180000">3 Minutes</option>
+      <option value="5 Minutes" data-ms="300000">5 Minutes</option>
+      <option value="10 Minutes" data-ms="600000">10 Minutes</option>
+      <option value="15 Minutes" data-ms="900000">15 Minutes</option>
+      <option value="30 Minutes" data-ms="1800000">30 Minutes</option>
+      <option value="1 Hour" data-ms="3600000">1 Hour</option>
 
     </select>
+
+    <p class="text-[10px] text-slate-500 mt-2">
+      For 2 minutes–1 hour, a new market scan is performed every 60 seconds.
+    </p>
 
   </div>
 
@@ -194,19 +188,20 @@
 </div>
 
 
-<!-- AUTOMATIC SCANNER -->
+<!-- SCANNER -->
 <div id="scannerView" class="hidden space-y-5 text-center">
 
+  <!-- TIMER -->
   <div class="bg-slate-950 border border-orange-500/30 rounded-2xl p-4">
 
     <div class="flex justify-between text-xs">
 
-      <span class="text-slate-400">
-        AUTO SCANNER
+      <span class="text-slate-400 font-bold">
+        AUTOMATIC SCANNER
       </span>
 
       <span id="scannerStatus"
-            class="text-orange-400 font-black">
+        class="text-emerald-400 font-black">
         ACTIVE
       </span>
 
@@ -214,8 +209,7 @@
 
     <div class="mt-3 h-2 bg-slate-800 rounded-full overflow-hidden">
 
-      <div
-        id="progressBar"
+      <div id="progressBar"
         class="progress-bar h-full bg-orange-500"
         style="width:100%">
       </div>
@@ -225,8 +219,8 @@
     <p class="text-xs text-slate-500 mt-2">
       Next scan in
       <span id="countdown"
-            class="text-orange-400 font-black">
-        7
+        class="text-orange-400 font-black">
+        5
       </span>
       seconds
     </p>
@@ -234,184 +228,99 @@
   </div>
 
 
-  <!-- CURRENT SIGNAL -->
-
-  <div
-    id="signalBox"
-    class="bg-slate-950 border border-slate-800 rounded-2xl p-6 space-y-3">
+  <!-- MAIN SIGNAL -->
+  <div class="bg-slate-950 border border-slate-800 rounded-2xl p-6 space-y-3">
 
     <p class="text-xs text-slate-400 uppercase font-bold tracking-widest">
-      Current Signal
+      SIGNAL
     </p>
 
-    <div
-      id="signalDirection"
+    <div id="signalDirection"
       class="font-black text-5xl tracking-widest text-orange-400">
       SCANNING
     </div>
 
-    <p
-      id="signalMessage"
-      class="text-sm font-black text-orange-400 uppercase">
-      Analysing market...
-    </p>
+    <div id="tradeDecision"
+      class="font-black text-4xl tracking-widest text-orange-400">
+      WAIT
+    </div>
 
   </div>
 
 
-  <!-- MARKET INFORMATION -->
-
-  <div class="bg-slate-950/80 border border-slate-800 rounded-2xl p-3.5 text-left text-xs space-y-2 font-mono">
+  <!-- DETAILS -->
+  <div class="bg-slate-950/80 border border-slate-800 rounded-2xl p-4 text-left text-xs space-y-3 font-mono">
 
     <div class="flex justify-between">
-
-      <span class="text-slate-400">
-        Pair
-      </span>
-
-      <span id="resPair"
-            class="font-bold text-white">
-        -
-      </span>
-
+      <span class="text-slate-400">Pair</span>
+      <span id="resPair" class="font-bold text-white">-</span>
     </div>
 
-
     <div class="flex justify-between">
-
-      <span class="text-slate-400">
-        Broker
-      </span>
-
-      <span id="resBroker"
-            class="font-bold text-white">
-        -
-      </span>
-
+      <span class="text-slate-400">Broker</span>
+      <span id="resBroker" class="font-bold text-white">-</span>
     </div>
 
-
     <div class="flex justify-between">
-
-      <span class="text-slate-400">
-        Expiry
-      </span>
-
-      <span id="resTimer"
-            class="font-bold text-white">
-        -
-      </span>
-
+      <span class="text-slate-400">Expiry</span>
+      <span id="resTimer" class="font-bold text-white">-</span>
     </div>
 
-
     <div class="flex justify-between">
-
-      <span class="text-slate-400">
-        Scan #
-      </span>
-
-      <span id="scanNumber"
-            class="font-bold text-orange-400">
-        0
-      </span>
-
+      <span class="text-slate-400">Scan</span>
+      <span id="scanNumber" class="font-bold text-orange-400">0</span>
     </div>
 
   </div>
 
 
   <!-- ANALYSIS -->
-
-  <div class="bg-slate-950/80 border border-slate-800 rounded-2xl p-3.5 text-left text-xs space-y-2 font-mono">
+  <div class="bg-slate-950/80 border border-slate-800 rounded-2xl p-4 text-left text-xs space-y-3 font-mono">
 
     <div class="flex justify-between">
-
-      <span class="text-slate-400">
-        RSI
-      </span>
-
-      <span id="resRsi"
-            class="font-bold text-slate-200">
-        Waiting
-      </span>
-
+      <span class="text-slate-400">RSI</span>
+      <span id="resRsi" class="font-bold text-white">Waiting</span>
     </div>
 
-
     <div class="flex justify-between">
-
-      <span class="text-slate-400">
-        Momentum
-      </span>
-
-      <span id="resMomentum"
-            class="font-bold text-slate-200">
-        Waiting
-      </span>
-
+      <span class="text-slate-400">Momentum</span>
+      <span id="resMomentum" class="font-bold text-white">Waiting</span>
     </div>
 
-
     <div class="flex justify-between">
-
-      <span class="text-slate-400">
-        Trend
-      </span>
-
-      <span id="resTrend"
-            class="font-bold text-slate-200">
-        Waiting
-      </span>
-
+      <span class="text-slate-400">Trend</span>
+      <span id="resTrend" class="font-bold text-white">Waiting</span>
     </div>
 
-
     <div class="flex justify-between">
-
-      <span class="text-slate-400">
-        Signal Strength
-      </span>
-
-      <span id="resStrength"
-            class="font-bold text-orange-400">
-        -
-      </span>
-
+      <span class="text-slate-400">Signal Strength</span>
+      <span id="resStrength" class="font-bold text-orange-400">-</span>
     </div>
 
   </div>
 
 
-  <!-- CONTROL BUTTONS -->
-
+  <!-- CONTROLS -->
   <div class="grid grid-cols-2 gap-3">
 
     <button
       id="pauseBtn"
       class="bg-slate-950 hover:bg-slate-800 text-xs font-black py-4 rounded-2xl text-orange-400 border border-orange-500/40 uppercase">
-
-      ⏸ Pause Scanner
-
+      ⏸ Pause
     </button>
-
 
     <button
       id="stopBtn"
       class="bg-slate-950 hover:bg-slate-800 text-xs font-black py-4 rounded-2xl text-red-400 border border-red-500/40 uppercase">
-
       ⛔ Stop
-
     </button>
 
   </div>
 
 
   <p class="text-[10px] text-slate-500 leading-relaxed">
-
-    Demo/local analysis only. No signal can guarantee a profitable trade.
-    Connect a verified live market-data source before using this for real trading.
-
+    Local/demo analysis only. No algorithm can guarantee a profitable trade.
+    Real signals require verified live market data.
   </p>
 
 </div>
@@ -423,15 +332,65 @@
 
 const VALID_KEY = "AWRSK78";
 
-const SCAN_INTERVAL = 7;
+const activationView =
+  document.getElementById("activationView");
 
-let scannerTimer = null;
-let countdownTimer = null;
-let scanCount = 0;
-let secondsLeft = SCAN_INTERVAL;
+const controlPanel =
+  document.getElementById("controlPanel");
+
+const scannerView =
+  document.getElementById("scannerView");
+
+const activationKeyInput =
+  document.getElementById("activationKeyInput");
+
+const keyError =
+  document.getElementById("keyError");
+
+const activateBtn =
+  document.getElementById("activateBtn");
+
+const brokerSelect =
+  document.getElementById("brokerSelect");
+
+const marketSelect =
+  document.getElementById("marketSelect");
+
+const pairSelect =
+  document.getElementById("pairSelect");
+
+const timerSelect =
+  document.getElementById("timerSelect");
+
+const signalDirection =
+  document.getElementById("signalDirection");
+
+const tradeDecision =
+  document.getElementById("tradeDecision");
+
+const countdown =
+  document.getElementById("countdown");
+
+const progressBar =
+  document.getElementById("progressBar");
+
+const scannerStatus =
+  document.getElementById("scannerStatus");
+
 let scannerRunning = false;
 let scannerPaused = false;
 
+let scanTimer = null;
+let countdownTimer = null;
+
+let scanNumber = 0;
+
+let scanIntervalMs = 5000;
+
+
+/* ================================
+   PAIRS
+================================ */
 
 const TRADING_PAIRS = {
 
@@ -498,62 +457,18 @@ const TRADING_PAIRS = {
 };
 
 
-const activationView =
-document.getElementById("activationView");
-
-const controlPanel =
-document.getElementById("controlPanel");
-
-const scannerView =
-document.getElementById("scannerView");
-
-const activationKeyInput =
-document.getElementById("activationKeyInput");
-
-const keyError =
-document.getElementById("keyError");
-
-const activateBtn =
-document.getElementById("activateBtn");
-
-const marketSelect =
-document.getElementById("marketSelect");
-
-const pairSelect =
-document.getElementById("pairSelect");
-
-const brokerSelect =
-document.getElementById("brokerSelect");
-
-const timerSelect =
-document.getElementById("timerSelect");
-
-const signalDirection =
-document.getElementById("signalDirection");
-
-const signalMessage =
-document.getElementById("signalMessage");
-
-const countdown =
-document.getElementById("countdown");
-
-const progressBar =
-document.getElementById("progressBar");
-
-const scannerStatus =
-document.getElementById("scannerStatus");
-
-
-/* =========================
+/* ================================
    ACTIVATION
-========================= */
+================================ */
 
 activateBtn.addEventListener("click", () => {
 
-  const key =
-    activationKeyInput.value.trim().toUpperCase();
+  const entered =
+    activationKeyInput.value
+      .trim()
+      .toUpperCase();
 
-  if (key === VALID_KEY) {
+  if (entered === VALID_KEY) {
 
     keyError.classList.add("hidden");
 
@@ -570,9 +485,18 @@ activateBtn.addEventListener("click", () => {
 });
 
 
-/* =========================
-   PAIRS
-========================= */
+activationKeyInput.addEventListener("keydown", e => {
+
+  if (e.key === "Enter") {
+    activateBtn.click();
+  }
+
+});
+
+
+/* ================================
+   POPULATE PAIRS
+================================ */
 
 function populatePairs() {
 
@@ -590,7 +514,6 @@ function populatePairs() {
       document.createElement("option");
 
     option.value = pair;
-
     option.textContent = pair;
 
     pairSelect.appendChild(option);
@@ -607,91 +530,118 @@ marketSelect.addEventListener(
 populatePairs();
 
 
-/* =========================
-   DEMO ANALYSIS ENGINE
-========================= */
+/* ================================
+   GET SCAN INTERVAL
+================================ */
 
-function generateLocalAnalysis() {
+function getScanInterval() {
+
+  const selected =
+    timerSelect.options[
+      timerSelect.selectedIndex
+    ];
+
+  const expiryMs =
+    Number(selected.dataset.ms);
 
   /*
-    This is NOT live market analysis.
+    3–30 seconds:
+    scan using same selected time.
 
-    It intentionally does not claim
-    real accuracy.
+    1 minute–1 hour:
+    scan every 60 seconds.
+  */
 
-    Replace this function with a
-    real candle/price-data engine
-    when a live data source is connected.
+  if (expiryMs < 60000) {
+
+    return expiryMs;
+
+  }
+
+  return 60000;
+
+}
+
+
+/* ================================
+   DEMO SIGNAL ENGINE
+================================ */
+
+function analyzeMarket() {
+
+  /*
+    IMPORTANT:
+    This function is a local demonstration
+    because no live candle feed is connected.
+
+    It deliberately does NOT claim
+    100% accuracy.
   */
 
   const rsi =
     25 + Math.random() * 50;
 
-  const momentum =
+  const momentumValue =
     Math.random();
 
-  const trend =
+  const trendValue =
     Math.random();
-
-  /*
-    Weak conditions = NO TRADE
-  */
 
   const strength =
     Math.round(
-      50 +
-      Math.random() * 48
+      55 + Math.random() * 44
     );
 
-  if (strength < 68) {
+
+  let momentum =
+    momentumValue >= 0.5
+      ? "Positive"
+      : "Negative";
+
+  let trend =
+    trendValue >= 0.5
+      ? "Bullish"
+      : "Bearish";
+
+
+  /*
+    Strong agreement requirement.
+  */
+
+  const bullish =
+    momentum === "Positive" &&
+    trend === "Bullish";
+
+  const bearish =
+    momentum === "Negative" &&
+    trend === "Bearish";
+
+
+  /*
+    Only generate a trade when
+    analysis is sufficiently strong.
+  */
+
+  if (
+    strength >= 75 &&
+    (bullish || bearish)
+  ) {
 
     return {
 
-      signal: "NO TRADE",
+      trade: true,
 
-      message:
-        "MARKET CONDITIONS NOT CLEAR",
+      signal:
+        bullish
+          ? "CALL"
+          : "PUT",
 
-      rsi: rsi.toFixed(1),
+      rsi:
+        rsi.toFixed(1),
 
-      momentum:
-        momentum > 0.5
-          ? "Positive"
-          : "Negative",
+      momentum,
 
-      trend:
-        trend > 0.5
-          ? "Bullish"
-          : "Bearish",
-
-      strength:
-        strength + "%"
-
-    };
-
-  }
-
-
-  const direction =
-    Math.random() > 0.5
-      ? "CALL"
-      : "PUT";
-
-
-  if (direction === "CALL") {
-
-    return {
-
-      signal: "CALL ▲",
-
-      message:
-        "UP SIGNAL",
-
-      rsi: rsi.toFixed(1),
-
-      momentum: "Positive",
-
-      trend: "Bullish",
+      trend,
 
       strength:
         strength + "%"
@@ -703,16 +653,16 @@ function generateLocalAnalysis() {
 
   return {
 
-    signal: "PUT ▼",
+    trade: false,
 
-    message:
-      "DOWN SIGNAL",
+    signal: "NO SIGNAL",
 
-    rsi: rsi.toFixed(1),
+    rsi:
+      rsi.toFixed(1),
 
-    momentum: "Negative",
+    momentum,
 
-    trend: "Bearish",
+    trend,
 
     strength:
       strength + "%"
@@ -722,26 +672,24 @@ function generateLocalAnalysis() {
 }
 
 
-/* =========================
+/* ================================
    DISPLAY SIGNAL
-========================= */
+================================ */
 
-function showSignal() {
+function showNewScan() {
 
-  scanCount++;
+  scanNumber++;
 
   document.getElementById(
     "scanNumber"
-  ).textContent = scanCount;
+  ).textContent =
+    scanNumber;
 
-
-  const selectedPair =
-    pairSelect.value;
 
   document.getElementById(
     "resPair"
   ).textContent =
-    selectedPair;
+    pairSelect.value;
 
 
   document.getElementById(
@@ -757,15 +705,7 @@ function showSignal() {
 
 
   const result =
-    generateLocalAnalysis();
-
-
-  signalDirection.textContent =
-    result.signal;
-
-
-  signalMessage.textContent =
-    result.message;
+    analyzeMarket();
 
 
   document.getElementById(
@@ -792,57 +732,74 @@ function showSignal() {
     result.strength;
 
 
-  /*
-    Keep original orange design.
-    Only signal text changes color.
-  */
+  if (result.trade) {
 
-  if (result.signal === "CALL ▲") {
+    signalDirection.textContent =
+      result.signal;
 
-    signalDirection.className =
-      "font-black text-5xl tracking-widest text-emerald-400 signal-pulse";
 
-    signalMessage.className =
-      "text-sm font-black text-emerald-400 uppercase";
+    tradeDecision.textContent =
+      "TRADE";
 
-  }
 
-  else if (result.signal === "PUT ▼") {
+    if (result.signal === "CALL") {
 
-    signalDirection.className =
-      "font-black text-5xl tracking-widest text-red-400 signal-pulse";
+      signalDirection.className =
+        "font-black text-5xl tracking-widest text-emerald-400 signal-pulse";
 
-    signalMessage.className =
-      "text-sm font-black text-red-400 uppercase";
+    } else {
+
+      signalDirection.className =
+        "font-black text-5xl tracking-widest text-red-400 signal-pulse";
+
+    }
+
+
+    tradeDecision.className =
+      "font-black text-4xl tracking-widest text-orange-400 signal-pulse";
 
   }
 
   else {
 
+    signalDirection.textContent =
+      "NO SIGNAL";
+
+
+    tradeDecision.textContent =
+      "NO TRADE";
+
+
     signalDirection.className =
       "font-black text-4xl tracking-widest text-orange-400";
 
-    signalMessage.className =
-      "text-sm font-black text-orange-400 uppercase";
+
+    tradeDecision.className =
+      "font-black text-4xl tracking-widest text-orange-400";
 
   }
 
 }
 
 
-/* =========================
+/* ================================
    COUNTDOWN
-========================= */
+================================ */
 
 function startCountdown() {
 
   clearInterval(countdownTimer);
 
-  secondsLeft =
-    SCAN_INTERVAL;
+  const interval =
+    scanIntervalMs / 1000;
+
+  let remaining =
+    interval;
+
 
   countdown.textContent =
-    secondsLeft;
+    formatSeconds(remaining);
+
 
   progressBar.style.width =
     "100%";
@@ -855,36 +812,30 @@ function startCountdown() {
         !scannerRunning ||
         scannerPaused
       ) {
-
         return;
-
       }
 
 
-      secondsLeft--;
+      remaining--;
+
 
       countdown.textContent =
-        secondsLeft;
+        formatSeconds(remaining);
 
-
-      const percent =
-        (secondsLeft /
-          SCAN_INTERVAL) *
-        100;
 
       progressBar.style.width =
-        percent + "%";
+        ((remaining / interval) * 100) + "%";
 
 
-      if (secondsLeft <= 0) {
+      if (remaining <= 0) {
 
-        showSignal();
+        showNewScan();
 
-        secondsLeft =
-          SCAN_INTERVAL;
+        remaining =
+          interval;
 
         countdown.textContent =
-          SCAN_INTERVAL;
+          formatSeconds(remaining);
 
         progressBar.style.width =
           "100%";
@@ -896,9 +847,22 @@ function startCountdown() {
 }
 
 
-/* =========================
-   START SCANNER
-========================= */
+function formatSeconds(seconds) {
+
+  if (seconds < 60) {
+
+    return seconds + "s";
+
+  }
+
+  return Math.floor(seconds / 60) + "m";
+
+}
+
+
+/* ================================
+   START
+================================ */
 
 document.getElementById(
   "startBtn"
@@ -906,13 +870,24 @@ document.getElementById(
   "click",
   () => {
 
+    clearInterval(scanTimer);
+    clearInterval(countdownTimer);
+
+
+    scanIntervalMs =
+      getScanInterval();
+
+
+    scannerRunning = true;
+    scannerPaused = false;
+
+    scanNumber = 0;
+
+
     controlPanel.classList.add("hidden");
 
     scannerView.classList.remove("hidden");
 
-    scannerRunning = true;
-
-    scannerPaused = false;
 
     scannerStatus.textContent =
       "ACTIVE";
@@ -922,10 +897,33 @@ document.getElementById(
 
 
     /*
-      First signal immediately.
+      First scan immediately.
     */
 
-    showSignal();
+    showNewScan();
+
+
+    /*
+      Repeated automatic scanning.
+    */
+
+    scanTimer =
+      setInterval(
+        () => {
+
+          if (
+            scannerRunning &&
+            !scannerPaused
+          ) {
+
+            showNewScan();
+
+          }
+
+        },
+        scanIntervalMs
+      );
+
 
     startCountdown();
 
@@ -933,9 +931,9 @@ document.getElementById(
 );
 
 
-/* =========================
-   PAUSE
-========================= */
+/* ================================
+   PAUSE / RESUME
+================================ */
 
 document.getElementById(
   "pauseBtn"
@@ -961,7 +959,7 @@ document.getElementById(
     if (scannerPaused) {
 
       button.textContent =
-        "▶ Resume Scanner";
+        "▶ Resume";
 
       scannerStatus.textContent =
         "PAUSED";
@@ -974,7 +972,7 @@ document.getElementById(
     else {
 
       button.textContent =
-        "⏸ Pause Scanner";
+        "⏸ Pause";
 
       scannerStatus.textContent =
         "ACTIVE";
@@ -988,9 +986,9 @@ document.getElementById(
 );
 
 
-/* =========================
+/* ================================
    STOP
-========================= */
+================================ */
 
 document.getElementById(
   "stopBtn"
@@ -1002,34 +1000,26 @@ document.getElementById(
 
     scannerPaused = false;
 
+    clearInterval(scanTimer);
     clearInterval(countdownTimer);
+
 
     scannerView.classList.add("hidden");
 
     controlPanel.classList.remove("hidden");
 
+
     scannerStatus.textContent =
       "STOPPED";
 
-    scanCount = 0;
 
-  }
-);
+    document.getElementById(
+      "pauseBtn"
+    ).textContent =
+      "⏸ Pause";
 
 
-/* =========================
-   ENTER KEY
-========================= */
-
-activationKeyInput.addEventListener(
-  "keydown",
-  event => {
-
-    if (event.key === "Enter") {
-
-      activateBtn.click();
-
-    }
+    scanNumber = 0;
 
   }
 );
