@@ -1,48 +1,89 @@
 import React, { useState } from 'react';
 
+// Comprehensive pairs list for Quotex and Pocket Option
+const TRADING_PAIRS = {
+  'OTC Markets': [
+    'USD/ARS (OTC)', 'EUR/USD (OTC)', 'GBP/USD (OTC)', 'USD/JPY (OTC)', 
+    'AUD/CAD (OTC)', 'AUD/CHF (OTC)', 'AUD/JPY (OTC)', 'CAD/CHF (OTC)', 
+    'CAD/JPY (OTC)', 'CHF/JPY (OTC)', 'EUR/GBP (OTC)', 'EUR/JPY (OTC)', 
+    'GBP/JPY (OTC)', 'USD/CAD (OTC)', 'USD/CHF (OTC)', 'USD/INR (OTC)', 
+    'USD/BRL (OTC)', 'USD/PKR (OTC)', 'USD/EGP (OTC)', 'USD/BDT (OTC)'
+  ],
+  'Live Currency Markets': [
+    'EUR/USD', 'GBP/USD', 'USD/JPY', 'USD/CHF', 'USD/CAD', 
+    'AUD/USD', 'NZD/USD', 'EUR/GBP', 'EUR/JPY', 'GBP/JPY', 
+    'AUD/JPY', 'CAD/JPY', 'EUR/CAD', 'GBP/CAD', 'AUD/CAD'
+  ],
+  'Crypto Markets': [
+    'BTC/USD', 'ETH/USD', 'SOL/USD', 'XRP/USD', 'LTC/USD', 'DOGE/USD'
+  ],
+  'Commodities': [
+    'USCRUDE (WTI)', 'UKBRENT (Brent)', 'XAU/USD (Gold)', 'XAG/USD (Silver)'
+  ],
+  'Indices & Stocks': [
+    'US100 (Nasdaq)', 'SP500', 'DJI30', 'Apple OTC', 'Microsoft OTC', 'Tesla OTC'
+  ]
+};
+
+// Expiry timeframe options from 3s to 1 hour
+const TIMEFRAMES = [
+  '3 Seconds', '5 Seconds', '10 Seconds', '15 Seconds', '30 Seconds',
+  '1 Minute', '2 Minutes', '3 Minutes', '5 Minutes', '10 Minutes',
+  '15 Minutes', '30 Minutes', '1 Hour'
+];
+
 export default function SignalGeneratorUI() {
   const [broker, setBroker] = useState('Quotex');
   const [market, setMarket] = useState('OTC Markets');
-  const [pair, setPair] = useState('USD/ARS (OTC)');
+  const [pair, setPair] = useState(TRADING_PAIRS['OTC Markets'][0]);
   const [timer, setTimer] = useState('5 Seconds');
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [signal, setSignal] = useState(null);
+
+  // Update selected pair default when changing market type
+  const handleMarketChange = (e) => {
+    const selectedMarket = e.target.value;
+    setMarket(selectedMarket);
+    setPair(TRADING_PAIRS[selectedMarket][0]);
+  };
 
   const handleGenerateSignal = () => {
     setIsAnalyzing(true);
     setSignal(null);
 
-    // Simulate analysis delay
     setTimeout(() => {
       setIsAnalyzing(false);
+      const isCall = Math.random() > 0.5;
       setSignal({
-        direction: 'DOWN',
-        type: 'STRONG SELL SIGNAL',
-        accuracy: '88.5%', // Realistic statistical estimate
-        signalStrength: '85.2%',
-        confidence: 'STABLE'
+        direction: isCall ? 'UP' : 'DOWN',
+        type: isCall ? 'STRONG BUY SIGNAL' : 'STRONG SELL SIGNAL',
+        accuracy: (85 + Math.random() * 12).toFixed(1) + '%',
+        signalStrength: (80 + Math.random() * 18).toFixed(1) + '%',
+        confidence: 'STABLE',
+        signalId: `#CSA${Math.floor(1000 + Math.random() * 9000)}`
       });
     }, 3000);
   };
 
   return (
     <div className="min-h-screen bg-slate-950 text-white p-4 font-sans max-w-md mx-auto">
-      {/* Header Banner */}
-      <div className="bg-slate-900 border border-slate-800 rounded-xl p-4 flex justify-between items-center mb-4">
+      {/* Top Bar */}
+      <div className="bg-slate-900 border border-slate-800 rounded-xl p-4 flex justify-between items-center mb-4 shadow-lg">
         <div>
-          <h1 className="text-lg font-bold text-cyan-400">Trading Signal AI</h1>
-          <p className="text-xs text-slate-400">Market Analysis Engine</p>
+          <h1 className="text-lg font-bold text-cyan-400">Chinese Signals</h1>
+          <p className="text-xs text-slate-400">AI BOT | PRO MAX</p>
         </div>
         <span className="bg-amber-500/20 text-amber-300 text-xs px-2.5 py-1 rounded-full font-semibold border border-amber-500/30">
-          PRO UNLOCKED
+          PRO MAX UNLOCKED
         </span>
       </div>
 
       {/* Control Form */}
       {!signal && !isAnalyzing && (
         <div className="space-y-3 bg-slate-900/60 p-4 rounded-xl border border-slate-800">
+          {/* Broker Selector */}
           <div>
-            <label className="text-xs text-slate-400">Broker</label>
+            <label className="text-xs text-slate-400">BROKER</label>
             <select 
               value={broker} 
               onChange={(e) => setBroker(e.target.value)}
@@ -53,62 +94,101 @@ export default function SignalGeneratorUI() {
             </select>
           </div>
 
+          {/* Market Category Selector */}
           <div>
-            <label className="text-xs text-slate-400">Market</label>
+            <label className="text-xs text-slate-400">MARKET</label>
             <select 
               value={market} 
-              onChange={(e) => setMarket(e.target.value)}
+              onChange={handleMarketChange}
               className="w-full bg-slate-800 border border-slate-700 rounded-lg p-2.5 mt-1 text-sm text-white"
             >
-              <option value="OTC Markets">OTC Markets</option>
-              <option value="Live Markets">Live Markets</option>
-              <option value="Crypto Markets">Crypto Markets</option>
+              {Object.keys(TRADING_PAIRS).map((m) => (
+                <option key={m} value={m}>{m}</option>
+              ))}
             </select>
           </div>
 
+          {/* Pair Selector */}
           <div>
-            <label className="text-xs text-slate-400">Pair</label>
-            <input 
-              type="text" 
+            <label className="text-xs text-slate-400">PAIR</label>
+            <select 
               value={pair} 
               onChange={(e) => setPair(e.target.value)}
               className="w-full bg-slate-800 border border-slate-700 rounded-lg p-2.5 mt-1 text-sm text-white"
-            />
+            >
+              {TRADING_PAIRS[market].map((p) => (
+                <option key={p} value={p}>{p}</option>
+              ))}
+            </select>
+          </div>
+
+          {/* Expiry Timer Selector (3s to 1 hour) */}
+          <div>
+            <label className="text-xs text-slate-400">TIMER (3 SECONDS - 1 HOUR)</label>
+            <select 
+              value={timer} 
+              onChange={(e) => setTimer(e.target.value)}
+              className="w-full bg-slate-800 border border-slate-700 rounded-lg p-2.5 mt-1 text-sm text-white"
+            >
+              {TIMEFRAMES.map((t) => (
+                <option key={t} value={t}>{t}</option>
+              ))}
+            </select>
           </div>
 
           <button 
             onClick={handleGenerateSignal}
             className="w-full mt-4 bg-blue-600 hover:bg-blue-500 font-bold py-3 rounded-xl transition-all shadow-lg shadow-blue-500/20"
           >
-            GENERATE SIGNAL
+            🚀 GENERATE SIGNAL
           </button>
         </div>
       )}
 
-      {/* Loading State */}
+      {/* Loading Animation */}
       {isAnalyzing && (
         <div className="text-center py-12 bg-slate-900/60 rounded-xl border border-slate-800">
-          <div className="w-16 h-16 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <div className="w-16 h-16 border-4 border-cyan-400 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
           <p className="text-sm font-semibold text-slate-300">ANALYZING MARKET DATA...</p>
+          <p className="text-xs text-slate-500 mt-1">{pair} • {timer}</p>
         </div>
       )}
 
-      {/* Result Output */}
+      {/* Signal Display Card */}
       {signal && (
         <div className="bg-slate-900 border border-slate-800 rounded-xl p-5 text-center space-y-4">
-          <div className="text-red-500 font-extrabold text-3xl tracking-widest animate-pulse">
-            ↓ {signal.direction}
+          <div className="flex justify-between items-center text-xs text-slate-400 border-b border-slate-800 pb-2">
+            <span>PAIR: {pair}</span>
+            <span>ID: {signal.signalId}</span>
           </div>
-          <p className="text-xs text-red-400 font-semibold">{signal.type}</p>
-          
+
+          <div className={`font-extrabold text-3xl tracking-widest animate-pulse ${
+            signal.direction === 'UP' ? 'text-emerald-500' : 'text-red-500'
+          }`}>
+            {signal.direction === 'UP' ? '↑ UP' : '↓ DOWN'}
+          </div>
+          <p className={`text-xs font-semibold ${
+            signal.direction === 'UP' ? 'text-emerald-400' : 'text-red-400'
+          }`}>
+            {signal.type}
+          </p>
+
           <div className="grid grid-cols-2 gap-2 text-xs pt-2 border-t border-slate-800">
             <div className="bg-slate-800/50 p-2 rounded">
-              <span className="text-slate-400 block">Est. Probability</span>
+              <span className="text-slate-400 block">Broker</span>
+              <span className="font-bold text-white">{broker}</span>
+            </div>
+            <div className="bg-slate-800/50 p-2 rounded">
+              <span className="text-slate-400 block">Timer</span>
+              <span className="font-bold text-white">{timer}</span>
+            </div>
+            <div className="bg-slate-800/50 p-2 rounded">
+              <span className="text-slate-400 block">Accuracy Est.</span>
               <span className="font-bold text-emerald-400">{signal.accuracy}</span>
             </div>
             <div className="bg-slate-800/50 p-2 rounded">
               <span className="text-slate-400 block">Signal Strength</span>
-              <span className="font-bold text-blue-400">{signal.signalStrength}</span>
+              <span className="font-bold text-cyan-400">{signal.signalStrength}</span>
             </div>
           </div>
 
