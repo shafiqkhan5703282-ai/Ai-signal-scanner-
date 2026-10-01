@@ -30,7 +30,7 @@
       </span>
     </div>
 
-    <!-- 🔑 ACTIVATION KEY VIEW -->
+    <!-- ACTIVATION KEY VIEW -->
     <div id="activationView" class="space-y-5 text-center py-4">
       <div class="bg-orange-500/10 border border-orange-500/30 rounded-2xl p-4">
         <h2 class="text-lg font-bold text-orange-400 mb-1">Security Access Required</h2>
@@ -52,7 +52,7 @@
       </button>
     </div>
 
-    <!-- 📊 MAIN CONTROL PANEL (Hidden until unlocked) -->
+    <!-- MAIN CONTROL PANEL -->
     <div id="controlPanel" class="hidden space-y-5">
       <div>
         <label class="text-xs font-extrabold text-orange-400 uppercase tracking-wider">Select Broker</label>
@@ -78,15 +78,18 @@
       <div>
         <label class="text-xs font-extrabold text-orange-400 uppercase tracking-wider">Trading Pair</label>
         <select id="pairSelect" class="w-full bg-slate-950 border border-slate-800 rounded-2xl p-4 mt-1.5 text-base font-bold text-white focus:outline-none focus:border-orange-500">
-          <!-- Populated by JS -->
         </select>
       </div>
 
       <div>
         <label class="text-xs font-extrabold text-orange-400 uppercase tracking-wider">Timeframe / Expiry</label>
         <select id="timerSelect" class="w-full bg-slate-950 border border-slate-800 rounded-2xl p-4 mt-1.5 text-base font-bold text-white focus:outline-none focus:border-orange-500">
-          <option value="3 Seconds">3 Seconds (Ultra Fast)</option>
           <option value="5 Seconds" selected>5 Seconds (Recommended)</option>
+          <option value="7 Seconds">7 Seconds</option>
+          <option value="12 Seconds">12 Seconds</option>
+          <option value="17 Seconds">17 Seconds</option>
+          <option value="20 Seconds">20 Seconds</option>
+          <option value="25 Seconds">25 Seconds</option>
           <option value="10 Seconds">10 Seconds</option>
           <option value="15 Seconds">15 Seconds</option>
           <option value="30 Seconds">30 Seconds</option>
@@ -106,7 +109,7 @@
       </button>
     </div>
 
-    <!-- ⚡ ANALYZING / DEEP SCAN VIEW -->
+    <!-- ANALYZING / DEEP SCAN VIEW -->
     <div id="loadingView" class="hidden text-center py-8 space-y-5">
       <div class="w-20 h-20 border-4 border-orange-500 border-t-transparent rounded-full animate-spin-custom mx-auto shadow-lg shadow-orange-500/20"></div>
       <div class="space-y-2">
@@ -118,7 +121,7 @@
       </div>
     </div>
 
-    <!-- 📈 RESULT SIGNAL VIEW -->
+    <!-- RESULT SIGNAL VIEW -->
     <div id="resultView" class="hidden space-y-5 text-center">
       <div class="flex justify-between items-center text-xs font-mono text-slate-400 border-b border-slate-800 pb-3">
         <span id="resPair" class="font-bold text-slate-200">PAIR: USD/ARS (OTC)</span>
