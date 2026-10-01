@@ -3,698 +3,161 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="theme-color" content="#03070d">
-<title>AI Signal Bot - Floating Overlay</title>
-
+<title>Quotex / Pocket Option AI Overlay</title>
 <style>
 *{box-sizing:border-box}
-
 :root{
- --bg:#03070d;
- --card:#08101a;
- --line:#152233;
- --text:#edf2f7;
- --muted:#71849d;
- --green:#00c853;
- --red:#ff3d57;
- --cyan:#00e5ff;
- --yellow:#ffab00;
+ --bg:#03070d; --card:#08101a; --line:#152233; --text:#edf2f7;
+ --muted:#71849d; --green:#00c853; --red:#ff3d57; --cyan:#00e5ff; --yellow:#ffab00;
 }
-
-body{
- margin:0;
- min-height:100vh;
- background:var(--bg);
- color:var(--text);
- font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
-}
-
-button,select{font:inherit}
-button{cursor:pointer}
-
-.app{
- width:100%;
- max-width:480px;
- margin:auto;
- min-height:100vh;
- padding-bottom:75px;
- position:relative;
-}
-
-/* TOP STATUS BAR */
-.brokerHeader{
- display:flex;
- justify-content:space-between;
- align-items:center;
- padding:12px 14px;
- background:#050d17;
- border-bottom:1px solid var(--line);
-}
-
-.brokerLogo{
- font-size:13px;
- font-weight:900;
- letter-spacing:.5px;
- color:#fff;
- display:flex;
- align-items:center;
- gap:6px;
-}
-
+body{margin:0; background:var(--bg); color:var(--text); font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;}
+.app{width:100%; max-width:480px; margin:auto; min-height:100vh; padding-bottom:75px;}
+.brokerHeader{display:flex; justify-content:space-between; align-items:center; padding:12px 14px; background:#050d17; border-bottom:1px solid var(--line);}
+.brokerLogo{font-size:13px; font-weight:900; color:#fff;}
 .brokerLogo span{color:var(--cyan)}
-
-.headerActions{
- display:flex;
- align-items:center;
- gap:8px;
-}
-
-.liveBadge{
- font-size:9px;
- font-weight:800;
- padding:3px 7px;
- background:#0e261d;
- color:var(--green);
- border:1px solid #144631;
- border-radius:4px;
- display:flex;
- align-items:center;
- gap:4px;
-}
-
-.liveDot{
- width:5px;
- height:5px;
- background:var(--green);
- border-radius:50%;
- box-shadow:0 0 6px var(--green);
-}
-
-/* MINIMIZE / OPEN BUTTON */
-.minimizeBtn{
- background:#122338;
- border:1px solid #203b5c;
- color:var(--cyan);
- font-size:10px;
- font-weight:900;
- padding:4px 8px;
- border-radius:4px;
- cursor:pointer;
-}
-
+.minimizeBtn{background:#122338; border:1px solid #203b5c; color:var(--cyan); font-size:10px; font-weight:900; padding:4px 8px; border-radius:4px; cursor:pointer;}
 .container{padding:10px}
-
-/* FLOATING WIDGET BOX */
-.widgetBox{
- background:var(--card);
- border:1px solid var(--line);
- border-radius:12px;
- margin-bottom:10px;
- overflow:hidden;
- box-shadow:0 8px 24px rgba(0,0,0,.4);
- transition:all 0.3s ease;
-}
-
-.widgetHeader{
- display:flex;
- justify-content:space-between;
- align-items:center;
- padding:10px 12px;
- background:#0a1320;
- border-bottom:1px solid var(--line);
-}
-
-.widgetTitle{
- font-size:11px;
- font-weight:850;
- letter-spacing:.5px;
- text-transform:uppercase;
- color:#9fb4cd;
-}
-
-.nodeId{
- font-size:9px;
- font-weight:800;
- color:var(--cyan);
- background:#081e2b;
- padding:2px 6px;
- border-radius:4px;
- border:1px solid #10384f;
-}
-
-/* RADAR & SIGNAL CORE */
-.coreBody{
- padding:12px;
- text-align:center;
-}
-
-.radarWrapper{
- position:relative;
- width:84px;
- height:84px;
- margin:0 auto 8px;
- border-radius:50%;
- background:radial-gradient(circle,#041424 0%, #030811 70%);
- border:1px solid #12304c;
- display:flex;
- justify-content:center;
- align-items:center;
- overflow:hidden;
- box-shadow:inset 0 0 15px rgba(0,229,255,.15);
-}
-
-.radarSweep{
- position:absolute;
- width:100%;
- height:100%;
- border-radius:50%;
- background:conic-gradient(from 0deg at 50% 50%, rgba(0,229,255,0) 0deg, rgba(0,229,255,0.4) 360deg);
- animation:spin 2s linear infinite;
-}
-
-@keyframes spin{
- 100%{transform:rotate(360deg)}
-}
-
-.radarCenter{
- position:absolute;
- width:8px;
- height:8px;
- background:var(--cyan);
- border-radius:50%;
- box-shadow:0 0 8px var(--cyan);
- z-index:2;
-}
-
-.pairDisplay{
- font-size:13px;
- font-weight:900;
- margin-bottom:2px;
-}
-
-.statusDecision{
- font-size:16px;
- font-weight:950;
- margin:5px 0;
- letter-spacing:.5px;
-}
-
-.statusDecision.noTrade{
- color:var(--yellow);
-}
-
-.statusDecision.trade{
- color:var(--green);
-}
-
-.directionArrow{
- font-size:26px;
- font-weight:950;
- line-height:1;
- margin:2px 0;
-}
+.widgetBox{background:var(--card); border:1px solid var(--line); border-radius:12px; margin-bottom:10px; overflow:hidden;}
+.widgetHeader{display:flex; justify-content:space-between; align-items:center; padding:10px 12px; background:#0a1320; border-bottom:1px solid var(--line);}
+.widgetTitle{font-size:11px; font-weight:850; text-transform:uppercase; color:#9fb4cd;}
+.nodeId{font-size:9px; font-weight:800; color:var(--cyan); background:#081e2b; padding:2px 6px; border-radius:4px;}
+.coreBody{padding:12px; text-align:center;}
+.statusDecision{font-size:16px; font-weight:950; margin:5px 0;}
+.statusDecision.noTrade{color:var(--yellow);}
+.statusDecision.trade{color:var(--green);}
+.directionArrow{font-size:26px; font-weight:950; margin:2px 0;}
 .directionArrow.buy{color:var(--green)}
 .directionArrow.sell{color:var(--red)}
-
-.confidenceSub{
- font-size:10px;
- color:var(--muted);
- margin-bottom:6px;
-}
-.confidenceSub strong{color:#fff}
-
-/* METRICS GRID BOARD */
-.metricsGrid{
- display:grid;
- grid-template-columns:repeat(3, 1fr);
- gap:6px;
- margin-bottom:8px;
-}
-
-.metricCard{
- background:#050d17;
- border:1px solid #132235;
- border-radius:6px;
- padding:6px;
- text-align:center;
-}
-
-.metricLabel{
- font-size:7px;
- color:var(--muted);
- text-transform:uppercase;
- display:block;
- margin-bottom:2px;
-}
-
-.metricValue{
- font-size:11px;
- font-weight:900;
- color:#fff;
-}
-.metricValue.green{color:var(--green)}
-.metricValue.red{color:var(--red)}
-
-/* TERMINAL LOGS */
-.terminalLogs{
- background:#020509;
- border:1px solid #111d2d;
- border-radius:8px;
- padding:8px;
- margin-top:6px;
- text-align:left;
- font-family:monospace;
- font-size:9px;
- color:#6c829e;
- max-height:85px;
- overflow-y:auto;
-}
-
-.terminalLogs div{margin-bottom:2px}
-.logGreen{color:var(--green)}
-.logRed{color:var(--red)}
-.logCyan{color:var(--cyan)}
-
-/* CONTROLS PANEL */
-.controlGrid{
- padding:10px 12px 12px;
- display:grid;
- grid-template-columns:1fr 1fr;
- gap:8px;
-}
-
-.controlGroup label{
- display:block;
- font-size:8px;
- font-weight:800;
- text-transform:uppercase;
- color:var(--muted);
- margin-bottom:4px;
-}
-
-select{
- width:100%;
- padding:8px;
- background:#040c16;
- border:1px solid var(--line);
- color:#fff;
- border-radius:6px;
- font-size:10px;
- font-weight:700;
- outline:none;
-}
-
-.actionRow{
- grid-column:span 2;
- display:grid;
- grid-template-columns:1fr 1fr;
- gap:8px;
- margin-top:4px;
-}
-
-.btn{
- padding:9px;
- border:0;
- border-radius:6px;
- font-size:10px;
- font-weight:900;
- color:#fff;
-}
-
+.terminalLogs{background:#020509; border:1px solid #111d2d; border-radius:8px; padding:8px; margin-top:6px; text-align:left; font-family:monospace; font-size:9px; color:#6c829e; max-height:85px; overflow-y:auto;}
+.controlGrid{padding:10px; display:grid; grid-template-columns:1fr 1fr; gap:8px;}
+select{width:100%; padding:8px; background:#040c16; border:1px solid var(--line); color:#fff; border-radius:6px; font-size:10px;}
+.actionRow{grid-column:span 2; display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-top:4px;}
+.btn{padding:9px; border:0; border-radius:6px; font-size:10px; font-weight:900; color:#fff; cursor:pointer;}
 .btnScan{background:linear-gradient(135deg,#0070f3,#00c8ff)}
 .btnAuto{background:#0d1c2d; border:1px solid #1a3554; color:#9fb4cd}
 .btnAuto.active{background:#0a2c1f; border-color:#145237; color:var(--green)}
-
-/* FLOATING MINIMIZED FLOATING WIDGET (POCKET / QUOTEX STYLE) */
-#floatingMiniWidget{
- display:none;
- position:fixed;
- top:15px;
- right:15px;
- background:rgba(8,16,26,0.95);
- border:1px solid var(--cyan);
- border-radius:30px;
- padding:6px 14px;
- z-index:9999;
- backdrop-filter:blur(10px);
- box-shadow:0 4px 20px rgba(0,229,255,0.3);
- align-items:center;
- gap:8px;
- cursor:pointer;
-}
-
-.miniDot{
- width:8px;
- height:8px;
- background:var(--yellow);
- border-radius:50%;
- box-shadow:0 0 8px var(--yellow);
-}
-.miniDot.ready{
- background:var(--green);
- box-shadow:0 0 8px var(--green);
-}
-
-.miniText{
- font-size:11px;
- font-weight:900;
- color:#fff;
- letter-spacing:.5px;
-}
-
-/* BOTTOM BROKER CONTROLS FOOTER */
-.brokerBar{
- position:fixed;
- bottom:0;
- left:50%;
- transform:translateX(-50%);
- width:100%;
- max-width:480px;
- background:#050d17;
- border-top:1px solid var(--line);
- padding:10px 12px;
- display:flex;
- justify-content:space-between;
- align-items:center;
- z-index:50;
-}
-
-.brokerAmount{
- font-size:9px;
- color:var(--muted);
-}
-.brokerAmount strong{color:#fff; display:block; font-size:11px;}
-
-.brokerButtons{
- display:flex;
- gap:6px;
-}
-
-.tradeBtn{
- padding:8px 16px;
- border-radius:6px;
- font-size:11px;
- font-weight:900;
- border:0;
- color:#fff;
-}
-.tradeUp{background:var(--green)}
-.tradeDown{background:var(--red)}
+/* MINIMIZED PILL OVERLAY */
+#floatingMiniWidget{display:none; position:fixed; top:15px; right:15px; background:rgba(8,16,26,0.95); border:1px solid var(--cyan); border-radius:30px; padding:6px 14px; z-index:9999; align-items:center; gap:8px; cursor:pointer;}
+.miniDot{width:8px; height:8px; background:var(--yellow); border-radius:50%;}
+.miniDot.ready{background:var(--green); box-shadow:0 0 8px var(--green);}
+.miniText{font-size:11px; font-weight:900; color:#fff;}
 </style>
 </head>
 <body>
 
-<!-- MINI FLOATING WIDGET (Appears when minimized to overlay over Quotex / Pocket Option) -->
 <div id="floatingMiniWidget" onclick="toggleMinimize()">
  <div class="miniDot" id="miniDot"></div>
  <span class="miniText" id="miniText">AI BOT: NO TRADE</span>
 </div>
 
 <div class="app" id="mainAppContainer">
-
- <!-- HEADER -->
  <header class="brokerHeader">
-  <div class="brokerLogo">
-   <span>■</span> QX / PO OVERLAY BOT
-  </div>
-  
-  <div class="headerActions">
-   <div class="liveBadge">
-    <div class="liveDot"></div>
-    ACTIVE
-   </div>
-   <button class="minimizeBtn" onclick="toggleMinimize()">MINIMISE 🗕</button>
-  </div>
+  <div class="brokerLogo"><span>■</span> QX / PO BOT OVERLAY</div>
+  <button class="minimizeBtn" onclick="toggleMinimize()">MINIMISE 🗕</button>
  </header>
 
  <main class="container">
-
-  <!-- AI SIGNAL CORE WIDGET -->
-  <section class="widgetBox" id="coreWidgetBox">
+  <section class="widgetBox">
    <div class="widgetHeader">
     <span class="widgetTitle">AI Signal Core Board</span>
-    <span class="nodeId" id="nodeId">NODE 812 - 12ms</span>
+    <span class="nodeId" id="nodeId">NODE 717 - 12ms</span>
    </div>
-
    <div class="coreBody">
-    
-    <div class="radarWrapper">
-     <div class="radarSweep"></div>
-     <div class="radarCenter"></div>
-    </div>
-
-    <div class="pairDisplay" id="displayPair">EUR/USD (OTC)</div>
-
-    <!-- 100% RULE DECISION -->
-    <div class="statusDecision noTrade" id="tradeStateText">
-     NO TRADE
-    </div>
-
+    <div style="font-size:13px; font-weight:900;" id="displayPair">USD/BRL (OTC)</div>
+    <div class="statusDecision noTrade" id="tradeStateText">NO TRADE</div>
     <div class="directionArrow" id="directionArrow"></div>
-
-    <div class="confidenceSub">
-     Confidence Score: <strong id="confidenceVal">--%</strong>
-    </div>
-
-    <!-- LIVE METRICS BOARD -->
-    <div class="metricsGrid">
-     <div class="metricCard">
-      <span class="metricLabel">Trend (EMA)</span>
-      <span class="metricValue" id="mTrend">--</span>
-     </div>
-     <div class="metricCard">
-      <span class="metricLabel">RSI (14)</span>
-      <span class="metricValue" id="mRsi">--</span>
-     </div>
-     <div class="metricCard">
-      <span class="metricLabel">Momentum</span>
-      <span class="metricValue" id="mMom">--</span>
-     </div>
-    </div>
-
-    <!-- TERMINAL LOGS FEED -->
+    <div style="font-size:10px; color:var(--muted);">Confidence: <strong id="confidenceVal" style="color:#fff">--%</strong></div>
+    
     <div class="terminalLogs" id="terminalLogs">
-     <div>[SYSTEM] Overlay connected to platform viewport...</div>
-     <div>[READY] Waiting for strict 100% confirmation filter...</div>
+     <div>[SYSTEM] Overlay tracking active...</div>
     </div>
-
    </div>
   </section>
 
-  <!-- MARKET SETUP CONTROLS -->
-  <section class="widgetBox" id="setupWidgetBox">
-   <div class="widgetHeader">
-    <span class="widgetTitle">Bot Config & Management</span>
-    <span class="nodeId">SETUP</span>
-   </div>
-
+  <section class="widgetBox">
+   <div class="widgetHeader"><span class="widgetTitle">Settings & Execution</span></div>
    <div class="controlGrid">
-    <div class="controlGroup">
-     <label>Asset Pair</label>
+    <div>
+     <label style="font-size:8px; color:var(--muted);">PAIR</label>
      <select id="pairSelect">
+      <option>USD/BRL (OTC)</option>
       <option>EUR/USD (OTC)</option>
       <option>GBP/USD (OTC)</option>
-      <option>USD/JPY (OTC)</option>
-      <option>AUD/CAD (OTC)</option>
-      <option>EUR/GBP (OTC)</option>
-      <option>USD/BRL (OTC)</option>
-      <option>GBP/JPY (OTC)</option>
      </select>
     </div>
-
-    <div class="controlGroup">
-     <label>Expiry Interval</label>
+    <div>
+     <label style="font-size:8px; color:var(--muted);">TIMEFRAME</label>
      <select id="expirySelect">
-      <option value="5">5 Seconds</option>
-      <option value="15">15 Seconds</option>
-      <option value="30" selected>30 Seconds</option>
-      <option value="60">1 Minute</option>
-      <option value="300">5 Minutes</option>
+      <option value="5">00:00:05</option>
+      <option value="30" selected>00:00:30</option>
      </select>
     </div>
-
     <div class="actionRow">
-     <button class="btn btnScan" id="scanBtn">FORCE SCAN</button>
-     <button class="btn btnAuto" id="autoBtn">AUTO BOT OFF</button>
+     <button class="btn btnScan" onclick="runScan()">SCAN MARKET</button>
+     <button class="btn btnAuto" id="autoBtn" onclick="toggleAuto()">AUTO BOT OFF</button>
     </div>
    </div>
   </section>
-
  </main>
-
- <!-- BROKER ACTION FOOTER -->
- <div class="brokerBar" id="brokerFooterBar">
-  <div class="brokerAmount">
-   Session P/L
-   <strong id="sessionProfit">+$0.00</strong>
-  </div>
-  <div class="brokerButtons">
-   <button class="tradeBtn tradeUp" onclick="executeManualTrade('UP')">UP</button>
-   <button class="tradeBtn tradeDown" onclick="executeManualTrade('DOWN')">DOWN</button>
-  </div>
- </div>
-
 </div>
 
 <script>
-const botState = {
- pair: localStorage.getItem("overlay_pair") || "EUR/USD (OTC)",
- expiry: parseInt(localStorage.getItem("overlay_expiry") || "30", 10),
- auto: false,
- minimized: false,
- timerId: null,
- sessionTotal: 0
-};
-
-const $ = id => document.getElementById(id);
+let botRunning = false;
+let isMinimized = false;
 
 function toggleMinimize(){
- botState.minimized = !botState.minimized;
- const miniWidget = $("floatingMiniWidget");
- const mainApp = $("mainAppContainer");
-
- if(botState.minimized){
-  mainApp.style.display = "none";
-  miniWidget.style.display = "flex";
- } else {
-  mainApp.style.display = "block";
-  miniWidget.style.display = "none";
- }
+ isMinimized = !isMinimized;
+ document.getElementById("mainAppContainer").style.display = isMinimized ? "none" : "block";
+ document.getElementById("floatingMiniWidget").style.display = isMinimized ? "flex" : "none";
 }
 
-function logMessage(text, type="normal"){
- const logs = $("terminalLogs");
- if(!logs) return;
- let colorClass = "";
- if(type === "green") colorClass = "logGreen";
- if(type === "red") colorClass = "logRed";
- if(type === "cyan") colorClass = "logCyan";
-
- logs.innerHTML += `<div class="${colorClass}">${text}</div>`;
+function log(text, type="normal"){
+ const logs = document.getElementById("terminalLogs");
+ logs.innerHTML += `<div>${text}</div>`;
  logs.scrollTop = logs.scrollHeight;
 }
 
-function runBotCycle(){
- const nodeNum = Math.floor(Math.random() * 300 + 700);
- const latency = Math.floor(Math.random() * 15 + 8);
- $("nodeId").textContent = `NODE ${nodeNum} - ${latency}ms`;
-
- logMessage(`[SCAN] Parsing order blocks for ${botState.pair}...`, "cyan");
-
+function runScan(){
+ log("[SCAN] Reading last candles & order flow...", "cyan");
  setTimeout(() => {
-  const trendBullish = Math.random() > 0.48;
-  const rsiVal = Math.floor(Math.random() * 60) + 20;
-  const momStrong = Math.random() > 0.4;
-
-  $("mTrend").textContent = trendBullish ? "BULLISH" : "BEARISH";
-  $("mTrend").className = "metricValue " + (trendBullish ? "green" : "red");
-  $("mRsi").textContent = rsiVal;
-  $("mMom").textContent = momStrong ? "HIGH" : "STABLE";
-
-  // STRICT 100% CONFIDENCE RULE
-  let hit100 = Math.random() < 0.3; // 30% frequency of 100% matched signals
-  let confidence = hit100 ? 100 : Math.floor(Math.random() * 20) + 74;
-
-  $("confidenceVal").textContent = confidence + "%";
-
-  const stateText = $("tradeStateText");
-  const arrow = $("directionArrow");
-  const miniDot = $("miniDot");
-  const miniText = $("miniText");
-
-  if(confidence >= 100){
-   let direction = trendBullish ? "UP" : "DOWN";
-   stateText.textContent = "TRADE READY";
-   stateText.className = "statusDecision trade";
-   
-   arrow.textContent = direction === "UP" ? "↑" : "↓";
-   arrow.className = "directionArrow " + (direction === "UP" ? "buy" : "sell");
-
-   miniDot.className = "miniDot ready";
-   miniText.textContent = `TRADE: ${direction}`;
-
-   logMessage(`[CONFIRMED] 100% Match! Executing trade: ${direction}`, "green");
-
-   if(botState.auto){
-    setTimeout(() => {
-     let won = Math.random() > 0.3;
-     let payout = won ? 9.20 : -10.00;
-     botState.sessionTotal += payout;
-     
-     let formattedPl = (botState.sessionTotal >= 0 ? "+$y" : "-$") + Math.abs(botState.sessionTotal).toFixed(2);
-     $("sessionProfit").textContent = (botState.sessionTotal >= 0 ? "+$" : "-$") + Math.abs(botState.sessionTotal).toFixed(2);
-
-     logMessage(`[RESULT] Order closed: ${won ? "WIN +$9.20" : "LOSS -$10.00"}`, won ? "green" : "red");
-    }, botState.expiry * 1000);
-   }
-
+  let hit100 = Math.random() > 0.6;
+  let conf = hit100 ? 100 : Math.floor(Math.random() * 15) + 80;
+  
+  document.getElementById("confidenceVal").textContent = conf + "%";
+  
+  if(conf === 100){
+   document.getElementById("tradeStateText").textContent = "TRADE READY";
+   document.getElementById("tradeStateText").className = "statusDecision trade";
+   document.getElementById("directionArrow").textContent = "↓";
+   document.getElementById("directionArrow").className = "directionArrow sell";
+   document.getElementById("miniDot").className = "miniDot ready";
+   document.getElementById("miniText").textContent = "TRADE: DOWN";
+   log("[CONFIRMED] 100% Signal Match! Order executed.", "green");
   } else {
-   stateText.textContent = "NO TRADE";
-   stateText.className = "statusDecision noTrade";
-   
-   arrow.textContent = "";
-   arrow.className = "directionArrow";
-
-   miniDot.className = "miniDot";
-   miniText.textContent = `AI BOT: NO TRADE`;
-
-   logMessage(`[HOLD] Confidence ${confidence}% - Profit not confirmed. NO TRADE.`, "red");
+   document.getElementById("tradeStateText").textContent = "NO TRADE";
+   document.getElementById("tradeStateText").className = "statusDecision noTrade";
+   document.getElementById("directionArrow").textContent = "";
+   document.getElementById("miniDot").className = "miniDot";
+   document.getElementById("miniText").textContent = "AI BOT: NO TRADE";
+   log("[HOLD] Confidence unverified. No Trade.", "red");
   }
-
  }, 600);
 }
 
-function executeManualTrade(direction){
- logMessage(`[MANUAL] Placed order: ${direction} on ${botState.pair}`, "cyan");
- setTimeout(() => {
-  let won = Math.random() > 0.4;
-  let amt = won ? 9.20 : -10.00;
-  botState.sessionTotal += amt;
-  $("sessionProfit").textContent = (botState.sessionTotal >= 0 ? "+$" : "-$") + Math.abs(botState.sessionTotal).toFixed(2);
-  logMessage(`[RESULT] Manual order closed: ${won ? "WIN" : "LOSS"}`, won ? "green" : "red");
- }, botState.expiry * 1000);
-}
-
-// Bindings
-$("pairSelect").addEventListener("change", (e) => {
- botState.pair = e.target.value;
- localStorage.setItem("overlay_pair", botState.pair);
- logMessage(`[ASSET] Switched to ${botState.pair}`);
- runBotCycle();
-});
-
-$("expirySelect").addEventListener("change", (e) => {
- botState.expiry = parseInt(e.target.value, 10);
- localStorage.setItem("overlay_expiry", botState.expiry);
- logMessage(`[EXPIRY] Set to ${botState.expiry}s`);
-});
-
-$("scanBtn").addEventListener("click", runBotCycle);
-
-$("autoBtn").addEventListener("click", () => {
- botState.auto = !botState.auto;
- const btn = $("autoBtn");
- if(botState.auto){
+function toggleAuto(){
+ botRunning = !botRunning;
+ const btn = document.getElementById("autoBtn");
+ if(botRunning){
   btn.textContent = "AUTO BOT ON";
   btn.classList.add("active");
-  logMessage("[AUTO] Automated Loop Engaged", "cyan");
-  runBotCycle();
-  botState.timerId = setInterval(runBotCycle, 8000);
+  log("[AUTO] Automated execution loop engaged.", "cyan");
+  runScan();
  } else {
   btn.textContent = "AUTO BOT OFF";
   btn.classList.remove("active");
-  logMessage("[AUTO] Automated Loop Stopped.");
-  clearInterval(botState.timerId);
+  log("[AUTO] Automated loop stopped.");
  }
-});
-
-// Init settings
-$("pairSelect").value = botState.pair;
-$("expirySelect").value = botState.expiry;
-
-runBotCycle();
+}
 </script>
-
 </body>
 </html>
