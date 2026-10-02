@@ -266,19 +266,141 @@
       <div class="form-group">
         <label>CURRENCY PAIR</label>
         <select id="pairSelect" class="form-control">
-          <option value="USD/BDT (OTC)">USD/BDT (OTC)</option>
+
+          <!-- Major / Forex -->
+          <option value="EUR/USD">EUR/USD</option>
+          <option value="GBP/USD">GBP/USD</option>
+          <option value="USD/JPY">USD/JPY</option>
+          <option value="USD/CHF">USD/CHF</option>
+          <option value="AUD/USD">AUD/USD</option>
+          <option value="USD/CAD">USD/CAD</option>
+          <option value="NZD/USD">NZD/USD</option>
+
+          <!-- Cross Pairs -->
+          <option value="EUR/GBP">EUR/GBP</option>
+          <option value="EUR/JPY">EUR/JPY</option>
+          <option value="EUR/CHF">EUR/CHF</option>
+          <option value="EUR/AUD">EUR/AUD</option>
+          <option value="EUR/CAD">EUR/CAD</option>
+          <option value="EUR/NZD">EUR/NZD</option>
+          <option value="GBP/JPY">GBP/JPY</option>
+          <option value="GBP/CHF">GBP/CHF</option>
+          <option value="GBP/AUD">GBP/AUD</option>
+          <option value="GBP/CAD">GBP/CAD</option>
+          <option value="GBP/NZD">GBP/NZD</option>
+          <option value="AUD/JPY">AUD/JPY</option>
+          <option value="AUD/CAD">AUD/CAD</option>
+          <option value="AUD/CHF">AUD/CHF</option>
+          <option value="AUD/NZD">AUD/NZD</option>
+          <option value="CAD/JPY">CAD/JPY</option>
+          <option value="CAD/CHF">CAD/CHF</option>
+          <option value="CHF/JPY">CHF/JPY</option>
+          <option value="NZD/JPY">NZD/JPY</option>
+          <option value="NZD/CAD">NZD/CAD</option>
+          <option value="NZD/CHF">NZD/CHF</option>
+
+          <!-- Common OTC Pairs -->
           <option value="EUR/USD (OTC)">EUR/USD (OTC)</option>
           <option value="GBP/USD (OTC)">GBP/USD (OTC)</option>
+          <option value="USD/JPY (OTC)">USD/JPY (OTC)</option>
+          <option value="USD/CHF (OTC)">USD/CHF (OTC)</option>
+          <option value="AUD/USD (OTC)">AUD/USD (OTC)</option>
+          <option value="USD/CAD (OTC)">USD/CAD (OTC)</option>
+          <option value="NZD/USD (OTC)">NZD/USD (OTC)</option>
+          <option value="EUR/GBP (OTC)">EUR/GBP (OTC)</option>
+          <option value="EUR/JPY (OTC)">EUR/JPY (OTC)</option>
+          <option value="GBP/JPY (OTC)">GBP/JPY (OTC)</option>
+          <option value="AUD/JPY (OTC)">AUD/JPY (OTC)</option>
+          <option value="USD/BDT (OTC)">USD/BDT (OTC)</option>
           <option value="USD/INR (OTC)">USD/INR (OTC)</option>
+          <option value="USD/PKR (OTC)">USD/PKR (OTC)</option>
+          <option value="USD/BRL (OTC)">USD/BRL (OTC)</option>
+          <option value="USD/MXN (OTC)">USD/MXN (OTC)</option>
+          <option value="USD/TRY (OTC)">USD/TRY (OTC)</option>
+          <option value="USD/ZAR (OTC)">USD/ZAR (OTC)</option>
+          <option value="USD/NGN (OTC)">USD/NGN (OTC)</option>
+          <option value="USD/ARS (OTC)">USD/ARS (OTC)</option>
+          <option value="USD/EGP (OTC)">USD/EGP (OTC)</option>
+
         </select>
       </div>
 
       <div class="form-group">
-        <label>EXPIRY TIMER (SECONDS)</label>
+        <label>EXPIRY TIMER</label>
         <select id="timerSelect" class="form-control">
-          <option value="60">60s (1 Min)</option>
-          <option value="100">100s</option>
-          <option value="300">300s (5 Min)</option>
+
+          <option value="3">3s</option>
+          <option value="7">7s</option>
+          <option value="9">9s</option>
+          <option value="11">11s</option>
+          <option value="14">14s</option>
+          <option value="17">17s</option>
+          <option value="20">20s</option>
+          <option value="24">24s</option>
+          <option value="27">27s</option>
+          <option value="30">30s</option>
+
+          <option value="60">1 Min</option>
+          <option value="120">2 Min</option>
+          <option value="180">3 Min</option>
+          <option value="240">4 Min</option>
+          <option value="300">5 Min</option>
+          <option value="360">6 Min</option>
+          <option value="420">7 Min</option>
+          <option value="480">8 Min</option>
+          <option value="540">9 Min</option>
+          <option value="600">10 Min</option>
+          <option value="660">11 Min</option>
+          <option value="720">12 Min</option>
+          <option value="780">13 Min</option>
+          <option value="840">14 Min</option>
+          <option value="900">15 Min</option>
+          <option value="960">16 Min</option>
+          <option value="1020">17 Min</option>
+          <option value="1080">18 Min</option>
+          <option value="1140">19 Min</option>
+          <option value="1200">20 Min</option>
+          <option value="1260">21 Min</option>
+          <option value="1320">22 Min</option>
+          <option value="1380">23 Min</option>
+          <option value="1440">24 Min</option>
+          <option value="1500">25 Min</option>
+          <option value="1560">26 Min</option>
+          <option value="1620">27 Min</option>
+          <option value="1680">28 Min</option>
+          <option value="1740">29 Min</option>
+          <option value="1800">30 Min</option>
+          <option value="1860">31 Min</option>
+          <option value="1920">32 Min</option>
+          <option value="1980">33 Min</option>
+          <option value="2040">34 Min</option>
+          <option value="2100">35 Min</option>
+          <option value="2160">36 Min</option>
+          <option value="2220">37 Min</option>
+          <option value="2280">38 Min</option>
+          <option value="2340">39 Min</option>
+          <option value="2400">40 Min</option>
+          <option value="2460">41 Min</option>
+          <option value="2520">42 Min</option>
+          <option value="2580">43 Min</option>
+          <option value="2640">44 Min</option>
+          <option value="2700">45 Min</option>
+          <option value="2760">46 Min</option>
+          <option value="2820">47 Min</option>
+          <option value="2880">48 Min</option>
+          <option value="2940">49 Min</option>
+          <option value="3000">50 Min</option>
+          <option value="3060">51 Min</option>
+          <option value="3120">52 Min</option>
+          <option value="3180">53 Min</option>
+          <option value="3240">54 Min</option>
+          <option value="3300">55 Min</option>
+          <option value="3360">56 Min</option>
+          <option value="3420">57 Min</option>
+          <option value="3480">58 Min</option>
+          <option value="3540">59 Min</option>
+          <option value="3600">1 Hour</option>
+
         </select>
       </div>
 
@@ -288,7 +410,7 @@
     <!-- ANALYZING SCREEN -->
     <div id="analyzingScreen" class="screen">
       <div class="analyzing-box">
-        <div class="pair-title" id="analyzingPair">USD/BDT (OTC)</div>
+        <div class="pair-title" id="analyzingPair">EUR/USD</div>
         
         <div class="chart-box">
           <canvas id="liveCanvas"></canvas>
@@ -307,12 +429,12 @@
     <!-- SIGNAL RESULT SCREEN -->
     <div id="signalScreen" class="screen">
       <div class="signal-card" id="signalBorder">
-        <div style="font-size: 12px; color: #94a3b8;" id="signalPairDisplay">USD/BDT (OTC)</div>
+        <div style="font-size: 12px; color: #94a3b8;" id="signalPairDisplay">EUR/USD</div>
         <div class="signal-direction" id="signalDir">▲ UP (CALL)</div>
         
         <div class="signal-details">
           Accuracy: <strong id="signalAcc">94%</strong><br>
-          Expiry: <span id="signalTime">100s</span>
+          Expiry: <span id="signalTime">3s</span>
         </div>
 
         <div>TAKE TRADE AT</div>
@@ -368,7 +490,7 @@
       document.getElementById("signalScreen").classList.add("active");
 
       const isCall = Math.random() > 0.4;
-      const accuracy = Math.floor(Math.random() * 8) + 90; // 90% - 97%
+      const accuracy = Math.floor(Math.random() * 8) + 90;
       
       const dirElem = document.getElementById("signalDir");
       const borderElem = document.getElementById("signalBorder");
@@ -384,8 +506,21 @@
       }
 
       document.getElementById("signalPairDisplay").innerText = pair;
+
+      const timerValue = parseInt(document.getElementById("timerSelect").value);
+
+      let timerText;
+
+      if (timerValue < 60) {
+        timerText = timerValue + "s";
+      } else if (timerValue === 3600) {
+        timerText = "1 Hour";
+      } else {
+        timerText = (timerValue / 60) + " Min";
+      }
+
       document.getElementById("signalAcc").innerText = accuracy + "%";
-      document.getElementById("signalTime").innerText = document.getElementById("timerSelect").value + "s";
+      document.getElementById("signalTime").innerText = timerText;
 
       // Calculate current time + 1 min for execution display
       const now = new Date();
