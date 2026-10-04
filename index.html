@@ -49,7 +49,7 @@
                 </h1>
                 <div class="flex items-center space-x-2">
                     <span class="inline-block w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                    <span class="text-xs text-emerald-400 font-medium">Auto-Loop Execution Active</span>
+                    <span class="text-xs text-emerald-400 font-medium">Fully Automatic Loop Active</span>
                 </div>
             </div>
         </div>
@@ -104,15 +104,14 @@
                 <!-- Dynamic Signal Display Board -->
                 <div id="signalDisplayCard" class="w-full max-w-2xl py-12 px-6 rounded-2xl bg-slate-950/90 border-2 border-emerald-500 shadow-2xl flex flex-col items-center justify-center space-y-6">
                     
-                    <!-- Countdown or Signal State -->
                     <div id="stateContainer" class="flex flex-col items-center space-y-4">
-                        <div id="signalIconBox" class="w-24 h-24 rounded-full bg-emerald-500/20 border-2 border-emerald-400 flex items-center justify-center">
-                            <span id="countdownDisplay" class="font-orbitron font-extrabold text-4xl text-emerald-300">3</span>
+                        <div id="signalIconBox" class="w-24 h-24 rounded-full bg-purple-900/40 border-2 border-purple-400 flex items-center justify-center animate-pulse">
+                            <span id="countdownDisplay" class="font-orbitron font-extrabold text-4xl text-purple-300">3</span>
                         </div>
                         
                         <div>
-                            <h2 id="signalTitle" class="font-orbitron font-black text-3xl tracking-wider text-emerald-300 mb-1">ANALYZING MARKET...</h2>
-                            <p id="signalSubtitle" class="text-slate-400 text-xs font-mono">Preparing 3 to 1 countdown cycle</p>
+                            <h2 id="signalTitle" class="font-orbitron font-black text-3xl tracking-wider text-purple-300 mb-1">ANALYZING MARKET...</h2>
+                            <p id="signalSubtitle" class="text-slate-400 text-xs font-mono">Synchronizing countdown cycle</p>
                         </div>
                     </div>
 
@@ -175,7 +174,7 @@
         let currentTimeframeLabel = '10s';
         let timeframeSeconds = 10;
         
-        let cycleTimer = null;
+        let activeTimer = null;
 
         function renderPairs(filter = 'all', searchQuery = '') {
             const container = document.getElementById('pairsContainer');
@@ -225,11 +224,11 @@
         }
 
         function restartCycle() {
-            if (cycleTimer) clearTimeout(cycleTimer);
-            runCountdown(3);
+            if (activeTimer) clearTimeout(activeTimer);
+            runAnalysisCountdown(3);
         }
 
-        function runCountdown(count) {
+        function runAnalysisCountdown(count) {
             const body = document.getElementById('mainBody');
             const card = document.getElementById('signalDisplayCard');
             const iconBox = document.getElementById('signalIconBox');
@@ -237,26 +236,25 @@
             const title = document.getElementById('signalTitle');
             const subtitle = document.getElementById('signalSubtitle');
 
-            // Neutral/Purple state during 3 to 1 countdown
+            // Neutral Purple state for 3 to 1 analysis
             body.className = 'min-h-screen flex flex-col';
             card.className = 'w-full max-w-2xl py-12 px-6 rounded-2xl bg-slate-950/90 border-2 border-purple-500 shadow-2xl flex flex-col items-center justify-center space-y-6';
             iconBox.className = 'w-24 h-24 rounded-full bg-purple-900/40 border-2 border-purple-400 flex items-center justify-center animate-pulse';
             countDisplay.className = 'font-orbitron font-extrabold text-4xl text-purple-300';
             title.className = 'font-orbitron font-black text-3xl tracking-wider text-purple-300 mb-1';
             title.innerText = 'ANALYZING MARKET...';
-            subtitle.innerText = `Synchronizing ${currentTimeframeSeconds}s expiry cycle`;
+            subtitle.innerText = `Preparing ${currentTimeframeLabel} trade cycle`;
 
             if (count > 0) {
                 countDisplay.innerText = count;
                 playBeep(600, 0.1);
-                cycleTimer = setTimeout(() => runCountdown(count - 1), 1000);
+                activeTimer = setTimeout(() => runAnalysisCountdown(count - 1), 1000);
             } else {
-                // When countdown hits 0 -> Show Signal (All Green for Buy, All Red for Sell)
-                showSignalResult();
+                fireSignalResult();
             }
         }
 
-        function showSignalResult() {
+        function fireSignalResult() {
             const isBuy = Math.random() > 0.5;
             const body = document.getElementById('mainBody');
             const card = document.getElementById('signalDisplayCard');
@@ -272,7 +270,6 @@
                 countDisplay.innerHTML = '<i class="fa-solid fa-arrow-trend-up text-5xl text-emerald-300"></i>';
                 title.className = 'font-orbitron font-black text-3xl tracking-wider text-emerald-300 mb-1';
                 title.innerText = 'BUY / CALL SIGNAL (100% PROFIT)';
-                subtitle.innerText = `Active for selected timeframe: ${currentTimeframeLabel}`;
             } else {
                 body.className = 'min-h-screen flex flex-col theme-red';
                 card.className = 'w-full max-w-2xl py-12 px-6 rounded-2xl bg-rose-950/90 border-2 border-rose-400 shadow-2xl flex flex-col items-center justify-center space-y-6';
@@ -280,22 +277,31 @@
                 countDisplay.innerHTML = '<i class="fa-solid fa-arrow-trend-down text-5xl text-rose-300"></i>';
                 title.className = 'font-orbitron font-black text-3xl tracking-wider text-rose-300 mb-1';
                 title.innerText = 'SELL / PUT SIGNAL (100% PROFIT)';
-                subtitle.innerText = `Active for selected timeframe: ${currentTimeframeLabel}`;
             }
 
             playBeep(isBuy ? 880 : 500, 0.4);
 
-            // Wait for the duration of the selected timeframe, then restart the 3 to 1 countdown loop automatically
-            cycleTimer = setTimeout(() => {
-                restartCycle();
-            }, timeframeSeconds * 1000);
+            // Start live expiration timeframe countdown matching user's selected time
+            let remainingTime = timeframeSeconds;
+            
+            function updateExpiryTick() {
+                if (remainingTime > 0) {
+                    subtitle.innerText = `Expiration Time Remaining: ${remainingTime}s`;
+                    remainingTime--;
+                    activeTimer = setTimeout(updateExpiryTick, 1000);
+                } else {
+                    // Timeframe ended at 0 -> Restart 3 to 1 countdown automatically
+                    restartCycle();
+                }
+            }
+            updateExpiryTick();
         }
 
         window.onload = () => {
             renderPairs('all');
             document.getElementById('boardPairSymbol').innerText = currentPair.symbol;
             document.getElementById('boardTimeframe').innerText = currentTimeframeLabel;
-            restartCycle();
+            restartCycle(); // Starts automatically on load
         };
     </script>
 </body>
