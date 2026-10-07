@@ -3,306 +3,302 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pocket & Quotex Prime AI Bot</title>
-    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <title>Arsii-74 Signal Scanner</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;800;900&family=Inter:wght@300;400;500;600;700&display=swap');
-        
+        :root {
+            --bg-dark: #2c221e;
+            --panel-bg: #3d302b;
+            --accent-orange: #ff8c00;
+            --accent-orange-hover: #e07b00;
+            --text-light: #f5f5f5;
+            --text-muted: #b0a4a0;
+            --call-green: #26a69a;
+            --put-red: #ef5350;
+        }
+
         body {
-            font-family: 'Inter', sans-serif;
-            background-color: #0b0e14;
-            color: #e2e8f0;
-            transition: background-color 0.4s ease;
-        }
-        
-        .font-orbitron { font-family: 'Orbitron', sans-serif; }
-
-        body.theme-green {
-            background-color: #022b14 !important;
-        }
-        body.theme-green header, body.theme-green div.bg-\[\#121824\] {
-            background-color: #044225 !important;
-            border-color: #10b981 !important;
+            background-color: var(--bg-dark);
+            color: var(--text-light);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
         }
 
-        body.theme-red {
-            background-color: #38080f !important;
+        .container {
+            width: 100%;
+            max-width: 600px;
+            background: var(--panel-bg);
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
         }
-        body.theme-red header, body.theme-red div.bg-\[\#121824\] {
-            background-color: #520d17 !important;
-            border-color: #f43f5e !important;
+
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 24px;
+            color: var(--accent-orange);
+            letter-spacing: 1px;
+        }
+
+        .controls-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .control-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            font-size: 13px;
+            color: var(--text-muted);
+            margin-bottom: 5px;
+        }
+
+        select {
+            background-color: #2c221e;
+            color: var(--text-light);
+            border: 1px solid #55443d;
+            padding: 10px;
+            border-radius: 6px;
+            font-size: 14px;
+            outline: none;
+            cursor: pointer;
+        }
+
+        select:focus {
+            border-color: var(--accent-orange);
+        }
+
+        .btn-action {
+            background-color: var(--accent-orange);
+            color: white;
+            border: none;
+            padding: 12px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            border-radius: 6px;
+            width: 100%;
+            transition: background 0.2s;
+            margin-bottom: 20px;
+        }
+
+        .btn-action:hover {
+            background-color: var(--accent-orange-hover);
+        }
+
+        .signal-board {
+            background-color: #2c221e;
+            border: 1px solid #55443d;
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 18px;
+            margin-bottom: 15px;
+            letter-spacing: 0.5px;
+        }
+
+        .status-wait { background-color: #555; color: #fff; }
+        .status-call { background-color: var(--call-green); color: #fff; }
+        .status-put { background-color: var(--put-red); color: #fff; }
+
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-top: 15px;
+            border-top: 1px solid #4a3a34;
+            padding-top: 15px;
+        }
+
+        .metric-item {
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+
+        .metric-value {
+            font-size: 16px;
+            font-weight: bold;
+            color: var(--text-light);
+            margin-top: 4px;
+        }
+
+        .connection-status {
+            text-align: center;
+            font-size: 12px;
+            margin-top: 15px;
+            color: var(--text-muted);
         }
     </style>
 </head>
-<body id="mainBody" class="min-h-screen flex flex-col selection:bg-purple-600 selection:text-white">
+<body>
 
-    <!-- Top Navigation Bar -->
-    <header class="bg-[#121824] border-b border-purple-900/40 px-4 py-3 flex items-center justify-between sticky top-0 z-50 transition-colors duration-300">
-        <div class="flex items-center space-x-3">
-            <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-purple-700 to-indigo-600 flex items-center justify-center shadow-lg">
-                <i class="fa-solid fa-brain text-white text-lg"></i>
+    <div class="container">
+        <h1>ARSII-74 SCANNER</h1>
+
+        <div class="controls-grid">
+            <div class="control-group">
+                <label for="asset-select">Asset Pair</label>
+                <select id="asset-select">
+                    <option value="EUR/USD">EUR/USD (OTC)</option>
+                    <option value="GBP/USD">GBP/USD (OTC)</option>
+                    <option value="AUD/USD">AUD/USD (OTC)</option>
+                    <option value="USD/JPY">USD/JPY (OTC)</option>
+                </select>
             </div>
-            <div>
-                <h1 class="font-orbitron font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-fuchsia-300 to-indigo-400 text-lg tracking-wide">
-                    POCKET & QUOTEX PRIME AI
-                </h1>
-                <div class="flex items-center space-x-2">
-                    <span class="inline-block w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                    <span class="text-xs text-emerald-400 font-medium">Fully Automatic Loop Active</span>
-                </div>
-            </div>
-        </div>
-        <button onclick="toggleSound()" id="soundToggleBtn" class="bg-slate-900 text-purple-300 px-3 py-1.5 rounded-lg border border-purple-900/50 text-xs">
-            Sound: ON
-        </button>
-    </header>
-
-    <!-- Main Content Grid -->
-    <main class="flex-1 grid grid-cols-1 lg:grid-cols-4 gap-4 p-4 max-w-[1700px] w-full mx-auto">
-
-        <!-- Left Column: Asset & Pair Selection + Controls -->
-        <div class="lg:col-span-1 flex flex-col space-y-4">
-            <div class="bg-[#121824] rounded-xl p-4 border border-purple-900/40 shadow-xl transition-colors duration-300">
-                <h2 class="font-orbitron text-xs font-bold text-purple-300 uppercase tracking-wider mb-3">
-                    <i class="fa-solid fa-layer-group mr-2 text-purple-400"></i> Pocket & Quotex Pairs
-                </h2>
-                <div class="grid grid-cols-2 gap-1 mb-3 bg-slate-900 p-1 rounded-lg border border-purple-900/30 text-xs font-semibold">
-                    <button onclick="filterPairs('all')" id="tabAll" class="py-1.5 rounded text-center bg-purple-600 text-white shadow">All Pairs</button>
-                    <button onclick="filterPairs('otc')" id="tabOtc" class="py-1.5 rounded text-center text-slate-400">OTC Only</button>
-                </div>
-                <div class="relative mb-3">
-                    <input type="text" id="pairSearchInput" onkeyup="searchPairs()" placeholder="Search pair..." class="w-full bg-slate-900 border border-purple-900/40 rounded-lg px-3 py-2 text-xs text-slate-200 focus:outline-none font-mono">
-                </div>
-                <div id="pairsContainer" class="space-y-1.5 max-h-72 overflow-y-auto pr-1"></div>
-            </div>
-
-            <div class="bg-[#121824] rounded-xl p-4 border border-purple-900/40 shadow-xl transition-colors duration-300">
-                <h2 class="font-orbitron text-xs font-bold text-purple-300 uppercase tracking-wider mb-3">
-                    <i class="fa-solid fa-sliders mr-2 text-purple-400"></i> Expiration Timeframe
-                </h2>
-                <div class="grid grid-cols-4 gap-1.5 mb-4 text-xs font-mono font-semibold" id="timeframeGrid">
-                    <button onclick="setTimeframe('10s', 10)" class="tf-btn bg-purple-600 border border-purple-400 py-2 rounded text-white shadow">10s</button>
-                    <button onclick="setTimeframe('15s', 15)" class="tf-btn bg-slate-900 border border-purple-900/40 py-2 rounded text-slate-300">15s</button>
-                    <button onclick="setTimeframe('30s', 30)" class="tf-btn bg-slate-900 border border-purple-900/40 py-2 rounded text-slate-300">30s</button>
-                    <button onclick="setTimeframe('45s', 45)" class="tf-btn bg-slate-900 border border-purple-900/40 py-2 rounded text-slate-300">45s</button>
-                    <button onclick="setTimeframe('1m', 60)" class="tf-btn bg-slate-900 border border-purple-900/40 py-2 rounded text-slate-300">1m</button>
-                    <button onclick="setTimeframe('2m', 120)" class="tf-btn bg-slate-900 border border-purple-900/40 py-2 rounded text-slate-300">2m</button>
-                    <button onclick="setTimeframe('5m', 300)" class="tf-btn bg-slate-900 border border-purple-900/40 py-2 rounded text-slate-300">5m</button>
-                    <button onclick="setTimeframe('15m', 900)" class="tf-btn bg-slate-900 border border-purple-900/40 py-2 rounded text-slate-300">15m</button>
-                    <button onclick="setTimeframe('30m', 1800)" class="tf-btn bg-slate-900 border border-purple-900/40 py-2 rounded text-slate-300">30m</button>
-                    <button onclick="setTimeframe('1h', 3600)" class="tf-btn bg-slate-900 border border-purple-900/40 py-2 rounded text-slate-300 col-span-3">1 Hour</button>
-                </div>
+            <div class="control-group">
+                <label for="timeframe-select">Timeframe</label>
+                <select id="timeframe-select">
+                    <option value="5S">5 Seconds</option>
+                    <option value="15S">15 Seconds</option>
+                    <option value="30S">30 Seconds</option>
+                    <option value="1M" selected>1 Minute</option>
+                    <option value="5M">5 Minutes</option>
+                </select>
             </div>
         </div>
 
-        <!-- Center Column: Signal & Countdown Board -->
-        <div class="lg:col-span-3 flex flex-col space-y-4">
+        <button class="btn-action" onclick="toggleScanner()">Start Scanner Engine</button>
+
+        <div class="signal-board">
+            <div id="status-badge" class="status-badge status-wait">WAITING FOR SIGNAL</div>
+            <div>Asset: <span id="display-asset" style="font-weight: bold;">EUR/USD</span></div>
             
-            <div id="signalBoardContainer" class="bg-[#121824] rounded-2xl p-8 border border-purple-900/40 shadow-2xl flex flex-col items-center justify-center min-h-[520px] text-center transition-colors duration-300">
-                
-                <!-- Dynamic Signal Display Board -->
-                <div id="signalDisplayCard" class="w-full max-w-2xl py-12 px-6 rounded-2xl bg-slate-950/90 border-2 border-emerald-500 shadow-2xl flex flex-col items-center justify-center space-y-6">
-                    
-                    <div id="stateContainer" class="flex flex-col items-center space-y-4">
-                        <div id="signalIconBox" class="w-24 h-24 rounded-full bg-purple-900/40 border-2 border-purple-400 flex items-center justify-center animate-pulse">
-                            <span id="countdownDisplay" class="font-orbitron font-extrabold text-4xl text-purple-300">3</span>
-                        </div>
-                        
-                        <div>
-                            <h2 id="signalTitle" class="font-orbitron font-black text-3xl tracking-wider text-purple-300 mb-1">ANALYZING MARKET...</h2>
-                            <p id="signalSubtitle" class="text-slate-400 text-xs font-mono">Synchronizing countdown cycle</p>
-                        </div>
-                    </div>
-
-                    <div class="grid grid-cols-2 gap-4 w-full max-w-md pt-4 border-t border-slate-800 font-mono">
-                        <div class="bg-slate-900 p-3 rounded-xl border border-slate-800">
-                            <span class="text-slate-500 text-xs block mb-1">SELECTED PAIR</span>
-                            <span id="boardPairSymbol" class="text-lg font-bold text-white">EUR/USD</span>
-                        </div>
-                        <div class="bg-slate-900 p-3 rounded-xl border border-slate-800">
-                            <span class="text-slate-500 text-xs block mb-1">EXPIRY TIMEFRAME</span>
-                            <span id="boardTimeframe" class="text-lg font-bold text-emerald-400">10s</span>
-                        </div>
-                    </div>
+            <div class="metrics-grid">
+                <div class="metric-item">
+                    Price
+                    <div id="val-price" class="metric-value">0.0000</div>
                 </div>
-
+                <div class="metric-item">
+                    RSI (14)
+                    <div id="val-rsi" class="metric-value">0.00</div>
+                </div>
+                <div class="metric-item">
+                    EMA (9)
+                    <div id="val-ema" class="metric-value">0.0000</div>
+                </div>
             </div>
-
         </div>
 
-    </main>
+        <div id="conn-status" class="connection-status">Status: Disconnected / Simulation Mode</div>
+    </div>
 
     <script>
-        let soundEnabled = true;
-        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        let isRunning = false;
+        let simulationInterval = null;
 
-        function playBeep(freq = 750, duration = 0.2) {
-            if (!soundEnabled) return;
+        // Web Audio API helper for sound alerts
+        function playBeep(isCall) {
             try {
-                if (audioCtx.state === 'suspended') audioCtx.resume();
+                const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
                 const osc = audioCtx.createOscillator();
                 const gain = audioCtx.createGain();
-                osc.type = 'sine';
-                osc.frequency.value = freq;
-                gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
-                gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
+
+                osc.type = isCall ? 'sine' : 'square';
+                osc.frequency.setValueAtTime(isCall ? 587.33 : 329.63, audioCtx.currentTime); // D5 for Call, E4 for Put
+
+                gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.3);
+
                 osc.connect(gain);
                 gain.connect(audioCtx.destination);
+
                 osc.start();
-                osc.stop(audioCtx.currentTime + duration);
+                osc.stop(audioCtx.currentTime + 0.3);
             } catch (e) {
-                console.error(e);
+                console.log("Audio blocked or not supported");
             }
         }
 
-        function toggleSound() {
-            soundEnabled = !soundEnabled;
-            document.getElementById('soundToggleBtn').innerText = soundEnabled ? 'Sound: ON' : 'Sound: OFF';
-        }
+        function toggleScanner() {
+            isRunning = !isRunning;
+            const btn = document.querySelector('.btn-action');
+            const connStatus = document.getElementById('conn-status');
 
-        const tradingPairs = [
-            { symbol: 'EUR/USD', otc: false }, { symbol: 'GBP/USD', otc: false },
-            { symbol: 'USD/JPY', otc: false }, { symbol: 'AUD/USD', otc: false },
-            { symbol: 'EUR/GBP', otc: false }, { symbol: 'GBP/JPY', otc: false },
-            { symbol: 'EUR/USD (OTC)', otc: true }, { symbol: 'GBP/USD (OTC)', otc: true },
-            { symbol: 'USD/JPY (OTC)', otc: true }, { symbol: 'GBP/JPY (OTC)', otc: true }
-        ];
-
-        let currentPair = tradingPairs[0];
-        let currentFilter = 'all';
-        let currentTimeframeLabel = '10s';
-        let timeframeSeconds = 10;
-        
-        let activeTimer = null;
-
-        function renderPairs(filter = 'all', searchQuery = '') {
-            const container = document.getElementById('pairsContainer');
-            container.innerHTML = '';
-            tradingPairs.filter(p => {
-                const matchesFilter = filter === 'all' || (filter === 'otc' && p.otc);
-                const matchesSearch = p.symbol.toLowerCase().includes(searchQuery.toLowerCase());
-                return matchesFilter && matchesSearch;
-            }).forEach(p => {
-                const isSelected = p.symbol === currentPair.symbol;
-                const div = document.createElement('div');
-                div.className = `flex items-center justify-between p-2 rounded-lg cursor-pointer transition text-xs font-mono border ${isSelected ? 'bg-purple-950 border-purple-500 text-white' : 'bg-slate-900 border-purple-900/20 text-slate-300 hover:bg-purple-900/30'}`;
-                div.innerHTML = `<span class="font-bold">${p.symbol}</span>`;
-                div.onclick = () => { 
-                    currentPair = p; 
-                    document.getElementById('boardPairSymbol').innerText = p.symbol;
-                    renderPairs(currentFilter, document.getElementById('pairSearchInput').value); 
-                    restartCycle();
-                };
-                container.appendChild(div);
-            });
-        }
-
-        function filterPairs(type) {
-            currentFilter = type;
-            document.getElementById('tabAll').className = type === 'all' ? 'py-1.5 rounded text-center bg-purple-600 text-white shadow' : 'py-1.5 rounded text-center text-slate-400';
-            document.getElementById('tabOtc').className = type === 'otc' ? 'py-1.5 rounded text-center bg-purple-600 text-white shadow' : 'py-1.5 rounded text-center text-slate-400';
-            renderPairs(currentFilter, document.getElementById('pairSearchInput').value);
-        }
-
-        function searchPairs() {
-            renderPairs(currentFilter, document.getElementById('pairSearchInput').value);
-        }
-
-        function setTimeframe(label, seconds) {
-            currentTimeframeLabel = label;
-            timeframeSeconds = seconds;
-            document.querySelectorAll('.tf-btn').forEach(btn => {
-                if (btn.innerText.trim().toLowerCase() === label.toLowerCase()) {
-                    btn.className = 'tf-btn bg-purple-600 border border-purple-400 py-2 rounded text-white shadow';
-                } else {
-                    btn.className = 'tf-btn bg-slate-900 border border-purple-900/40 py-2 rounded text-slate-300';
-                }
-            });
-            document.getElementById('boardTimeframe').innerText = label;
-            restartCycle();
-        }
-
-        function restartCycle() {
-            if (activeTimer) clearTimeout(activeTimer);
-            runAnalysisCountdown(3);
-        }
-
-        function runAnalysisCountdown(count) {
-            const body = document.getElementById('mainBody');
-            const card = document.getElementById('signalDisplayCard');
-            const iconBox = document.getElementById('signalIconBox');
-            const countDisplay = document.getElementById('countdownDisplay');
-            const title = document.getElementById('signalTitle');
-            const subtitle = document.getElementById('signalSubtitle');
-
-            // Neutral Purple state for 3 to 1 analysis
-            body.className = 'min-h-screen flex flex-col';
-            card.className = 'w-full max-w-2xl py-12 px-6 rounded-2xl bg-slate-950/90 border-2 border-purple-500 shadow-2xl flex flex-col items-center justify-center space-y-6';
-            iconBox.className = 'w-24 h-24 rounded-full bg-purple-900/40 border-2 border-purple-400 flex items-center justify-center animate-pulse';
-            countDisplay.className = 'font-orbitron font-extrabold text-4xl text-purple-300';
-            title.className = 'font-orbitron font-black text-3xl tracking-wider text-purple-300 mb-1';
-            title.innerText = 'ANALYZING MARKET...';
-            subtitle.innerText = `Preparing ${currentTimeframeLabel} trade cycle`;
-
-            if (count > 0) {
-                countDisplay.innerText = count;
-                playBeep(600, 0.1);
-                activeTimer = setTimeout(() => runAnalysisCountdown(count - 1), 1000);
+            if (isRunning) {
+                btn.textContent = "Stop Scanner Engine";
+                btn.style.backgroundColor = "#d32f2f";
+                connStatus.textContent = "Status: Live Simulation Active";
+                
+                // Start simulation loop (or swap this out with your WebSocket connection)
+                simulationInterval = setInterval(runSimulationTick, 3000);
             } else {
-                fireSignalResult();
+                btn.textContent = "Start Scanner Engine";
+                btn.style.backgroundColor = "var(--accent-orange)";
+                connStatus.textContent = "Status: Stopped";
+                clearInterval(simulationInterval);
+                resetBoard();
             }
         }
 
-        function fireSignalResult() {
-            const isBuy = Math.random() > 0.5;
-            const body = document.getElementById('mainBody');
-            const card = document.getElementById('signalDisplayCard');
-            const iconBox = document.getElementById('signalIconBox');
-            const countDisplay = document.getElementById('countdownDisplay');
-            const title = document.getElementById('signalTitle');
-            const subtitle = document.getElementById('signalSubtitle');
+        function runSimulationTick() {
+            const selectedAsset = document.getElementById('asset-select').value;
+            document.getElementById('display-asset').textContent = selectedAsset;
 
-            if (isBuy) {
-                body.className = 'min-h-screen flex flex-col theme-green';
-                card.className = 'w-full max-w-2xl py-12 px-6 rounded-2xl bg-emerald-950/90 border-2 border-emerald-400 shadow-2xl flex flex-col items-center justify-center space-y-6';
-                iconBox.className = 'w-24 h-24 rounded-full bg-emerald-500/30 border-2 border-emerald-400 flex items-center justify-center animate-bounce';
-                countDisplay.innerHTML = '<i class="fa-solid fa-arrow-trend-up text-5xl text-emerald-300"></i>';
-                title.className = 'font-orbitron font-black text-3xl tracking-wider text-emerald-300 mb-1';
-                title.innerText = 'BUY / CALL SIGNAL (100% PROFIT)';
-            } else {
-                body.className = 'min-h-screen flex flex-col theme-red';
-                card.className = 'w-full max-w-2xl py-12 px-6 rounded-2xl bg-rose-950/90 border-2 border-rose-400 shadow-2xl flex flex-col items-center justify-center space-y-6';
-                iconBox.className = 'w-24 h-24 rounded-full bg-rose-500/30 border-2 border-rose-400 flex items-center justify-center animate-bounce';
-                countDisplay.innerHTML = '<i class="fa-solid fa-arrow-trend-down text-5xl text-rose-300"></i>';
-                title.className = 'font-orbitron font-black text-3xl tracking-wider text-rose-300 mb-1';
-                title.innerText = 'SELL / PUT SIGNAL (100% PROFIT)';
+            // Generate mock metrics
+            const randomPrice = (1.0500 + Math.random() * 0.0500).toFixed(4);
+            const randomRsi = (Math.random() * 100).toFixed(2);
+            const randomEma = (1.0500 + Math.random() * 0.0490).toFixed(4);
+
+            let action = "WAIT";
+            let badgeClass = "status-wait";
+            let badgeText = "WAIT / ANALYZING";
+
+            if (randomRsi < 35) {
+                action = "CALL";
+                badgeClass = "status-call";
+                badgeText = "CALL (BUY)";
+                playBeep(true);
+            } else if (randomRsi > 65) {
+                action = "PUT";
+                badgeClass = "status-put";
+                badgeText = "PUT (SELL)";
+                playBeep(false);
             }
 
-            playBeep(isBuy ? 880 : 500, 0.4);
+            // Update DOM elements
+            const badge = document.getElementById('status-badge');
+            badge.className = `status-badge ${badgeClass}`;
+            badge.textContent = badgeText;
 
-            // Start live expiration timeframe countdown matching user's selected time
-            let remainingTime = timeframeSeconds;
-            
-            function updateExpiryTick() {
-                if (remainingTime > 0) {
-                    subtitle.innerText = `Expiration Time Remaining: ${remainingTime}s`;
-                    remainingTime--;
-                    activeTimer = setTimeout(updateExpiryTick, 1000);
-                } else {
-                    // Timeframe ended at 0 -> Restart 3 to 1 countdown automatically
-                    restartCycle();
-                }
-            }
-            updateExpiryTick();
+            document.getElementById('val-price').textContent = randomPrice;
+            document.getElementById('val-rsi').textContent = randomRsi;
+            document.getElementById('val-ema').textContent = randomEma;
         }
 
-        window.onload = () => {
-            renderPairs('all');
-            document.getElementById('boardPairSymbol').innerText = currentPair.symbol;
-            document.getElementById('boardTimeframe').innerText = currentTimeframeLabel;
-            restartCycle(); // Starts automatically on load
-        };
+        function resetBoard() {
+            const badge = document.getElementById('status-badge');
+            badge.className = "status-badge status-wait";
+            badge.textContent = "WAITING FOR SIGNAL";
+            document.getElementById('val-price').textContent = "0.0000";
+            document.getElementById('val-rsi').textContent = "0.00";
+            document.getElementById('val-ema').textContent = "0.0000";
+        }
+
+        /* 
+           If connecting to your FastAPI WebSocket backend instead of simulation, replace runSimulationTick with:
+           const ws = new WebSocket("ws://localhost:8000/ws/signals");
+           ws.onmessage = function(event) {
+               const data = JSON.parse(event.data);
+               // update DOM elements here...
+           };
+        */
     </script>
 </body>
 </html>
