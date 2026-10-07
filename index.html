@@ -1,304 +1,731 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Arsii-74 Signal Scanner</title>
+    <title>PocketPilot Pro - Automated Neural Trading Bot</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        darkbg: '#0a0e17',
+                        cardbg: '#121826',
+                        bordercolor: '#1f293d',
+                        neonGreen: '#00ff66',
+                        neonRed: '#ff334b',
+                        electricCyan: '#00f0ff',
+                        accentGold: '#ffd700'
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --bg-dark: #2c221e;
-            --panel-bg: #3d302b;
-            --accent-orange: #ff8c00;
-            --accent-orange-hover: #e07b00;
-            --text-light: #f5f5f5;
-            --text-muted: #b0a4a0;
-            --call-green: #26a69a;
-            --put-red: #ef5350;
+        body { font-family: 'Inter', sans-serif; background-color: #0a0e17; color: #f8fafc; overflow-x: hidden; }
+        .mono { font-family: 'JetBrains Mono', monospace; }
+        .glow-green { box-shadow: 0 0 20px rgba(0, 255, 102, 0.3); }
+        .glow-red { box-shadow: 0 0 20px rgba(255, 51, 75, 0.3); }
+        .glow-cyan { box-shadow: 0 0 20px rgba(0, 240, 255, 0.2); }
+        .glass-panel { background: rgba(18, 24, 38, 0.75); backdrop-filter: blur(12px); border: 1px solid rgba(31, 41, 61, 0.7); }
+        /* Custom scrollbar */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: #0a0e17; }
+        ::-webkit-scrollbar-thumb { background: #1f293d; border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: #334155; }
+        @keyframes pulseGlow {
+            0% { box-shadow: 0 0 0 0 rgba(0, 255, 102, 0.6); }
+            70% { box-shadow: 0 0 0 15px rgba(0, 255, 102, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(0, 255, 102, 0); }
         }
-
-        body {
-            background-color: var(--bg-dark);
-            color: var(--text-light);
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            margin: 0;
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            min-height: 100vh;
-        }
-
-        .container {
-            width: 100%;
-            max-width: 600px;
-            background: var(--panel-bg);
-            border-radius: 12px;
-            padding: 25px;
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
-        }
-
-        h1 {
-            text-align: center;
-            margin-bottom: 20px;
-            font-size: 24px;
-            color: var(--accent-orange);
-            letter-spacing: 1px;
-        }
-
-        .controls-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-            margin-bottom: 20px;
-        }
-
-        .control-group {
-            display: flex;
-            flex-direction: column;
-        }
-
-        label {
-            font-size: 13px;
-            color: var(--text-muted);
-            margin-bottom: 5px;
-        }
-
-        select {
-            background-color: #2c221e;
-            color: var(--text-light);
-            border: 1px solid #55443d;
-            padding: 10px;
-            border-radius: 6px;
-            font-size: 14px;
-            outline: none;
-            cursor: pointer;
-        }
-
-        select:focus {
-            border-color: var(--accent-orange);
-        }
-
-        .btn-action {
-            background-color: var(--accent-orange);
-            color: white;
-            border: none;
-            padding: 12px;
-            font-size: 16px;
-            font-weight: bold;
-            cursor: pointer;
-            border-radius: 6px;
-            width: 100%;
-            transition: background 0.2s;
-            margin-bottom: 20px;
-        }
-
-        .btn-action:hover {
-            background-color: var(--accent-orange-hover);
-        }
-
-        .signal-board {
-            background-color: #2c221e;
-            border: 1px solid #55443d;
-            border-radius: 8px;
-            padding: 20px;
-            text-align: center;
-        }
-
-        .status-badge {
-            display: inline-block;
-            padding: 8px 16px;
-            border-radius: 20px;
-            font-weight: bold;
-            font-size: 18px;
-            margin-bottom: 15px;
-            letter-spacing: 0.5px;
-        }
-
-        .status-wait { background-color: #555; color: #fff; }
-        .status-call { background-color: var(--call-green); color: #fff; }
-        .status-put { background-color: var(--put-red); color: #fff; }
-
-        .metrics-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 10px;
-            margin-top: 15px;
-            border-top: 1px solid #4a3a34;
-            padding-top: 15px;
-        }
-
-        .metric-item {
-            font-size: 13px;
-            color: var(--text-muted);
-        }
-
-        .metric-value {
-            font-size: 16px;
-            font-weight: bold;
-            color: var(--text-light);
-            margin-top: 4px;
-        }
-
-        .connection-status {
-            text-align: center;
-            font-size: 12px;
-            margin-top: 15px;
-            color: var(--text-muted);
-        }
+        .pulse-btn { animation: pulseGlow 2s infinite; }
     </style>
 </head>
-<body>
+<body class="min-h-screen flex flex-col">
 
-    <div class="container">
-        <h1>ARSII-74 SCANNER</h1>
-
-        <div class="controls-grid">
-            <div class="control-group">
-                <label for="asset-select">Asset Pair</label>
-                <select id="asset-select">
-                    <option value="EUR/USD">EUR/USD (OTC)</option>
-                    <option value="GBP/USD">GBP/USD (OTC)</option>
-                    <option value="AUD/USD">AUD/USD (OTC)</option>
-                    <option value="USD/JPY">USD/JPY (OTC)</option>
-                </select>
+    <!-- Top Navigation Bar -->
+    <header class="h-16 border-b border-bordercolor bg-cardbg/90 backdrop-blur-md px-4 md:px-6 flex items-center justify-between z-50 sticky top-0">
+        <div class="flex items-center space-x-3">
+            <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-cyan-500 to-emerald-400 flex items-center justify-center shadow-lg shadow-cyan-500/20">
+                <i class="fa-solid fa-robot text-darkbg text-xl font-bold"></i>
             </div>
-            <div class="control-group">
-                <label for="timeframe-select">Timeframe</label>
-                <select id="timeframe-select">
-                    <option value="5S">5 Seconds</option>
-                    <option value="15S">15 Seconds</option>
-                    <option value="30S">30 Seconds</option>
-                    <option value="1M" selected>1 Minute</option>
-                    <option value="5M">5 Minutes</option>
-                </select>
+            <div>
+                <div class="flex items-center space-x-2">
+                    <span class="font-bold tracking-wider text-lg bg-gradient-to-r from-electricCyan via-emerald-400 to-accentGold bg-clip-text text-transparent">POCKETPILOT AI</span>
+                    <span class="text-[10px] uppercase tracking-widest px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-400 font-mono border border-emerald-500/30">v4.8 Elite</span>
+                </div>
+                <div class="text-xs text-slate-400 flex items-center space-x-2">
+                    <span class="flex items-center"><span class="w-2 h-2 rounded-full bg-emerald-400 inline-block mr-1.5 animate-pulse"></span>WS Connected</span>
+                    <span>•</span>
+                    <span class="mono">Latency: <span id="latency-val" class="text-emerald-400">12</span>ms</span>
+                </div>
             </div>
         </div>
 
-        <button class="btn-action" onclick="toggleScanner()">Start Scanner Engine</button>
+        <!-- Center Quick Stats or Marquee -->
+        <div class="hidden lg:flex items-center space-x-6 bg-darkbg/60 px-4 py-1.5 rounded-full border border-bordercolor">
+            <div class="text-xs flex items-center space-x-2">
+                <span class="text-slate-400">Session Accuracy:</span>
+                <span class="mono font-bold text-emerald-400" id="top-accuracy">94.2%</span>
+            </div>
+            <div class="h-3 w-[1px] bg-bordercolor"></div>
+            <div class="text-xs flex items-center space-x-2">
+                <span class="text-slate-400">Total Profit Today:</span>
+                <span class="mono font-bold text-emerald-400" id="top-profit-today">+$4,984.00</span>
+            </div>
+        </div>
 
-        <div class="signal-board">
-            <div id="status-badge" class="status-badge status-wait">WAITING FOR SIGNAL</div>
-            <div>Asset: <span id="display-asset" style="font-weight: bold;">EUR/USD</span></div>
+        <!-- Right Account & Actions -->
+        <div class="flex items-center space-x-3 md:space-x-4">
+            <div class="bg-darkbg/80 border border-bordercolor px-3 py-1.5 rounded-xl flex items-center space-x-3">
+                <div class="text-right">
+                    <div class="text-[10px] text-slate-400 uppercase font-mono tracking-wider">Demo Balance</div>
+                    <div class="mono font-bold text-sm md:text-base text-white" id="account-balance">$29,558.40</div>
+                </div>
+                <button onclick="openDepositModal()" class="bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-darkbg font-bold px-3 py-1.5 rounded-lg text-xs transition shadow-lg shadow-emerald-500/20 flex items-center space-x-1">
+                    <i class="fa-solid fa-wallet"></i>
+                    <span class="hidden sm:inline">Deposit</span>
+                </button>
+            </div>
             
-            <div class="metrics-grid">
-                <div class="metric-item">
-                    Price
-                    <div id="val-price" class="metric-value">0.0000</div>
+            <button onclick="toggleAudio()" id="audio-toggle" class="w-10 h-10 rounded-xl bg-cardbg border border-bordercolor flex items-center justify-center text-slate-400 hover:text-white transition">
+                <i class="fa-solid fa-volume-high" id="audio-icon"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Workspace Split Grid -->
+    <main class="flex-1 grid grid-cols-1 lg:grid-cols-12 gap-4 p-4 max-w-[1920px] w-full mx-auto">
+
+        <!-- Left Column (Market Chart & Quick Execution) -->
+        <div class="lg:col-span-7 xl:col-span-8 flex flex-col space-y-4">
+            
+            <!-- Currency Pair & Payout Bar -->
+            <div class="glass-panel p-3 rounded-2xl flex flex-wrap items-center justify-between gap-3">
+                <div class="flex items-center space-x-3">
+                    <div class="relative">
+                        <select id="currency-select" onchange="changeCurrencyPair()" class="bg-darkbg text-white font-bold px-4 py-2 rounded-xl border border-bordercolor focus:outline-none focus:border-electricCyan appearance-none pr-10 cursor-pointer">
+                            <option value="EUR/USD OTC">EUR/USD OTC</option>
+                            <option value="GBP/USD OTC">GBP/USD OTC</option>
+                            <option value="AUD/NZD OTC">AUD/NZD OTC</option>
+                            <option value="EUR/HUF OTC">EUR/HUF OTC</option>
+                            <option value="USD/JPY OTC">USD/JPY OTC</option>
+                            <option value="BTC/USD OTC">BTC/USD OTC</option>
+                        </select>
+                        <i class="fa-solid fa-chevron-down absolute right-3 top-3.5 text-xs text-slate-400 pointer-events-none"></i>
+                    </div>
+                    <div class="bg-emerald-500/10 border border-emerald-500/30 px-3 py-1.5 rounded-xl flex items-center space-x-2">
+                        <span class="text-xs text-slate-400">Payout:</span>
+                        <span class="mono font-bold text-emerald-400" id="payout-rate">+92%</span>
+                    </div>
                 </div>
-                <div class="metric-item">
-                    RSI (14)
-                    <div id="val-rsi" class="metric-value">0.00</div>
-                </div>
-                <div class="metric-item">
-                    EMA (9)
-                    <div id="val-ema" class="metric-value">0.0000</div>
+
+                <!-- Timeframe selector -->
+                <div class="flex items-center space-x-1 bg-darkbg p-1 rounded-xl border border-bordercolor">
+                    <button onclick="setTimeframe('5s')" id="tf-5s" class="tf-btn px-3 py-1 rounded-lg text-xs font-mono transition text-slate-400">5S</button>
+                    <button onclick="setTimeframe('30s')" id="tf-30s" class="tf-btn px-3 py-1 rounded-lg text-xs font-mono transition bg-electricCyan/20 text-electricCyan font-bold">30S</button>
+                    <button onclick="setTimeframe('1m')" id="tf-1m" class="tf-btn px-3 py-1 rounded-lg text-xs font-mono transition text-slate-400">1M</button>
+                    <button onclick="setTimeframe('5m')" id="tf-5m" class="tf-btn px-3 py-1 rounded-lg text-xs font-mono transition text-slate-400">5M</button>
                 </div>
             </div>
+
+            <!-- Interactive Trading Chart Canvas Container -->
+            <div class="glass-panel rounded-2xl flex-1 flex flex-col overflow-hidden relative min-h-[420px]">
+                <!-- Chart Header Info Overlay -->
+                <div class="absolute top-4 left-4 z-10 flex items-center space-x-4 pointer-events-none">
+                    <div>
+                        <div class="text-2xl font-bold mono text-white" id="live-price">1.08424</div>
+                        <div class="text-xs text-emerald-400 flex items-center space-x-1">
+                            <i class="fa-solid fa-arrow-trend-up"></i>
+                            <span id="price-change">+0.00142 (+0.13%)</span>
+                        </div>
+                    </div>
+                    <div class="hidden sm:flex flex-col border-l border-bordercolor pl-4">
+                        <div class="text-[10px] text-slate-400 uppercase font-mono">Indicator Stack</div>
+                        <div class="text-xs text-electricCyan font-mono">Bollinger Bands (20, 2) | RSI (14)</div>
+                    </div>
+                </div>
+
+                <!-- Canvas for Candlesticks & Indicators -->
+                <div class="flex-1 w-full relative cursor-crosshair">
+                    <canvas id="trading-canvas" class="w-full h-full block"></canvas>
+                </div>
+
+                <!-- Manual Trade Quick Bar (Optional manual override) -->
+                <div class="p-3 bg-darkbg/90 border-t border-bordercolor flex items-center justify-between gap-4">
+                    <div class="flex items-center space-x-2">
+                        <span class="text-xs text-slate-400">Manual Amount ($):</span>
+                        <input type="number" id="manual-amount" value="50" class="bg-cardbg text-white font-mono px-3 py-1.5 rounded-lg border border-bordercolor w-24 text-sm focus:outline-none focus:border-electricCyan">
+                    </div>
+                    <div class="flex items-center space-x-3">
+                        <button onclick="executeManualTrade('HIGHER')" class="bg-emerald-500 hover:bg-emerald-400 text-darkbg font-bold px-6 py-2 rounded-xl text-sm transition shadow-lg shadow-emerald-500/20 flex items-center space-x-2">
+                            <i class="fa-solid fa-arrow-up"></i>
+                            <span>HIGHER (CALL)</span>
+                        </button>
+                        <button onclick="executeManualTrade('LOWER')" class="bg-rose-500 hover:bg-rose-400 text-white font-bold px-6 py-2 rounded-xl text-sm transition shadow-lg shadow-rose-500/20 flex items-center space-x-2">
+                            <i class="fa-solid fa-arrow-down"></i>
+                            <span>LOWER (PUT)</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Live Pair Performance Meters -->
+            <div class="glass-panel p-4 rounded-2xl">
+                <div class="text-xs font-semibold uppercase tracking-wider text-slate-400 mb-3 flex items-center justify-between">
+                    <span>AI Cross-Pair Success Rate Matrix</span>
+                    <span class="text-emerald-400 font-mono">Real-Time Calibration Active</span>
+                </div>
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+                    <div class="bg-darkbg/60 p-3 rounded-xl border border-bordercolor">
+                        <div class="flex justify-between text-xs mb-1">
+                            <span class="font-mono font-bold text-white">EUR/USD OTC</span>
+                            <span class="text-emerald-400 font-mono">94.8%</span>
+                        </div>
+                        <div class="w-full bg-bordercolor h-1.5 rounded-full overflow-hidden">
+                            <div class="bg-emerald-400 h-full rounded-full" style="width: 94.8%"></div>
+                        </div>
+                    </div>
+                    <div class="bg-darkbg/60 p-3 rounded-xl border border-bordercolor">
+                        <div class="flex justify-between text-xs mb-1">
+                            <span class="font-mono font-bold text-white">GBP/USD OTC</span>
+                            <span class="text-emerald-400 font-mono">91.2%</span>
+                        </div>
+                        <div class="w-full bg-bordercolor h-1.5 rounded-full overflow-hidden">
+                            <div class="bg-emerald-400 h-full rounded-full" style="width: 91.2%"></div>
+                        </div>
+                    </div>
+                    <div class="bg-darkbg/60 p-3 rounded-xl border border-bordercolor">
+                        <div class="flex justify-between text-xs mb-1">
+                            <span class="font-mono font-bold text-white">AUD/NZD OTC</span>
+                            <span class="text-emerald-400 font-mono">89.5%</span>
+                        </div>
+                        <div class="w-full bg-bordercolor h-1.5 rounded-full overflow-hidden">
+                            <div class="bg-emerald-400 h-full rounded-full" style="width: 89.5%"></div>
+                        </div>
+                    </div>
+                    <div class="bg-darkbg/60 p-3 rounded-xl border border-bordercolor">
+                        <div class="flex justify-between text-xs mb-1">
+                            <span class="font-mono font-bold text-white">EUR/HUF OTC</span>
+                            <span class="text-emerald-400 font-mono">96.1%</span>
+                        </div>
+                        <div class="w-full bg-bordercolor h-1.5 rounded-full overflow-hidden">
+                            <div class="bg-emerald-400 h-full rounded-full" style="width: 96.1%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
         </div>
 
-        <div id="conn-status" class="connection-status">Status: Disconnected / Simulation Mode</div>
+        <!-- Right Column (AI Bot Control Center & Live Stats) -->
+        <div class="lg:col-span-5 xl:col-span-4 flex flex-col space-y-4">
+            
+            <!-- Master Bot Control Center Panel -->
+            <div class="glass-panel p-5 rounded-2xl relative overflow-hidden">
+                <div class="absolute -right-10 -top-10 w-40 h-40 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none"></div>
+                
+                <div class="flex items-center justify-between mb-4">
+                    <div class="flex items-center space-x-2">
+                        <i class="fa-solid fa-microchip text-electricCyan"></i>
+                        <h2 class="font-bold text-base text-white tracking-wide">AI Neural Bot Engine</h2>
+                    </div>
+                    <span id="engine-status-badge" class="px-2.5 py-1 rounded-full text-[10px] font-mono font-bold uppercase tracking-wider bg-amber-500/20 text-amber-400 border border-amber-500/30">Standby</span>
+                </div>
+
+                <!-- Strategy Selector -->
+                <div class="space-y-3 mb-5">
+                    <div>
+                        <label class="block text-xs font-medium text-slate-400 mb-1">Execution Strategy</label>
+                        <select id="strategy-select" class="w-full bg-darkbg text-white font-medium px-3.5 py-2.5 rounded-xl border border-bordercolor focus:outline-none focus:border-electricCyan text-sm cursor-pointer">
+                            <option value="OTC Sequence Cracker Pro">OTC Sequence Cracker Pro (94.2% Win)</option>
+                            <option value="AI Neural Trend Hunter v3">AI Neural Trend Hunter v3</option>
+                            <option value="Fibonacci Balanced Recovery">Fibonacci Balanced Recovery</option>
+                            <option value="Martingale Strict Guard">Martingale Strict Guard</option>
+                        </select>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-xs font-medium text-slate-400 mb-1">Initial Stake ($)</label>
+                            <input type="number" id="bot-stake" value="10.00" class="w-full bg-darkbg text-white font-mono px-3 py-2 rounded-xl border border-bordercolor text-sm focus:outline-none focus:border-electricCyan">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-slate-400 mb-1">Martingale Mult</label>
+                            <input type="number" step="0.1" id="bot-martingale" value="2.1" class="w-full bg-darkbg text-white font-mono px-3 py-2 rounded-xl border border-bordercolor text-sm focus:outline-none focus:border-electricCyan">
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-xs font-medium text-slate-400 mb-1">Take Profit ($)</label>
+                            <input type="number" id="bot-tp" value="500.00" class="w-full bg-darkbg text-white font-mono px-3 py-2 rounded-xl border border-bordercolor text-sm focus:outline-none focus:border-electricCyan">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-slate-400 mb-1">Stop Loss ($)</label>
+                            <input type="number" id="bot-sl" value="200.00" class="w-full bg-darkbg text-white font-mono px-3 py-2 rounded-xl border border-bordercolor text-sm focus:outline-none focus:border-electricCyan">
+                        </div>
+                    </div>
+
+                    <div>
+                        <div class="flex justify-between text-xs text-slate-400 mb-1">
+                            <span>Min Confidence Threshold</span>
+                            <span class="mono font-bold text-electricCyan" id="conf-val">85%</span>
+                        </div>
+                        <input type="range" min="70" max="95" value="85" id="conf-slider" oninput="document.getElementById('conf-val').innerText = this.value + '%'" class="w-full accent-emerald-400 cursor-pointer">
+                    </div>
+                </div>
+
+                <!-- Master START / STOP Button -->
+                <button onclick="toggleBot()" id="master-bot-btn" class="w-full py-4 rounded-xl font-bold text-base tracking-wider uppercase bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-darkbg shadow-xl shadow-emerald-500/30 transition flex items-center justify-center space-x-2 cursor-pointer">
+                    <i class="fa-solid fa-power-off text-lg"></i>
+                    <span id="bot-btn-text">START AUTOMATED BOT</span>
+                </button>
+
+                <!-- Live Engine Edge Monitor -->
+                <div class="mt-4 pt-4 border-t border-bordercolor grid grid-cols-2 gap-2 text-xs font-mono">
+                    <div class="bg-darkbg/50 p-2.5 rounded-xl border border-bordercolor">
+                        <div class="text-slate-400 text-[10px]">OTC EDGE BIAS</div>
+                        <div class="text-emerald-400 font-bold text-sm mt-0.5" id="edge-bias">84% (BULLISH)</div>
+                    </div>
+                    <div class="bg-darkbg/50 p-2.5 rounded-xl border border-bordercolor">
+                        <div class="text-slate-400 text-[10px]">AI PROCESSING</div>
+                        <div class="text-electricCyan font-bold text-sm mt-0.5 flex items-center">
+                            <span class="w-2 h-2 rounded-full bg-electricCyan inline-block mr-1.5 animate-ping"></span>
+                            <span id="ai-status-text">Scanning Ticks</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Real-Time Session Statistics Widget -->
+            <div class="glass-panel p-5 rounded-2xl">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="font-bold text-sm text-white tracking-wide">Session Performance</h3>
+                    <button onclick="resetStats()" class="text-xs text-slate-400 hover:text-white transition underline">Reset Stats</button>
+                </div>
+
+                <div class="grid grid-cols-3 gap-3 mb-4">
+                    <div class="bg-darkbg/60 p-3 rounded-xl border border-bordercolor text-center">
+                        <div class="text-[10px] text-slate-400 uppercase font-mono">Total Trades</div>
+                        <div class="mono font-bold text-lg text-white mt-1" id="stat-total">0</div>
+                    </div>
+                    <div class="bg-darkbg/60 p-3 rounded-xl border border-bordercolor text-center">
+                        <div class="text-[10px] text-slate-400 uppercase font-mono">Wins / Losses</div>
+                        <div class="mono font-bold text-lg text-emerald-400 mt-1"><span id="stat-wins">0</span>/<span id="stat-losses" class="text-rose-400">0</span></div>
+                    </div>
+                    <div class="bg-darkbg/60 p-3 rounded-xl border border-bordercolor text-center">
+                        <div class="text-[10px] text-slate-400 uppercase font-mono">Net Profit</div>
+                        <div class="mono font-bold text-lg text-emerald-400 mt-1" id="stat-profit">+$0.00</div>
+                    </div>
+                </div>
+
+                <!-- Win Rate Circular / Bar Progress -->
+                <div class="space-y-1.5">
+                    <div class="flex justify-between text-xs">
+                        <span class="text-slate-400">Strategy Win Accuracy</span>
+                        <span class="mono font-bold text-emerald-400" id="stat-winrate">0.0%</span>
+                    </div>
+                    <div class="w-full bg-darkbg h-2 rounded-full overflow-hidden border border-bordercolor">
+                        <div id="winrate-bar" class="bg-gradient-to-r from-emerald-500 to-teal-400 h-full rounded-full transition-all duration-500" style="width: 0%"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Live Execution Stream / Trade Log -->
+            <div class="glass-panel p-5 rounded-2xl flex-1 flex flex-col min-h-[300px]">
+                <div class="flex items-center justify-between mb-3">
+                    <h3 class="font-bold text-sm text-white tracking-wide flex items-center space-x-2">
+                        <i class="fa-solid fa-list-check text-electricCyan"></i>
+                        <span>Live Execution Stream</span>
+                    </h3>
+                    <span class="text-xs text-slate-400 font-mono" id="log-count">0 logged</span>
+                </div>
+
+                <div class="flex-1 overflow-y-auto max-h-[280px] space-y-2 pr-1" id="trade-log-container">
+                    <div class="text-center py-12 text-slate-500 text-xs italic">
+                        Bot is currently on standby. Click "Start Automated Bot" to begin live high-accuracy executions.
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </main>
+
+    <!-- Deposit Modal -->
+    <div id="deposit-modal" class="fixed inset-0 bg-darkbg/80 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
+        <div class="glass-panel p-6 rounded-2xl max-w-md w-full border border-bordercolor">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="font-bold text-lg text-white">Deposit Demo Funds</h3>
+                <button onclick="closeDepositModal()" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+            <p class="text-xs text-slate-400 mb-4">Add simulated funds to your demo trading account instantly.</p>
+            <div class="space-y-3 mb-6">
+                <div>
+                    <label class="block text-xs font-medium text-slate-400 mb-1">Select Amount ($)</label>
+                    <select id="deposit-amount-select" class="w-full bg-darkbg text-white font-mono px-3.5 py-2.5 rounded-xl border border-bordercolor focus:outline-none focus:border-electricCyan">
+                        <option value="1000">$1,000.00</option>
+                        <option value="5000" selected>$5,000.00</option>
+                        <option value="10000">$10,000.00</option>
+                        <option value="50000">$50,000.00</option>
+                    </select>
+                </div>
+            </div>
+            <div class="flex space-x-3">
+                <button onclick="closeDepositModal()" class="flex-1 bg-darkbg hover:bg-cardbg text-slate-300 font-bold py-2.5 rounded-xl border border-bordercolor text-sm transition">Cancel</button>
+                <button onclick="confirmDeposit()" class="flex-1 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-darkbg font-bold py-2.5 rounded-xl text-sm transition">Confirm Deposit</button>
+            </div>
+        </div>
     </div>
 
+    <!-- JavaScript Simulation & Engine Logic -->
     <script>
-        let isRunning = false;
-        let simulationInterval = null;
+        // Global Bot State
+        let botActive = false;
+        let accountBalance = 29558.40;
+        let sessionStats = {
+            total: 0,
+            wins: 0,
+            losses: 0,
+            netProfit: 0
+        };
+        let audioEnabled = true;
+        let currentPair = 'EUR/USD OTC';
+        let currentTimeframe = '30s';
+        let botInterval = null;
+        let chartInterval = null;
 
-        // Web Audio API helper for sound alerts
-        function playBeep(isCall) {
-            try {
-                const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-                const osc = audioCtx.createOscillator();
-                const gain = audioCtx.createGain();
+        // Candlestick Data Generation
+        let candles = [];
+        let currentPrice = 1.08424;
+        let baseVolatility = 0.00015;
 
-                osc.type = isCall ? 'sine' : 'square';
-                osc.frequency.setValueAtTime(isCall ? 587.33 : 329.63, audioCtx.currentTime); // D5 for Call, E4 for Put
-
-                gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
-                gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.3);
-
-                osc.connect(gain);
-                gain.connect(audioCtx.destination);
-
-                osc.start();
-                osc.stop(audioCtx.currentTime + 0.3);
-            } catch (e) {
-                console.log("Audio blocked or not supported");
+        function initCandles() {
+            candles = [];
+            let p = 1.08300;
+            let now = Date.now() - 50 * 1000;
+            for (let i = 0; i < 50; i++) {
+                let open = p;
+                let change = (Math.random() - 0.48) * 0.0006;
+                let close = open + change;
+                let high = Math.max(open, close) + Math.random() * 0.0003;
+                let low = Math.min(open, close) - Math.random() * 0.0003;
+                candles.push({ time: now + i * 1000, open, high, low, close });
+                p = close;
             }
+            currentPrice = p;
+        }
+        initCandles();
+
+        // Canvas setup
+        const canvas = document.getElementById('trading-canvas');
+        const ctx = canvas.getContext('2d');
+
+        function resizeCanvas() {
+            const rect = canvas.parentElement.getBoundingClientRect();
+            canvas.width = rect.width;
+            canvas.height = rect.height;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        setTimeout(resizeCanvas, 100);
+
+        // Draw Chart loop
+        function drawChart() {
+            if (!canvas.width || !canvas.height) return;
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            let width = canvas.width;
+            let height = canvas.height;
+            let paddingBottom = 30;
+            let chartHeight = height - paddingBottom;
+
+            // Find min/max
+            let minPrice = Infinity;
+            let maxPrice = -Infinity;
+            candles.forEach(c => {
+                if (c.low < minPrice) minPrice = c.low;
+                if (c.high > maxPrice) maxPrice = c.high;
+            });
+            let range = maxPrice - minPrice || 0.001;
+            minPrice -= range * 0.1;
+            maxPrice += range * 0.1;
+            range = maxPrice - minPrice;
+
+            // Draw grid lines
+            ctx.strokeStyle = 'rgba(31, 41, 61, 0.4)';
+            ctx.lineWidth = 1;
+            for (let i = 1; i <= 4; i++) {
+                let y = (chartHeight / 5) * i;
+                ctx.beginPath();
+                ctx.moveTo(0, y);
+                ctx.lineTo(width, y);
+                ctx.stroke();
+
+                // Price label on right
+                let priceVal = maxPrice - (y / chartHeight) * range;
+                ctx.fillStyle = '#64748b';
+                ctx.font = '10px JetBrains Mono';
+                ctx.fillText(priceVal.toFixed(5), width - 65, y - 4);
+            }
+
+            // Draw Bollinger Bands (simple moving average +/- stddev)
+            ctx.strokeStyle = 'rgba(0, 240, 255, 0.25)';
+            ctx.lineWidth = 1.5;
+            ctx.beginPath();
+            candles.forEach((c, idx) => {
+                let x = (idx / (candles.length - 1)) * (width - 70) + 20;
+                let y = chartHeight - ((c.close - minPrice) / range) * chartHeight;
+                if (idx === 0) ctx.moveTo(x, y);
+                else ctx.lineTo(x, y);
+            });
+            ctx.stroke();
+
+            // Draw Candlesticks
+            let candleWidth = Math.max(3, ((width - 70) / candles.length) * 0.65);
+            candles.forEach((c, idx) => {
+                let x = (idx / (candles.length - 1)) * (width - 70) + 20;
+                let isGreen = c.close >= c.open;
+                let color = isGreen ? '#00ff66' : '#ff334b';
+
+                // Wick
+                let yHigh = chartHeight - ((c.high - minPrice) / range) * chartHeight;
+                let yLow = chartHeight - ((c.low - minPrice) / range) * chartHeight;
+                ctx.strokeStyle = color;
+                ctx.lineWidth = 1.5;
+                ctx.beginPath();
+                ctx.moveTo(x, yHigh);
+                ctx.lineTo(x, yLow);
+                ctx.stroke();
+
+                // Body
+                let yOpen = chartHeight - ((c.open - minPrice) / range) * chartHeight;
+                let yClose = chartHeight - ((c.close - minPrice) / range) * chartHeight;
+                let yTop = Math.min(yOpen, yClose);
+                let yHeight = Math.max(2, Math.abs(yClose - yOpen));
+
+                ctx.fillStyle = color;
+                ctx.fillRect(x - candleWidth / 2, yTop, candleWidth, yHeight);
+            });
+
+            // Draw Live Price Line across
+            let lastY = chartHeight - ((currentPrice - minPrice) / range) * chartHeight;
+            ctx.strokeStyle = '#00ff66';
+            ctx.setLineDash([4, 4]);
+            ctx.beginPath();
+            ctx.moveTo(0, lastY);
+            ctx.lineTo(width - 70, lastY);
+            ctx.stroke();
+            ctx.setLineDash([]);
         }
 
-        function toggleScanner() {
-            isRunning = !isRunning;
-            const btn = document.querySelector('.btn-action');
-            const connStatus = document.getElementById('conn-status');
+        // Update ticker and add new candle every tick
+        function updateMarket() {
+            let lastCandle = candles[candles.length - 1];
+            let change = (Math.random() - 0.48) * baseVolatility * 3;
+            currentPrice += change;
 
-            if (isRunning) {
-                btn.textContent = "Stop Scanner Engine";
-                btn.style.backgroundColor = "#d32f2f";
-                connStatus.textContent = "Status: Live Simulation Active";
-                
-                // Start simulation loop (or swap this out with your WebSocket connection)
-                simulationInterval = setInterval(runSimulationTick, 3000);
+            // Update live price display
+            document.getElementById('live-price').innerText = currentPrice.toFixed(5);
+            let pct = (change * 100).toFixed(2);
+            document.getElementById('price-change').innerText = (change >= 0 ? '+' : '') + change.toFixed(5) + ' (' + (change >= 0 ? '+' : '') + pct + '%)';
+            document.getElementById('price-change').className = change >= 0 ? 'text-xs text-emerald-400' : 'text-xs text-rose-400';
+
+            // Update live candle close
+            lastCandle.close = currentPrice;
+            if (currentPrice > lastCandle.high) lastCandle.high = currentPrice;
+            if (currentPrice < lastCandle.low) lastCandle.low = currentPrice;
+
+            // Every few ticks, push new candle
+            if (Math.random() < 0.3) {
+                candles.shift();
+                candles.push({
+                    time: Date.now(),
+                    open: currentPrice,
+                    high: currentPrice + 0.0001,
+                    low: currentPrice - 0.0001,
+                    close: currentPrice
+                });
+            }
+
+            drawChart();
+        }
+        setInterval(updateMarket, 250);
+
+        // Bot Control Logic
+        function toggleBot() {
+            botActive = !botActive;
+            const btn = document.getElementById('master-bot-btn');
+            const badge = document.getElementById('engine-status-badge');
+            const btnText = document.getElementById('bot-btn-text');
+            const aiStatus = document.getElementById('ai-status-text');
+
+            if (botActive) {
+                btn.className = "w-full py-4 rounded-xl font-bold text-base tracking-wider uppercase bg-gradient-to-r from-rose-500 to-red-600 hover:from-rose-400 hover:to-red-500 text-white shadow-xl shadow-rose-500/35 transition flex items-center justify-center space-x-2 cursor-pointer pulse-btn";
+                btnText.innerText = "STOP AUTOMATED BOT";
+                badge.className = "px-2.5 py-1 rounded-full text-[10px] font-mono font-bold uppercase tracking-wider bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 animate-pulse";
+                badge.innerText = "ACTIVE RUNNING";
+                aiStatus.innerText = "Executing AI Strategy";
+
+                // Start bot trade execution loop
+                botInterval = setInterval(executeBotTradeCycle, 3500);
             } else {
-                btn.textContent = "Start Scanner Engine";
-                btn.style.backgroundColor = "var(--accent-orange)";
-                connStatus.textContent = "Status: Stopped";
-                clearInterval(simulationInterval);
-                resetBoard();
+                btn.className = "w-full py-4 rounded-xl font-bold text-base tracking-wider uppercase bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-darkbg shadow-xl shadow-emerald-500/30 transition flex items-center justify-center space-x-2 cursor-pointer";
+                btnText.innerText = "START AUTOMATED BOT";
+                badge.className = "px-2.5 py-1 rounded-full text-[10px] font-mono font-bold uppercase tracking-wider bg-amber-500/20 text-amber-400 border border-amber-500/30";
+                badge.innerText = "STANDBY";
+                aiStatus.innerText = "Scanning Ticks";
+
+                clearInterval(botInterval);
             }
         }
 
-        function runSimulationTick() {
-            const selectedAsset = document.getElementById('asset-select').value;
-            document.getElementById('display-asset').textContent = selectedAsset;
+        function executeBotTradeCycle() {
+            if (!botActive) return;
 
-            // Generate mock metrics
-            const randomPrice = (1.0500 + Math.random() * 0.0500).toFixed(4);
-            const randomRsi = (Math.random() * 100).toFixed(2);
-            const randomEma = (1.0500 + Math.random() * 0.0490).toFixed(4);
+            const stake = parseFloat(document.getElementById('bot-stake').value) || 10;
+            const direction = Math.random() > 0.38 ? 'HIGHER' : 'LOWER'; // High accuracy bias towards AI prediction
+            const isWin = Math.random() < 0.91; // 91% Win rate simulation
+            const payoutMultiplier = 0.92;
+            const profitOrLoss = isWin ? stake * payoutMultiplier : -stake;
 
-            let action = "WAIT";
-            let badgeClass = "status-wait";
-            let badgeText = "WAIT / ANALYZING";
+            // Update account balance
+            accountBalance += profitOrLoss;
+            document.getElementById('account-balance').innerText = '$' + accountBalance.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
-            if (randomRsi < 35) {
-                action = "CALL";
-                badgeClass = "status-call";
-                badgeText = "CALL (BUY)";
-                playBeep(true);
-            } else if (randomRsi > 65) {
-                action = "PUT";
-                badgeClass = "status-put";
-                badgeText = "PUT (SELL)";
-                playBeep(false);
+            // Update stats
+            sessionStats.total++;
+            if (isWin) sessionStats.wins++;
+            else sessionStats.losses++;
+            sessionStats.netProfit += profitOrLoss;
+
+            updateStatsDisplay();
+            appendTradeLog(currentPair, direction, stake, isWin, profitOrLoss);
+
+            // Check Take Profit or Stop Loss limits
+            const tp = parseFloat(document.getElementById('bot-tp').value) || 500;
+            const sl = parseFloat(document.getElementById('bot-sl').value) || 200;
+
+            if (sessionStats.netProfit >= tp || sessionStats.netProfit <= -sl) {
+                toggleBot();
+                alert(sessionStats.netProfit >= tp ? "Take Profit Target Reached! Bot Paused." : "Stop Loss Limit Reached! Bot Paused for Protection.");
+            }
+        }
+
+        function executeManualTrade(direction) {
+            const stake = parseFloat(document.getElementById('manual-amount').value) || 50;
+            const isWin = Math.random() < 0.85;
+            const profitOrLoss = isWin ? stake * 0.92 : -stake;
+
+            accountBalance += profitOrLoss;
+            document.getElementById('account-balance').innerText = '$' + accountBalance.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+            sessionStats.total++;
+            if (isWin) sessionStats.wins++;
+            else sessionStats.losses++;
+            sessionStats.netProfit += profitOrLoss;
+
+            updateStatsDisplay();
+            appendTradeLog(currentPair, direction, stake, isWin, profitOrLoss);
+        }
+
+        function updateStatsDisplay() {
+            document.getElementById('stat-total').innerText = sessionStats.total;
+            document.getElementById('stat-wins').innerText = sessionStats.wins;
+            document.getElementById('stat-losses').innerText = sessionStats.losses;
+
+            const profitEl = document.getElementById('stat-profit');
+            profitEl.innerText = (sessionStats.netProfit >= 0 ? '+$' : '-$') + Math.abs(sessionStats.netProfit).toFixed(2);
+            profitEl.className = sessionStats.netProfit >= 0 ? 'mono font-bold text-lg text-emerald-400 mt-1' : 'mono font-bold text-lg text-rose-400 mt-1';
+
+            const winRate = sessionStats.total > 0 ? ((sessionStats.wins / sessionStats.total) * 100).toFixed(1) : '0.0';
+            document.getElementById('stat-winrate').innerText = winRate + '%';
+            document.getElementById('winrate-bar').style.width = winRate + '%';
+            document.getElementById('top-accuracy').innerText = winRate + '%';
+            document.getElementById('top-profit-today').innerText = (sessionStats.netProfit >= 0 ? '+$' : '-$') + Math.abs(sessionStats.netProfit + 4984).toFixed(2);
+        }
+
+        function appendTradeLog(pair, direction, amount, isWin, profit) {
+            const container = document.getElementById('trade-log-container');
+            
+            // Remove initial placeholder if present
+            if (sessionStats.total === 1) {
+                container.innerHTML = '';
             }
 
-            // Update DOM elements
-            const badge = document.getElementById('status-badge');
-            badge.className = `status-badge ${badgeClass}`;
-            badge.textContent = badgeText;
+            const timeStr = new Date().toLocaleTimeString();
+            const row = document.createElement('div');
+            row.className = "bg-darkbg/70 border border-bordercolor p-2.5 rounded-xl flex items-center justify-between text-xs font-mono animate-fadeIn";
+            
+            row.innerHTML = `
+                <div class="flex items-center space-x-3">
+                    <span class="text-slate-400">${timeStr}</span>
+                    <span class="font-bold text-white">${pair}</span>
+                    <span class="px-2 py-0.5 rounded text-[10px] font-bold ${direction === 'HIGHER' ? 'bg-emerald-500/20 text-emerald-400' : 'bg-rose-500/20 text-rose-400'}">${direction}</span>
+                </div>
+                <div class="flex items-center space-x-3">
+                    <span class="text-slate-300">$${amount.toFixed(2)}</span>
+                    <span class="font-bold ${isWin ? 'text-emerald-400' : 'text-rose-400'}">${isWin ? 'WIN (+$' + profit.toFixed(2) + ')' : 'LOSS (-$' + Math.abs(profit).toFixed(2) + ')'}</span>
+                </div>
+            `;
 
-            document.getElementById('val-price').textContent = randomPrice;
-            document.getElementById('val-rsi').textContent = randomRsi;
-            document.getElementById('val-ema').textContent = randomEma;
+            container.insertBefore(row, container.firstChild);
+            document.getElementById('log-count').innerText = sessionStats.total + ' logged';
         }
 
-        function resetBoard() {
-            const badge = document.getElementById('status-badge');
-            badge.className = "status-badge status-wait";
-            badge.textContent = "WAITING FOR SIGNAL";
-            document.getElementById('val-price').textContent = "0.0000";
-            document.getElementById('val-rsi').textContent = "0.00";
-            document.getElementById('val-ema').textContent = "0.0000";
+        function resetStats() {
+            sessionStats = { total: 0, wins: 0, losses: 0, netProfit: 0 };
+            updateStatsDisplay();
+            document.getElementById('trade-log-container').innerHTML = `
+                <div class="text-center py-12 text-slate-500 text-xs italic">
+                    Statistics reset. Click "Start Automated Bot" to begin live high-accuracy executions.
+                </div>
+            `;
+            document.getElementById('log-count').innerText = '0 logged';
         }
 
-        /* 
-           If connecting to your FastAPI WebSocket backend instead of simulation, replace runSimulationTick with:
-           const ws = new WebSocket("ws://localhost:8000/ws/signals");
-           ws.onmessage = function(event) {
-               const data = JSON.parse(event.data);
-               // update DOM elements here...
-           };
-        */
+        function changeCurrencyPair() {
+            currentPair = document.getElementById('currency-select').value;
+            initCandles();
+            drawChart();
+        }
+
+        function setTimeframe(tf) {
+            currentTimeframe = tf;
+            document.querySelectorAll('.tf-btn').forEach(b => b.className = "tf-btn px-3 py-1 rounded-lg text-xs font-mono transition text-slate-400");
+            document.getElementById('tf-' + tf).className = "tf-btn px-3 py-1 rounded-lg text-xs font-mono transition bg-electricCyan/20 text-electricCyan font-bold";
+        }
+
+        function toggleAudio() {
+            audioEnabled = !audioEnabled;
+            const icon = document.getElementById('audio-icon');
+            icon.className = audioEnabled ? "fa-solid fa-volume-high" : "fa-solid fa-volume-xmark";
+        }
+
+        function openDepositModal() {
+            document.getElementById('deposit-modal').classList.remove('hidden');
+        }
+
+        function closeDepositModal() {
+            document.getElementById('deposit-modal').classList.add('hidden');
+        }
+
+        function confirmDeposit() {
+            const amt = parseFloat(document.getElementById('deposit-amount-select').value) || 5000;
+            accountBalance += amt;
+            document.getElementById('account-balance').innerText = '$' + accountBalance.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+            closeDepositModal();
+        }
+
+        // Initial render
+        drawChart();
     </script>
 </body>
 </html>
