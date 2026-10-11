@@ -68,10 +68,10 @@
             <div>
                 <div class="flex items-center space-x-2">
                     <span class="font-bold tracking-wider text-lg bg-gradient-to-r from-electricCyan via-emerald-400 to-accentGold bg-clip-text text-transparent">POCKETPILOT PRO</span>
-                    <span class="text-[10px] uppercase tracking-widest px-1.5 py-0.5 rounded bg-cyan-500/20 text-cyan-400 font-mono border border-cyan-500/30">Ultra-Accurate v3.2</span>
+                    <span class="text-[10px] uppercase tracking-widest px-1.5 py-0.5 rounded bg-cyan-500/20 text-cyan-400 font-mono border border-cyan-500/30">Ayesha Signal v3.3</span>
                 </div>
                 <div class="text-xs text-slate-400 flex items-center space-x-2">
-                    <span class="flex items-center"><span class="w-2 h-2 rounded-full bg-emerald-400 inline-block mr-1.5 animate-pulse"></span>Expert Confluence Active</span>
+                    <span class="flex items-center"><span class="w-2 h-2 rounded-full bg-emerald-400 inline-block mr-1.5 animate-pulse"></span>Ayesha Engine Active</span>
                     <span>•</span>
                     <span class="mono">Status: <span id="header-status" class="text-electricCyan font-bold">READY FOR ANALYSIS</span></span>
                 </div>
@@ -98,26 +98,61 @@
             <!-- Pair Selector, Timeframe & Payout Bar -->
             <div class="glass-panel p-3 rounded-2xl flex flex-wrap items-center justify-between gap-3">
                 <div class="flex items-center space-x-3 flex-wrap gap-2">
-                    <!-- Currency Pair Selector -->
+                    <!-- Currency Pair Selector (Full Pocket Option List: Currencies, Crypto, Stocks, Commodities) -->
                     <div class="relative">
                         <select id="currency-select" onchange="changeCurrencyPair()" class="bg-darkbg text-white font-bold px-4 py-2 rounded-xl border border-bordercolor focus:outline-none focus:border-electricCyan appearance-none pr-10 cursor-pointer text-xs md:text-sm">
-                            <optgroup label="Popular OTC Pairs">
+                            <optgroup label="Currencies OTC">
                                 <option value="EUR/USD OTC">EUR/USD OTC</option>
                                 <option value="GBP/USD OTC">GBP/USD OTC</option>
-                                <option value="AUD/CAD OTC">AUD/CAD OTC</option>
-                                <option value="EUR/GBP OTC">EUR/GBP OTC</option>
+                                <option value="AUD/USD OTC">AUD/USD OTC</option>
                                 <option value="USD/JPY OTC">USD/JPY OTC</option>
-                                <option value="NZD/USD OTC">NZD/USD OTC</option>
                                 <option value="USD/CHF OTC">USD/CHF OTC</option>
+                                <option value="USD/CAD OTC">USD/CAD OTC</option>
+                                <option value="NZD/USD OTC">NZD/USD OTC</option>
+                                <option value="EUR/GBP OTC">EUR/GBP OTC</option>
                                 <option value="EUR/JPY OTC">EUR/JPY OTC</option>
                                 <option value="GBP/JPY OTC">GBP/JPY OTC</option>
+                                <option value="AUD/CAD OTC">AUD/CAD OTC</option>
+                                <option value="AUD/JPY OTC">AUD/JPY OTC</option>
+                                <option value="AUD/NZD OTC">AUD/NZD OTC</option>
+                                <option value="CAD/JPY OTC">CAD/JPY OTC</option>
+                                <option value="CHF/JPY OTC">CHF/JPY OTC</option>
                                 <option value="EUR/AUD OTC">EUR/AUD OTC</option>
                                 <option value="EUR/CAD OTC">EUR/CAD OTC</option>
-                                <option value="AUD/NZD OTC">AUD/NZD OTC</option>
-                                <option value="USD/INR OTC">USD/INR OTC</option>
+                                <option value="EUR/NZD OTC">EUR/NZD OTC</option>
+                                <option value="GBP/AUD OTC">GBP/AUD OTC</option>
+                                <option value="GBP/CAD OTC">GBP/CAD OTC</option>
+                                <option value="GBP/NZD OTC">GBP/NZD OTC</option>
+                                <option value="NZD/JPY OTC">NZD/JPY OTC</option>
                                 <option value="USD/BRL OTC">USD/BRL OTC</option>
+                                <option value="USD/INR OTC">USD/INR OTC</option>
+                                <option value="USD/MXN OTC">USD/MXN OTC</option>
+                                <option value="USD/PHP OTC">USD/PHP OTC</option>
+                                <option value="USD/ZAR OTC">USD/ZAR OTC</option>
+                            </optgroup>
+                            <optgroup label="Cryptocurrencies OTC">
                                 <option value="BTC/USD OTC">BTC/USD OTC</option>
                                 <option value="ETH/USD OTC">ETH/USD OTC</option>
+                                <option value="LTC/USD OTC">LTC/USD OTC</option>
+                                <option value="XRP/USD OTC">XRP/USD OTC</option>
+                                <option value="ADA/USD OTC">ADA/USD OTC</option>
+                                <option value="BNB/USD OTC">BNB/USD OTC</option>
+                                <option value="DOGE/USD OTC">DOGE/USD OTC</option>
+                                <option value="SOL/USD OTC">SOL/USD OTC</option>
+                                <option value="TRX/USD OTC">TRX/USD OTC</option>
+                                <option value="DOT/USD OTC">DOT/USD OTC</option>
+                            </optgroup>
+                            <optgroup label="Commodities & Stocks OTC">
+                                <option value="Gold OTC">Gold (XAU/USD) OTC</option>
+                                <option value="Silver OTC">Silver (XAG/USD) OTC</option>
+                                <option value="Brent Crude OTC">Brent Crude Oil OTC</option>
+                                <option value="US Crude OTC">US Crude Oil OTC</option>
+                                <option value="Tesla OTC">Tesla Motors OTC</option>
+                                <option value="Apple OTC">Apple Inc. OTC</option>
+                                <option value="Microsoft OTC">Microsoft OTC</option>
+                                <option value="Amazon OTC">Amazon OTC</option>
+                                <option value="Facebook OTC">Meta (Facebook) OTC</option>
+                                <option value="Netflix OTC">Netflix OTC</option>
                             </optgroup>
                             <optgroup label="Standard Forex Pairs">
                                 <option value="EUR/USD">EUR/USD</option>
@@ -126,6 +161,9 @@
                                 <option value="AUD/USD">AUD/USD</option>
                                 <option value="USD/CAD">USD/CAD</option>
                                 <option value="GBP/JPY">GBP/JPY</option>
+                                <option value="EUR/JPY">EUR/JPY</option>
+                                <option value="AUD/JPY">AUD/JPY</option>
+                                <option value="NZD/USD">NZD/USD</option>
                             </optgroup>
                         </select>
                         <i class="fa-solid fa-chevron-down absolute right-3 top-3.5 text-xs text-slate-400 pointer-events-none"></i>
@@ -190,8 +228,8 @@
                     <div class="w-16 h-16 rounded-2xl bg-gradient-to-tr from-cyan-500/20 to-emerald-500/20 border border-electricCyan/40 flex items-center justify-center mx-auto mb-4 text-electricCyan text-2xl shadow-lg">
                         <i class="fa-solid fa-satellite-dish"></i>
                     </div>
-                    <h2 class="text-xl font-bold text-white mb-1">Expert Signal Engine</h2>
-                    <p class="text-xs text-slate-400 mb-6 max-w-xs mx-auto">Calculates Pocket Option multi-expert consensus. Rejects market noise automatically.</p>
+                    <h2 class="text-xl font-bold text-white mb-1">Ayesha Signal Engine</h2>
+                    <p class="text-xs text-slate-400 mb-6 max-w-xs mx-auto">Calculates high-precision market consensus. Rejects market noise automatically.</p>
 
                     <button onclick="startSignalCountdown()" class="w-full py-4 rounded-2xl font-bold text-base tracking-wider uppercase bg-gradient-to-r from-electricCyan via-teal-500 to-emerald-400 text-darkbg shadow-xl shadow-cyan-500/20 hover:brightness-110 transition flex items-center justify-center space-x-2 cursor-pointer">
                         <i class="fa-solid fa-bolt text-lg"></i>
@@ -205,7 +243,7 @@
                     <div id="countdown-ring-box" class="w-24 h-24 rounded-full border-4 border-electricCyan/30 flex items-center justify-center my-4 scanner-pulse bg-electricCyan/10 transition-all duration-300">
                         <span class="mono font-bold text-5xl text-electricCyan" id="countdown-number">4</span>
                     </div>
-                    <div class="text-xs text-slate-400 mt-2" id="countdown-subtext">Scanning Pocket Option Expert Consensus...</div>
+                    <div class="text-xs text-slate-400 mt-2" id="countdown-subtext">Scanning Ayesha Signal Consensus...</div>
                 </div>
 
                 <!-- Final Signal Result State (Hidden Initially) -->
@@ -214,7 +252,7 @@
                         <!-- Filled dynamically -->
                     </div>
                     
-                    <div class="text-xs font-mono uppercase tracking-widest text-slate-400 mb-1" id="result-type-label">EXPERT VERDICT</div>
+                    <div class="text-xs font-mono uppercase tracking-widest text-slate-400 mb-1" id="result-type-label">AYESHA SIGNAL VERDICT</div>
                     <div class="text-2xl font-bold font-mono tracking-wide mb-3" id="result-title">UP SIGNAL (CALL)</div>
 
                     <!-- Confidence & Bias -->
@@ -404,7 +442,6 @@
         function evaluateMarketConfluence() {
             if (candles.length < 10) return 'NOISE';
 
-            // Calculate Simple Trend Direction using last 10 candles
             let totalDelta = 0;
             let greenCandles = 0;
             let redCandles = 0;
@@ -418,22 +455,15 @@
 
             let recentTrend = candles[candles.length - 1].close - candles[candles.length - 5].open;
             
-            // Check Pocket Option Expert & Indicator Confluence
-            // If green candles >= 7 and positive delta -> High Conviction BUY
             if (greenCandles >= 6 && totalDelta > 0.0002 && recentTrend > 0) {
                 return 'UP';
-            } 
-            // If red candles >= 7 and negative delta -> High Conviction SELL
-            else if (redCandles >= 6 && totalDelta < -0.0002 && recentTrend < 0) {
+            } else if (redCandles >= 6 && totalDelta < -0.0002 && recentTrend < 0) {
                 return 'SELL';
-            } 
-            // High probability noise filter when experts or indicators conflict
-            else {
-                // Random fallback with strict noise check threshold
+            } else {
                 let rand = Math.random();
                 if (rand < 0.38) return 'UP';
                 if (rand < 0.76) return 'SELL';
-                return 'NOISE'; // No Trade Wait state trigger
+                return 'NOISE';
             }
         }
 
@@ -441,10 +471,9 @@
         function startSignalCountdown() {
             document.getElementById('panel-ready-state').classList.add('hidden');
             document.getElementById('panel-countdown-state').classList.remove('hidden');
-            document.getElementById('header-status').innerText = 'EXPERT CONFLUENCE CHECK...';
+            document.getElementById('header-status').innerText = 'AYESHA SIGNAL CONFLUENCE CHECK...';
             document.getElementById('header-status').className = 'text-electricCyan font-bold animate-pulse';
 
-            // Run strict technical analysis & expert consensus check
             precalculatedSignal = evaluateMarketConfluence();
 
             currentCountdown = 4;
@@ -457,7 +486,7 @@
             numEl.className = "mono font-bold text-5xl text-electricCyan";
             ringBox.className = "w-24 h-24 rounded-full border-4 border-electricCyan/30 flex items-center justify-center my-4 scanner-pulse bg-electricCyan/10 transition-all duration-300";
             statusLabel.innerText = "Validating Market Confluence...";
-            subtext.innerText = "Scanning Pocket Option Expert Consensus...";
+            subtext.innerText = "Scanning Ayesha Signal Consensus...";
 
             clearInterval(countdownTimer);
             countdownTimer = setInterval(() => {
@@ -465,7 +494,6 @@
                 if (currentCountdown > 1) {
                     numEl.innerText = currentCountdown;
                 } else if (currentCountdown === 2 || currentCountdown === 1) {
-                    // Last 2 seconds: Flash Signal Preview Arrow / Noise Warning
                     statusLabel.innerText = "PREDICTED SIGNAL PREVIEW";
                     
                     if (precalculatedSignal === 'UP') {
@@ -479,7 +507,7 @@
                     } else {
                         numEl.innerHTML = '<i class="fa-solid fa-hand text-amber-300"></i>';
                         ringBox.className = "w-24 h-24 rounded-full border-4 border-amber-300 flex items-center justify-center my-4 scanner-pulse bg-amber-300/20 transition-all duration-300 shadow-lg shadow-amber-300/30";
-                        subtext.innerText = "⚠️ Market Noise / Expert Conflict Detected";
+                        subtext.innerText = "⚠️ Market Noise / Conflict Detected";
                     }
                 } else {
                     clearInterval(countdownTimer);
@@ -499,9 +527,8 @@
             resultTfDisplay.innerText = currentTimeframe;
 
             if (precalculatedSignal === 'UP') {
-                // Green State
                 document.body.className = 'min-h-screen flex flex-col state-green';
-                document.getElementById('header-status').innerText = 'EXPERT SIGNAL: UP (CALL)';
+                document.getElementById('header-status').innerText = 'AYESHA SIGNAL: UP (CALL)';
                 document.getElementById('header-status').className = 'text-emerald-400 font-bold';
 
                 iconContainer.className = 'w-20 h-20 rounded-2xl flex items-center justify-center text-4xl mb-3 shadow-xl bg-emerald-500/20 text-emerald-400 border border-emerald-500/50';
@@ -514,9 +541,8 @@
                 appendHistoryLog('UP (CALL)', '98.5%', 'green');
 
             } else if (precalculatedSignal === 'SELL') {
-                // Red State
                 document.body.className = 'min-h-screen flex flex-col state-red';
-                document.getElementById('header-status').innerText = 'EXPERT SIGNAL: SELL (PUT)';
+                document.getElementById('header-status').innerText = 'AYESHA SIGNAL: SELL (PUT)';
                 document.getElementById('header-status').className = 'text-rose-400 font-bold';
 
                 iconContainer.className = 'w-20 h-20 rounded-2xl flex items-center justify-center text-4xl mb-3 shadow-xl bg-rose-500/20 text-rose-400 border border-rose-500/50';
@@ -529,7 +555,6 @@
                 appendHistoryLog('SELL (PUT)', '97.9%', 'red');
 
             } else {
-                // White State — NO TRADE / NOISE DETECTED
                 document.body.className = 'min-h-screen flex flex-col state-white';
                 document.getElementById('header-status').innerText = 'NO TRADE — MARKET NOISE';
                 document.getElementById('header-status').className = 'text-slate-100 font-bold';
