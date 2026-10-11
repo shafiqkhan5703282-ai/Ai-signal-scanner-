@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PocketPilot Pro - High Accuracy Expert Signal Generator</title>
+    <title>PocketPilot Pro - Pocket Option Trading Platform</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -98,11 +98,11 @@
             <!-- Pair Selector, Timeframe & Payout Bar -->
             <div class="glass-panel p-3 rounded-2xl flex flex-wrap items-center justify-between gap-3">
                 <div class="flex items-center space-x-3 flex-wrap gap-2">
-                    <!-- Currency Pair Selector (Full Pocket Option List: Currencies, Crypto, Stocks, Commodities) -->
+                    <!-- Currency Pair Selector (Exact Pocket Option App List) -->
                     <div class="relative">
                         <select id="currency-select" onchange="changeCurrencyPair()" class="bg-darkbg text-white font-bold px-4 py-2 rounded-xl border border-bordercolor focus:outline-none focus:border-electricCyan appearance-none pr-10 cursor-pointer text-xs md:text-sm">
                             <optgroup label="Currencies OTC">
-                                <option value="EUR/USD OTC">EUR/USD OTC</option>
+                                <option value="EUR/USD OTC" selected>EUR/USD OTC</option>
                                 <option value="GBP/USD OTC">GBP/USD OTC</option>
                                 <option value="AUD/USD OTC">AUD/USD OTC</option>
                                 <option value="USD/JPY OTC">USD/JPY OTC</option>
@@ -113,57 +113,115 @@
                                 <option value="EUR/JPY OTC">EUR/JPY OTC</option>
                                 <option value="GBP/JPY OTC">GBP/JPY OTC</option>
                                 <option value="AUD/CAD OTC">AUD/CAD OTC</option>
+                                <option value="AUD/CHF OTC">AUD/CHF OTC</option>
                                 <option value="AUD/JPY OTC">AUD/JPY OTC</option>
                                 <option value="AUD/NZD OTC">AUD/NZD OTC</option>
+                                <option value="CAD/CHF OTC">CAD/CHF OTC</option>
                                 <option value="CAD/JPY OTC">CAD/JPY OTC</option>
                                 <option value="CHF/JPY OTC">CHF/JPY OTC</option>
                                 <option value="EUR/AUD OTC">EUR/AUD OTC</option>
                                 <option value="EUR/CAD OTC">EUR/CAD OTC</option>
+                                <option value="EUR/CHF OTC">EUR/CHF OTC</option>
                                 <option value="EUR/NZD OTC">EUR/NZD OTC</option>
                                 <option value="GBP/AUD OTC">GBP/AUD OTC</option>
                                 <option value="GBP/CAD OTC">GBP/CAD OTC</option>
+                                <option value="GBP/CHF OTC">GBP/CHF OTC</option>
                                 <option value="GBP/NZD OTC">GBP/NZD OTC</option>
+                                <option value="NZD/CAD OTC">NZD/CAD OTC</option>
+                                <option value="NZD/CHF OTC">NZD/CHF OTC</option>
                                 <option value="NZD/JPY OTC">NZD/JPY OTC</option>
                                 <option value="USD/BRL OTC">USD/BRL OTC</option>
                                 <option value="USD/INR OTC">USD/INR OTC</option>
                                 <option value="USD/MXN OTC">USD/MXN OTC</option>
                                 <option value="USD/PHP OTC">USD/PHP OTC</option>
                                 <option value="USD/ZAR OTC">USD/ZAR OTC</option>
+                                <option value="USD/RUB OTC">USD/RUB OTC</option>
+                                <option value="EUR/RUB OTC">EUR/RUB OTC</option>
+                                <option value="USD/CNH OTC">USD/CNH OTC</option>
+                                <option value="USD/TRY OTC">USD/TRY OTC</option>
+                                <option value="EUR/TRY OTC">EUR/TRY OTC</option>
+                                <option value="USD/SGD OTC">USD/SGD OTC</option>
+                                <option value="USD/THB OTC">USD/THB OTC</option>
+                                <option value="USD/VND OTC">USD/VND OTC</option>
+                                <option value="USD/PKR OTC">USD/PKR OTC</option>
+                                <option value="USD/IDR OTC">USD/IDR OTC</option>
+                                <option value="USD/BDT OTC">USD/BDT OTC</option>
+                                <option value="AED/CNY OTC">AED/CNY OTC</option>
                             </optgroup>
-                            <optgroup label="Cryptocurrencies OTC">
-                                <option value="BTC/USD OTC">BTC/USD OTC</option>
-                                <option value="ETH/USD OTC">ETH/USD OTC</option>
-                                <option value="LTC/USD OTC">LTC/USD OTC</option>
-                                <option value="XRP/USD OTC">XRP/USD OTC</option>
-                                <option value="ADA/USD OTC">ADA/USD OTC</option>
-                                <option value="BNB/USD OTC">BNB/USD OTC</option>
-                                <option value="DOGE/USD OTC">DOGE/USD OTC</option>
-                                <option value="SOL/USD OTC">SOL/USD OTC</option>
-                                <option value="TRX/USD OTC">TRX/USD OTC</option>
-                                <option value="DOT/USD OTC">DOT/USD OTC</option>
-                            </optgroup>
-                            <optgroup label="Commodities & Stocks OTC">
-                                <option value="Gold OTC">Gold (XAU/USD) OTC</option>
-                                <option value="Silver OTC">Silver (XAG/USD) OTC</option>
-                                <option value="Brent Crude OTC">Brent Crude Oil OTC</option>
-                                <option value="US Crude OTC">US Crude Oil OTC</option>
-                                <option value="Tesla OTC">Tesla Motors OTC</option>
-                                <option value="Apple OTC">Apple Inc. OTC</option>
-                                <option value="Microsoft OTC">Microsoft OTC</option>
-                                <option value="Amazon OTC">Amazon OTC</option>
-                                <option value="Facebook OTC">Meta (Facebook) OTC</option>
-                                <option value="Netflix OTC">Netflix OTC</option>
-                            </optgroup>
+
                             <optgroup label="Standard Forex Pairs">
                                 <option value="EUR/USD">EUR/USD</option>
                                 <option value="GBP/USD">GBP/USD</option>
                                 <option value="USD/JPY">USD/JPY</option>
                                 <option value="AUD/USD">AUD/USD</option>
                                 <option value="USD/CAD">USD/CAD</option>
-                                <option value="GBP/JPY">GBP/JPY</option>
-                                <option value="EUR/JPY">EUR/JPY</option>
-                                <option value="AUD/JPY">AUD/JPY</option>
+                                <option value="USD/CHF">USD/CHF</option>
                                 <option value="NZD/USD">NZD/USD</option>
+                                <option value="EUR/GBP">EUR/GBP</option>
+                                <option value="EUR/JPY">EUR/JPY</option>
+                                <option value="GBP/JPY">GBP/JPY</option>
+                                <option value="AUD/JPY">AUD/JPY</option>
+                                <option value="AUD/CAD">AUD/CAD</option>
+                                <option value="EUR/AUD">EUR/AUD</option>
+                                <option value="EUR/CAD">EUR/CAD</option>
+                                <option value="GBP/AUD">GBP/AUD</option>
+                                <option value="CAD/JPY">CAD/JPY</option>
+                            </optgroup>
+
+                            <optgroup label="Cryptocurrencies">
+                                <option value="BTC/USD OTC">Bitcoin (BTC/USD) OTC</option>
+                                <option value="ETH/USD OTC">Ethereum (ETH/USD) OTC</option>
+                                <option value="LTC/USD OTC">Litecoin (LTC/USD) OTC</option>
+                                <option value="XRP/USD OTC">Ripple (XRP/USD) OTC</option>
+                                <option value="SOL/USD OTC">Solana (SOL/USD) OTC</option>
+                                <option value="BNB/USD OTC">BNB OTC</option>
+                                <option value="ADA/USD OTC">Cardano (ADA/USD) OTC</option>
+                                <option value="DOGE/USD OTC">Dogecoin OTC</option>
+                                <option value="TRX/USD OTC">TRON OTC</option>
+                                <option value="DOT/USD OTC">Polkadot OTC</option>
+                                <option value="AVAX/USD OTC">Avalanche OTC</option>
+                                <option value="TON/USD OTC">Toncoin OTC</option>
+                                <option value="Bitcoin">Bitcoin (Standard)</option>
+                                <option value="Ethereum">Ethereum (Standard)</option>
+                            </optgroup>
+
+                            <optgroup label="Commodities">
+                                <option value="Gold OTC">Gold (XAU/USD) OTC</option>
+                                <option value="Silver OTC">Silver (XAG/USD) OTC</option>
+                                <option value="Brent Oil OTC">Brent Crude Oil OTC</option>
+                                <option value="WTI Oil OTC">US Crude Oil (WTI) OTC</option>
+                                <option value="Natural Gas OTC">Natural Gas OTC</option>
+                                <option value="Platinum OTC">Platinum OTC</option>
+                                <option value="Palladium OTC">Palladium OTC</option>
+                            </optgroup>
+
+                            <optgroup label="Stocks OTC">
+                                <option value="Apple OTC">Apple Inc OTC</option>
+                                <option value="Tesla OTC">Tesla Motors OTC</option>
+                                <option value="Microsoft OTC">Microsoft OTC</option>
+                                <option value="Amazon OTC">Amazon OTC</option>
+                                <option value="Meta OTC">Meta (Facebook) OTC</option>
+                                <option value="Netflix OTC">Netflix OTC</option>
+                                <option value="McDonalds OTC">McDonald's OTC</option>
+                                <option value="American Express OTC">American Express OTC</option>
+                                <option value="VISA OTC">VISA OTC</option>
+                                <option value="Boeing OTC">Boeing Company OTC</option>
+                                <option value="Intel OTC">Intel OTC</option>
+                                <option value="AMD OTC">Advanced Micro Devices OTC</option>
+                                <option value="Coinbase OTC">Coinbase Global OTC</option>
+                                <option value="Palantir OTC">Palantir Technologies OTC</option>
+                                <option value="Johnson & Johnson OTC">Johnson & Johnson OTC</option>
+                                <option value="Pfizer OTC">Pfizer Inc OTC</option>
+                            </optgroup>
+
+                            <optgroup label="Indices OTC">
+                                <option value="US30 OTC">Dow Jones (US30) OTC</option>
+                                <option value="SPX500 OTC">S&P 500 OTC</option>
+                                <option value="NAS100 OTC">NASDAQ 100 OTC</option>
+                                <option value="GER30 OTC">DAX 30 Germany OTC</option>
+                                <option value="UK100 OTC">FTSE 100 OTC</option>
+                                <option value="AUS200 OTC">AUS 200 OTC</option>
+                                <option value="JPN225 OTC">Nikkei 225 (JPN225) OTC</option>
                             </optgroup>
                         </select>
                         <i class="fa-solid fa-chevron-down absolute right-3 top-3.5 text-xs text-slate-400 pointer-events-none"></i>
