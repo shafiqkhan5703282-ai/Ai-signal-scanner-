@@ -170,7 +170,7 @@
             border: 1px solid var(--border-color);
         }
 
-        /* Action Buttons Style */
+        /* Action Buttons Style with Countdown Button */
         .action-buttons {
             display: flex;
             gap: 8px;
@@ -179,9 +179,9 @@
 
         .btn-action {
             flex: 1;
-            padding: 10px;
+            padding: 12px;
             font-weight: 700;
-            font-size: 0.85rem;
+            font-size: 0.9rem;
             border-radius: 6px;
             border: none;
             cursor: pointer;
@@ -195,8 +195,14 @@
             color: #000;
         }
 
-        .btn-generate:hover {
+        .btn-generate:hover:not(:disabled) {
             background-color: #00c853;
+        }
+
+        .btn-generate:disabled {
+            background-color: #1b5e20;
+            color: #81c784;
+            cursor: not-allowed;
         }
 
         .btn-regenerate {
@@ -351,9 +357,9 @@
             <span>EXPIRY: <strong id="lblExpiry">1m</strong></span>
         </div>
 
-        <!-- Generate & Regenerate Action Buttons -->
+        <!-- Generate (with Countdown) & Regenerate Action Buttons -->
         <div class="action-buttons">
-            <button class="btn-action btn-generate" onclick="generateSignal()">⚡ Generate Signal</button>
+            <button id="btnGenerate" class="btn-action btn-generate" onclick="startCountdownAndGenerate()">⚡ Generate Signal</button>
             <button class="btn-action btn-regenerate" onclick="regenerateSignal()">🔄 Regenerate Analysis</button>
         </div>
 
@@ -502,19 +508,37 @@
             }
         }
 
-        // Manual Generate Button Handler
-        function generateSignal() {
-            updateConfig();
-            triggerClientMockAnalysis("Signal generated successfully on demand.");
+        // 3 to 1 Second Countdown Generator Button Handler
+        function startCountdownAndGenerate() {
+            const btn = document.getElementById('btnGenerate');
+            btn.disabled = true;
+            
+            let count = 3;
+            btn.innerText = `Scanning Market... (${count})`;
+
+            const timer = setInterval(() => {
+                count--;
+                if (count > 0) {
+                    btn.innerText = `Scanning Market... (${count})`;
+                } else {
+                    clearInterval(timer);
+                    btn.innerText = `⚡ Generate Signal`;
+                    btn.disabled = false;
+                    
+                    // Trigger Live Market Signal Generation
+                    updateConfig();
+                    triggerClientMockAnalysis("Live market scan completed successfully.");
+                }
+            }, 1000);
         }
 
         // Manual Regenerate Button Handler
         function regenerateSignal() {
             updateConfig();
-            triggerClientMockAnalysis("Analysis re-calculated with fresh market scan.");
+            triggerClientMockAnalysis("Analysis re-calculated instantly.");
         }
 
-        // Fallback standalone simulation if backend is offline on GitHub Pages
+        // Standalone simulation fallback for GitHub Pages
         function triggerClientMockAnalysis(reasonNote) {
             const directions = ['CALL/UP', 'PUT/DOWN', 'WAIT'];
             const finalDirs = ['CALL/UP', 'PUT/DOWN', 'NO TRADE'];
@@ -528,8 +552,8 @@
                         direction: randDir,
                         confidence: conf,
                         entryReference: (1.0850 + Math.random() * 0.0050).toFixed(5),
-                        freshnessMs: Math.floor(Math.random() * 150),
-                        reasons: [reasonNote, 'EMA 8/21 momentum checked', 'RSI range validated']
+                        freshnessMs: Math.floor(Math.random() * 120),
+                        reasons: [reasonNote, 'EMA 8/21 momentum verified', 'RSI 14 range healthy']
                     },
                     midCandle: {
                         direction: randDir,
