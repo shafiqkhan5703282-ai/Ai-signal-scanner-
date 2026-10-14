@@ -2,206 +2,224 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Trading Signal Scanner</title>
-    <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-        body {
-            background-color: #0b0e14;
-            color: #e1e6ed;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            min-height: 100vh;
-            padding: 20px;
-        }
-        .header {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-        .header h1 {
-            font-size: 26px;
-            color: #00e676;
-            letter-spacing: 1px;
-        }
-        .header p {
-            color: #8a99ad;
-            font-size: 14px;
-        }
-        .container {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 20px;
-            max-width: 1100px;
-            width: 100%;
-            justify-content: center;
-        }
-        .card {
-            background: #151a23;
-            border: 1px solid #232a36;
-            border-radius: 12px;
-            padding: 20px;
-            flex: 1 1 320px;
-            max-width: 400px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
-        }
-        .symbol-selector {
-            width: 100%;
-            padding: 10px;
-            background: #1c2330;
-            border: 1px solid #2d3748;
-            color: #fff;
-            border-radius: 6px;
-            font-size: 16px;
-            margin-bottom: 15px;
-            outline: none;
-        }
-        .signal-box {
-            text-align: center;
-            padding: 20px;
-            border-radius: 8px;
-            background: #1c2330;
-            margin-bottom: 15px;
-        }
-        .signal-type {
-            font-size: 32px;
-            font-weight: bold;
-            margin: 10px 0;
-        }
-        .buy { color: #00e676; }
-        .sell { color: #ff5252; }
-        .details-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            margin-bottom: 15px;
-        }
-        .detail-item {
-            background: #1c2330;
-            padding: 10px;
-            border-radius: 6px;
-            font-size: 13px;
-        }
-        .detail-item span {
-            display: block;
-            color: #8a99ad;
-            font-size: 11px;
-            margin-bottom: 3px;
-        }
-        .btn {
-            width: 100%;
-            padding: 12px;
-            background: #00e676;
-            color: #0b0e14;
-            font-weight: bold;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 15px;
-            transition: 0.2s;
-        }
-        .btn:hover {
-            background: #00c853;
-        }
-        .chart-card {
-            flex: 2 1 500px;
-            min-height: 400px;
-        }
-    </style>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>AI Dual-Platform Trading Signal Bot</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <div class="app-container">
+        <!-- Header & Connection Status -->
+        <header class="app-header">
+            <div class="logo-area">
+                <h1>AI TRADING BOT <span>PRO</span></h1>
+            </div>
+            <div id="connectionStatus" class="status-badge disconnected">
+                <span class="dot"></span> <span id="statusText">Connecting...</span>
+            </div>
+        </header>
 
-    <div class="header">
-        <h1>AI TRADING SIGNAL SCANNER</h1>
-        <p>Real-Time Technical Analysis & Signal Generator</p>
-    </div>
-
-    <div class="container">
-        <!-- Signal Control Panel -->
-        <div class="card">
-            <select id="assetSelect" class="symbol-selector" onchange="updateSignal()">
-                <option value="EURUSD">EUR / USD</option>
-                <option value="GBPUSD">GBP / USD</option>
-                <option value="USDJPY">USD / JPY</option>
-                <option value="BTCUSD">BTC / USD</option>
-            </select>
-
-            <div class="signal-box">
-                <div style="color: #8a99ad; font-size: 12px;">ACTIVE SIGNAL</div>
-                <div id="signalText" class="signal-type buy">BUY</div>
-                <div id="accuracyText" style="font-size: 14px; color: #a0aec0;">Accuracy: 88%</div>
+        <!-- Platform & Asset Controls -->
+        <section class="control-panel">
+            <div class="control-group">
+                <label>Broker Platform</label>
+                <div class="platform-toggle">
+                    <button id="btnPocket" class="btn-toggle active" onclick="setPlatform('pocketoption')">Pocket Option</button>
+                    <button id="btnOlm" class="btn-toggle" onclick="setPlatform('olmtrade')">Olmtrade</button>
+                </div>
             </div>
 
-            <div class="details-grid">
-                <div class="detail-item"><span>Timeframe</span><strong id="tfText">1 min</strong></div>
-                <div class="detail-item"><span>RSI (14)</span><strong id="rsiText">32.4 (Oversold)</strong></div>
-                <div class="detail-item"><span>EMA Trend</span><strong id="emaText" style="color: #00e676;">Bullish</strong></div>
-                <div class="detail-item"><span>MACD</span><strong id="macdText">Cross Above</strong></div>
+            <div class="control-group">
+                <label>Select Asset</label>
+                <select id="assetSelect" onchange="updateConfig()">
+                    <!-- Populated dynamically -->
+                </select>
+            </div>
+        </section>
+
+        <!-- Expiry Timeframe Horizontal Scroll Selector (5s to 1h) -->
+        <section class="timeframe-section">
+            <label>Expiry Timeframe</label>
+            <div class="tf-scroll-container">
+                <button class="tf-btn" onclick="setExpiry('5s')">5s</button>
+                <button class="tf-btn" onclick="setExpiry('10s')">10s</button>
+                <button class="tf-btn" onclick="setExpiry('15s')">15s</button>
+                <button class="tf-btn" onclick="setExpiry('20s')">20s</button>
+                <button class="tf-btn" onclick="setExpiry('25s')">25s</button>
+                <button class="tf-btn" onclick="setExpiry('30s')">30s</button>
+                <button class="tf-btn" onclick="setExpiry('35s')">35s</button>
+                <button class="tf-btn" onclick="setExpiry('40s')">40s</button>
+                <button class="tf-btn" onclick="setExpiry('45s')">45s</button>
+                <button class="tf-btn active" onclick="setExpiry('1m')">1m</button>
+                <button class="tf-btn" onclick="setExpiry('2m')">2m</button>
+                <button class="tf-btn" onclick="setExpiry('3m')">3m</button>
+                <button class="tf-btn" onclick="setExpiry('4m')">4m</button>
+                <button class="tf-btn" onclick="setExpiry('5m')">5m</button>
+                <button class="tf-btn" onclick="setExpiry('10m')">10m</button>
+                <button class="tf-btn" onclick="setExpiry('15m')">15m</button>
+                <button class="tf-btn" onclick="setExpiry('20m')">20m</button>
+                <button class="tf-btn" onclick="setExpiry('30m')">30m</button>
+                <button class="tf-btn" onclick="setExpiry('45m')">45m</button>
+                <button class="tf-btn" onclick="setExpiry('1h')">1h</button>
+            </div>
+        </section>
+
+        <!-- Active Context Bar -->
+        <div class="context-bar">
+            <span>PLATFORM: <strong id="lblPlatform">Pocket Option</strong></span>
+            <span>ASSET: <strong id="lblAsset">EUR/USD (OTC)</strong></span>
+            <span>EXPIRY: <strong id="lblExpiry">1m</strong></span>
+        </div>
+
+        <!-- Three Separate Signal Cards -->
+        <main class="signals-grid">
+            <!-- Signal 1: Live Signal -->
+            <div class="signal-card">
+                <div class="card-header">
+                    <h3>SIGNAL 1: LIVE SIGNAL</h3>
+                    <span id="liveFreshness" class="pill">0ms</span>
+                </div>
+                <div class="card-body">
+                    <div id="liveDir" class="direction WAIT">WAIT</div>
+                    <div class="metric-row"><span>Confidence:</span><strong id="liveConf">0%</strong></div>
+                    <div class="metric-row"><span>Entry Price:</span><strong id="livePrice">0.00</strong></div>
+                    <div class="reasons-box"><ul id="liveReasons"><li>Awaiting data...</li></ul></div>
+                </div>
             </div>
 
-            <button class="btn" onclick="generateNewSignal()">SCAN MARKET NOW</button>
-        </div>
+            <!-- Signal 2: Mid-Candle Expert Signal -->
+            <div class="signal-card">
+                <div class="card-header">
+                    <h3>SIGNAL 2: MID-CANDLE</h3>
+                    <span id="midStatus" class="pill warning">FORMING</span>
+                </div>
+                <div class="card-body">
+                    <div id="midDir" class="direction WAIT">WAIT</div>
+                    <div class="metric-row"><span>Confidence:</span><strong id="midConf">0%</strong></div>
+                    <div class="metric-row"><span>Body Ratio:</span><strong id="midBodyRatio">0.00</strong></div>
+                    <div class="reasons-box"><ul id="midReasons"><li>Analyzing candle...</li></ul></div>
+                </div>
+            </div>
 
-        <!-- TradingView Embedded Live Chart -->
-        <div class="card chart-card">
-            <div id="tradingview_widget" style="height: 100%; width: 100%;"></div>
-        </div>
+            <!-- Signal 3: Final Confirmation Signal -->
+            <div class="signal-card final-card">
+                <div class="card-header">
+                    <h3>SIGNAL 3: FINAL CONFIRMATION</h3>
+                    <span class="pill danger">STRICT FILTER</span>
+                </div>
+                <div class="card-body">
+                    <div id="finalDir" class="direction NO_TRADE">NO TRADE</div>
+                    <div class="metric-row"><span>Validated Conf:</span><strong id="finalConf">0%</strong></div>
+                    <div class="metric-row"><span>Invalidation:</span><strong id="finalInvalid">0.00</strong></div>
+                    <div class="reasons-box"><ul id="finalReasons"><li>Evaluating consensus...</li></ul></div>
+                </div>
+            </div>
+        </main>
     </div>
 
-    <!-- TradingView Widget Script -->
-    <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
-    <script type="text/javascript">
-        let currentSymbol = "FX:EURUSD";
+    <script>
+        let ws;
+        let config = { platform: 'pocketoption', asset: 'EURUSD_otc', expiry: '1m' };
+        let availableAssets = {};
 
-        function loadChart(symbol) {
-            new TradingView.widget({
-                "autosize": true,
-                "symbol": symbol,
-                "interval": "1",
-                "timezone": "Etc/UTC",
-                "theme": "dark",
-                "style": "1",
-                "locale": "en",
-                "toolbar_bg": "#f1f3f6",
-                "enable_publishing": false,
-                "allow_symbol_change": true,
-                "container_id": "tradingview_widget"
+        function connectWS() {
+            ws = new WebSocket(`ws://${window.location.host}`);
+            ws.onopen = () => {
+                document.getElementById('connectionStatus').className = 'status-badge connected';
+                document.getElementById('statusText').innerText = 'Data Stream Live';
+                updateConfig();
+            };
+            ws.onmessage = (event) => {
+                const msg = JSON.parse(event.data);
+                if (msg.type === 'INIT_CONFIG') {
+                    availableAssets = msg.assets;
+                    populateAssets();
+                } else if (msg.type === 'SIGNAL_UPDATE') {
+                    renderSignals(msg.data);
+                }
+            };
+            ws.onclose = () => {
+                document.getElementById('connectionStatus').className = 'status-badge disconnected';
+                document.getElementById('statusText').innerText = 'Reconnecting...';
+                setTimeout(connectWS, 3000);
+            };
+        }
+
+        function setPlatform(p) {
+            config.platform = p;
+            document.getElementById('btnPocket').classList.toggle('active', p === 'pocketoption');
+            document.getElementById('btnOlm').classList.toggle('active', p === 'olmtrade');
+            populateAssets();
+            updateConfig();
+        }
+
+        function populateAssets() {
+            const select = document.getElementById('assetSelect');
+            select.innerHTML = '';
+            const list = availableAssets[config.platform] || [];
+            list.forEach(a => {
+                const opt = document.createElement('option');
+                opt.value = a.id;
+                opt.innerText = `${a.name} [${a.type}]`;
+                select.appendChild(opt);
+            });
+            if (list.length > 0) config.asset = list[0].id;
+        }
+
+        function setExpiry(exp) {
+            config.expiry = exp;
+            document.querySelectorAll('.tf-btn').forEach(b => b.classList.toggle('active', b.innerText === exp));
+            updateConfig();
+        }
+
+        function updateConfig() {
+            const select = document.getElementById('assetSelect');
+            if (select.value) config.asset = select.value;
+            document.getElementById('lblPlatform').innerText = config.platform === 'pocketoption' ? 'Pocket Option' : 'Olmtrade';
+            document.getElementById('lblAsset').innerText = config.asset;
+            document.getElementById('lblExpiry').innerText = config.expiry;
+            if (ws && ws.readyState === WebSocket.OPEN) ws.send(JSON.stringify({ type: 'SET_CONFIG', ...config }));
+        }
+
+        function renderSignals(data) {
+            if (!data || !data.signals) return;
+            const live = data.signals.live;
+            setDir('liveDir', live.direction);
+            document.getElementById('liveConf').innerText = live.confidence + '%';
+            document.getElementById('livePrice').innerText = live.entryReference;
+            document.getElementById('liveFreshness').innerText = live.freshnessMs + 'ms';
+            setList('liveReasons', live.reasons);
+
+            const mid = data.signals.midCandle;
+            setDir('midDir', mid.direction);
+            document.getElementById('midConf').innerText = mid.confidence + '%';
+            document.getElementById('midStatus').innerText = mid.candleStatus;
+            document.getElementById('midBodyRatio').innerText = mid.metrics ? mid.metrics.bodyRatio : '0';
+            setList('midReasons', mid.reasons);
+
+            const final = data.signals.final;
+            setDir('finalDir', final.direction);
+            document.getElementById('finalConf').innerText = final.confidence + '%';
+            document.getElementById('finalInvalid').innerText = final.invalidation || 'N/A';
+            setList('finalReasons', final.reasons);
+        }
+
+        function setDir(id, dir) {
+            const el = document.getElementById(id);
+            el.innerText = dir;
+            el.className = 'direction ' + dir.replace('/', '_').replace(' ', '_');
+        }
+
+        function setList(id, items) {
+            const ul = document.getElementById(id);
+            ul.innerHTML = '';
+            (items || []).forEach(i => {
+                const li = document.createElement('li');
+                li.innerText = i;
+                ul.appendChild(li);
             });
         }
 
-        function updateSignal() {
-            const selected = document.getElementById('assetSelect').value;
-            if (selected === 'BTCUSD') {
-                currentSymbol = 'BINANCE:BTCUSDT';
-            } else {
-                currentSymbol = 'FX:' + selected;
-            }
-            loadChart(currentSymbol);
-            generateNewSignal();
-        }
-
-        function generateNewSignal() {
-            const signals = ['BUY', 'SELL'];
-            const randomSignal = signals[Math.floor(Math.random() * signals.length)];
-            const randomAccuracy = (Math.floor(Math.random() * 15) + 80) + '%';
-            
-            const signalElem = document.getElementById('signalText');
-            signalElem.innerText = randomSignal;
-            signalElem.className = 'signal-type ' + (randomSignal === 'BUY' ? 'buy' : 'sell');
-
-            document.getElementById('accuracyText').innerText = 'Accuracy: ' + randomAccuracy;
-            document.getElementById('rsiText').innerText = (Math.random() * 40 + 30).toFixed(1);
-            document.getElementById('emaText').innerText = randomSignal === 'BUY' ? 'Bullish' : 'Bearish';
-            document.getElementById('emaText').style.color = randomSignal === 'BUY' ? '#00e676' : '#ff5252';
-        }
-
-        // Initialize Chart on Page Load
-        loadChart(currentSymbol);
+        window.onload = connectWS;
     </script>
 </body>
 </html>
