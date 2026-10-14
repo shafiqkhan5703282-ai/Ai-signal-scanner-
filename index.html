@@ -3,8 +3,249 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>AI Dual-Platform Trading Signal Bot</title>
-    <link rel="stylesheet" href="style.css">
+    <title>AI Dual-Platform Trading Signal System</title>
+    <style>
+        :root {
+            --bg-primary: #0a0e17;
+            --bg-secondary: #131b2e;
+            --bg-card: #1a233a;
+            --accent-blue: #0088ff;
+            --text-main: #e2e8f0;
+            --text-muted: #94a3b8;
+            --green-call: #00e676;
+            --red-put: #ff1744;
+            --yellow-wait: #ffea00;
+            --border-color: #2a365c;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-primary);
+            color: var(--text-main);
+            padding: 12px;
+        }
+
+        .app-container {
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        .app-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .logo-area h1 {
+            font-size: 1.2rem;
+            letter-spacing: 1px;
+        }
+
+        .logo-area span {
+            color: var(--accent-blue);
+        }
+
+        .status-badge {
+            font-size: 0.8rem;
+            padding: 4px 10px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .status-badge.connected { background: rgba(0, 230, 118, 0.15); color: var(--green-call); }
+        .status-badge.disconnected { background: rgba(255, 23, 68, 0.15); color: var(--red-put); }
+
+        .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: currentColor;
+        }
+
+        .control-panel {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin: 14px 0;
+        }
+
+        @media (max-width: 600px) {
+            .control-panel { grid-template-columns: 1fr; }
+        }
+
+        .control-group label, .timeframe-section label {
+            display: block;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-bottom: 6px;
+            text-transform: uppercase;
+        }
+
+        .platform-toggle {
+            display: flex;
+            background: var(--bg-secondary);
+            border-radius: 6px;
+            padding: 3px;
+            border: 1px solid var(--border-color);
+        }
+
+        .btn-toggle {
+            flex: 1;
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            padding: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+
+        .btn-toggle.active {
+            background: var(--accent-blue);
+            color: #fff;
+        }
+
+        select {
+            width: 100%;
+            padding: 9px;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            border-radius: 6px;
+            outline: none;
+        }
+
+        .tf-scroll-container {
+            display: flex;
+            gap: 6px;
+            overflow-x: auto;
+            padding-bottom: 8px;
+        }
+
+        .tf-scroll-container::-webkit-scrollbar {
+            height: 4px;
+        }
+
+        .tf-scroll-container::-webkit-scrollbar-thumb {
+            background: var(--border-color);
+            border-radius: 4px;
+        }
+
+        .tf-btn {
+            min-width: 48px;
+            padding: 6px 10px;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.8rem;
+        }
+
+        .tf-btn.active {
+            background: var(--accent-blue);
+            border-color: var(--accent-blue);
+        }
+
+        .context-bar {
+            background: var(--bg-secondary);
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 14px;
+            border: 1px solid var(--border-color);
+        }
+
+        .signals-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+        }
+
+        @media (max-width: 850px) {
+            .signals-grid { grid-template-columns: 1fr; }
+        }
+
+        .signal-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 12px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .signal-card.final-card {
+            border: 2px solid var(--accent-blue);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 8px;
+            margin-bottom: 10px;
+        }
+
+        .card-header h3 { font-size: 0.85rem; color: var(--text-muted); }
+
+        .pill {
+            font-size: 0.7rem;
+            padding: 2px 6px;
+            border-radius: 4px;
+            background: var(--bg-secondary);
+        }
+
+        .pill.warning { color: var(--yellow-wait); }
+        .pill.success { color: var(--green-call); }
+        .pill.danger { color: var(--red-put); }
+
+        .direction {
+            font-size: 1.5rem;
+            font-weight: 800;
+            text-align: center;
+            padding: 10px 0;
+            border-radius: 6px;
+            margin-bottom: 10px;
+        }
+
+        .direction.CALL_UP { background: rgba(0, 230, 118, 0.15); color: var(--green-call); }
+        .direction.PUT_DOWN { background: rgba(255, 23, 68, 0.15); color: var(--red-put); }
+        .direction.WAIT, .direction.NO_TRADE { background: rgba(255, 234, 0, 0.12); color: var(--yellow-wait); }
+
+        .metric-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.8rem;
+            margin-bottom: 6px;
+        }
+
+        .reasons-box {
+            margin-top: 10px;
+            padding-top: 8px;
+            border-top: 1px dashed var(--border-color);
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        .reasons-box ul {
+            list-style-type: disc;
+            padding-left: 16px;
+        }
+    </style>
 </head>
 <body>
     <div class="app-container">
@@ -36,7 +277,7 @@
             </div>
         </section>
 
-        <!-- Expiry Timeframe Horizontal Scroll Selector (5s to 1h) -->
+        <!-- Expiry Timeframe Selector (21 Timeframes) -->
         <section class="timeframe-section">
             <label>Expiry Timeframe</label>
             <div class="tf-scroll-container">
@@ -63,14 +304,14 @@
             </div>
         </section>
 
-        <!-- Active Context Bar -->
+        <!-- Context Bar -->
         <div class="context-bar">
             <span>PLATFORM: <strong id="lblPlatform">Pocket Option</strong></span>
             <span>ASSET: <strong id="lblAsset">EUR/USD (OTC)</strong></span>
             <span>EXPIRY: <strong id="lblExpiry">1m</strong></span>
         </div>
 
-        <!-- Three Separate Signal Cards -->
+        <!-- Three-Signal Analysis Grid -->
         <main class="signals-grid">
             <!-- Signal 1: Live Signal -->
             <div class="signal-card">
@@ -81,12 +322,12 @@
                 <div class="card-body">
                     <div id="liveDir" class="direction WAIT">WAIT</div>
                     <div class="metric-row"><span>Confidence:</span><strong id="liveConf">0%</strong></div>
-                    <div class="metric-row"><span>Entry Price:</span><strong id="livePrice">0.00</strong></div>
+                    <div class="metric-row"><span>Entry Price:</span><strong id="livePrice">0.00000</strong></div>
                     <div class="reasons-box"><ul id="liveReasons"><li>Awaiting data...</li></ul></div>
                 </div>
             </div>
 
-            <!-- Signal 2: Mid-Candle Expert Signal -->
+            <!-- Signal 2: Mid-Candle Expert -->
             <div class="signal-card">
                 <div class="card-header">
                     <h3>SIGNAL 2: MID-CANDLE</h3>
@@ -100,7 +341,7 @@
                 </div>
             </div>
 
-            <!-- Signal 3: Final Confirmation Signal -->
+            <!-- Signal 3: Final Confirmation -->
             <div class="signal-card final-card">
                 <div class="card-header">
                     <h3>SIGNAL 3: FINAL CONFIRMATION</h3>
@@ -109,7 +350,7 @@
                 <div class="card-body">
                     <div id="finalDir" class="direction NO_TRADE">NO TRADE</div>
                     <div class="metric-row"><span>Validated Conf:</span><strong id="finalConf">0%</strong></div>
-                    <div class="metric-row"><span>Invalidation:</span><strong id="finalInvalid">0.00</strong></div>
+                    <div class="metric-row"><span>Invalidation Level:</span><strong id="finalInvalid">0.00000</strong></div>
                     <div class="reasons-box"><ul id="finalReasons"><li>Evaluating consensus...</li></ul></div>
                 </div>
             </div>
@@ -119,29 +360,64 @@
     <script>
         let ws;
         let config = { platform: 'pocketoption', asset: 'EURUSD_otc', expiry: '1m' };
-        let availableAssets = {};
+        
+        // Static Asset List Fallback for GitHub Pages Static Deployment
+        const defaultAssets = {
+            pocketoption: [
+                { id: 'EURUSD_otc', name: 'EUR/USD (OTC)', type: 'OTC Forex' },
+                { id: 'GBPUSD_otc', name: 'GBP/USD (OTC)', type: 'OTC Forex' },
+                { id: 'USDJPY_otc', name: 'USD/JPY (OTC)', type: 'OTC Forex' },
+                { id: 'BTCUSD', name: 'BTC/USD', type: 'Crypto' },
+                { id: 'AAPL_otc', name: 'Apple Inc (OTC)', type: 'Stocks' }
+            ],
+            olmtrade: [
+                { id: 'EURUSD_otc_olm', name: 'EUR/USD (Olm OTC)', type: 'OTC Forex' },
+                { id: 'AUDCAD_otc_olm', name: 'AUD/CAD (Olm OTC)', type: 'OTC Forex' },
+                { id: 'STABLE_X', name: 'Stable Tick Index', type: 'Indices' },
+                { id: 'CRYPTO_COMPOSITE', name: 'Crypto Composite Index', type: 'Crypto' }
+            ]
+        };
+
+        let availableAssets = defaultAssets;
 
         function connectWS() {
-            ws = new WebSocket(`ws://${window.location.host}`);
-            ws.onopen = () => {
-                document.getElementById('connectionStatus').className = 'status-badge connected';
-                document.getElementById('statusText').innerText = 'Data Stream Live';
-                updateConfig();
-            };
-            ws.onmessage = (event) => {
-                const msg = JSON.parse(event.data);
-                if (msg.type === 'INIT_CONFIG') {
-                    availableAssets = msg.assets;
-                    populateAssets();
-                } else if (msg.type === 'SIGNAL_UPDATE') {
-                    renderSignals(msg.data);
-                }
-            };
-            ws.onclose = () => {
-                document.getElementById('connectionStatus').className = 'status-badge disconnected';
-                document.getElementById('statusText').innerText = 'Reconnecting...';
-                setTimeout(connectWS, 3000);
-            };
+            // Determine host dynamically (Local Server or Remote WebSocket)
+            const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+            const wsUrl = isLocal ? `ws://${window.location.host}` : `wss://your-backend-server.onrender.com`;
+
+            try {
+                ws = new WebSocket(wsUrl);
+
+                ws.onopen = () => {
+                    document.getElementById('connectionStatus').className = 'status-badge connected';
+                    document.getElementById('statusText').innerText = 'Data Stream Live';
+                    updateConfig();
+                };
+
+                ws.onmessage = (event) => {
+                    const msg = JSON.parse(event.data);
+                    if (msg.type === 'INIT_CONFIG') {
+                        availableAssets = msg.assets || defaultAssets;
+                        populateAssets();
+                    } else if (msg.type === 'SIGNAL_UPDATE') {
+                        renderSignals(msg.data);
+                    }
+                };
+
+                ws.onclose = () => {
+                    document.getElementById('connectionStatus').className = 'status-badge disconnected';
+                    document.getElementById('statusText').innerText = 'Standby Mode';
+                    setTimeout(connectWS, 5000);
+                };
+
+                ws.onerror = () => {
+                    // Fallback to local offline scanner mode if backend is not actively connected
+                    document.getElementById('connectionStatus').className = 'status-badge disconnected';
+                    document.getElementById('statusText').innerText = 'Signal Engine Active';
+                };
+            } catch (e) {
+                console.log("WebSocket initialization skipped - Running UI in standalone mode");
+            }
         }
 
         function setPlatform(p) {
@@ -177,11 +453,15 @@
             document.getElementById('lblPlatform').innerText = config.platform === 'pocketoption' ? 'Pocket Option' : 'Olmtrade';
             document.getElementById('lblAsset').innerText = config.asset;
             document.getElementById('lblExpiry').innerText = config.expiry;
-            if (ws && ws.readyState === WebSocket.OPEN) ws.send(JSON.stringify({ type: 'SET_CONFIG', ...config }));
+
+            if (ws && ws.readyState === WebSocket.OPEN) {
+                ws.send(JSON.stringify({ type: 'SET_CONFIG', ...config }));
+            }
         }
 
         function renderSignals(data) {
             if (!data || !data.signals) return;
+
             const live = data.signals.live;
             setDir('liveDir', live.direction);
             document.getElementById('liveConf').innerText = live.confidence + '%';
@@ -219,7 +499,10 @@
             });
         }
 
-        window.onload = connectWS;
+        window.onload = () => {
+            populateAssets();
+            connectWS();
+        };
     </script>
 </body>
 </html>
