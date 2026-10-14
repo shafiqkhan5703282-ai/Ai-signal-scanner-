@@ -1,680 +1,207 @@
 <!DOCTYPE html>
-<html lang="en" class="dark">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PocketPilot Pro - Pocket Option Trading Platform</title>
-    <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            darkMode: 'class',
-            theme: {
-                extend: {
-                    colors: {
-                        darkbg: '#0a0e17',
-                        cardbg: '#121826',
-                        bordercolor: '#1f293d',
-                        neonGreen: '#00ff66',
-                        neonRed: '#ff334b',
-                        electricCyan: '#00f0ff',
-                        accentGold: '#ffd700'
-                    }
-                }
-            }
-        }
-    </script>
-    <!-- FontAwesome for Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+    <title>AI Trading Signal Scanner</title>
     <style>
-        body { font-family: 'Inter', sans-serif; background-color: #0a0e17; color: #f8fafc; overflow-x: hidden; transition: background-color 0.5s ease, border-color 0.5s ease; }
-        .mono { font-family: 'JetBrains Mono', monospace; }
-        .glass-panel { background: rgba(18, 24, 38, 0.85); backdrop-filter: blur(12px); border: 1px solid rgba(31, 41, 61, 0.8); transition: all 0.4s ease; }
-        
-        /* Dynamic Board States */
-        body.state-green { background-color: rgba(0, 40, 20, 0.4); }
-        body.state-green .glass-panel { border-color: #00ff66; box-shadow: 0 0 30px rgba(0, 255, 102, 0.25); }
-        
-        body.state-red { background-color: rgba(40, 10, 15, 0.4); }
-        body.state-red .glass-panel { border-color: #ff334b; box-shadow: 0 0 30px rgba(255, 51, 75, 0.25); }
-        
-        body.state-white { background-color: rgba(35, 40, 50, 0.6); }
-        body.state-white .glass-panel { border-color: #cbd5e1; box-shadow: 0 0 30px rgba(255, 255, 255, 0.2); }
-
-        /* Custom scrollbar */
-        ::-webkit-scrollbar { width: 6px; height: 6px; }
-        ::-webkit-scrollbar-track { background: #0a0e17; }
-        ::-webkit-scrollbar-thumb { background: #1f293d; border-radius: 3px; }
-        ::-webkit-scrollbar-thumb:hover { background: #334155; }
-
-        @keyframes scanPulse {
-            0% { transform: scale(0.95); opacity: 0.8; }
-            50% { transform: scale(1.05); opacity: 1; }
-            100% { transform: scale(0.95); opacity: 0.8; }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
-        .scanner-pulse { animation: scanPulse 0.8s infinite ease-in-out; }
+        body {
+            background-color: #0b0e14;
+            color: #e1e6ed;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .header h1 {
+            font-size: 26px;
+            color: #00e676;
+            letter-spacing: 1px;
+        }
+        .header p {
+            color: #8a99ad;
+            font-size: 14px;
+        }
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            max-width: 1100px;
+            width: 100%;
+            justify-content: center;
+        }
+        .card {
+            background: #151a23;
+            border: 1px solid #232a36;
+            border-radius: 12px;
+            padding: 20px;
+            flex: 1 1 320px;
+            max-width: 400px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+        }
+        .symbol-selector {
+            width: 100%;
+            padding: 10px;
+            background: #1c2330;
+            border: 1px solid #2d3748;
+            color: #fff;
+            border-radius: 6px;
+            font-size: 16px;
+            margin-bottom: 15px;
+            outline: none;
+        }
+        .signal-box {
+            text-align: center;
+            padding: 20px;
+            border-radius: 8px;
+            background: #1c2330;
+            margin-bottom: 15px;
+        }
+        .signal-type {
+            font-size: 32px;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+        .buy { color: #00e676; }
+        .sell { color: #ff5252; }
+        .details-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        .detail-item {
+            background: #1c2330;
+            padding: 10px;
+            border-radius: 6px;
+            font-size: 13px;
+        }
+        .detail-item span {
+            display: block;
+            color: #8a99ad;
+            font-size: 11px;
+            margin-bottom: 3px;
+        }
+        .btn {
+            width: 100%;
+            padding: 12px;
+            background: #00e676;
+            color: #0b0e14;
+            font-weight: bold;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 15px;
+            transition: 0.2s;
+        }
+        .btn:hover {
+            background: #00c853;
+        }
+        .chart-card {
+            flex: 2 1 500px;
+            min-height: 400px;
+        }
     </style>
 </head>
-<body class="min-h-screen flex flex-col">
+<body>
 
-    <!-- Top Navigation Header -->
-    <header class="h-16 border-b border-bordercolor bg-cardbg/95 backdrop-blur-md px-4 md:px-6 flex items-center justify-between z-50 sticky top-0">
-        <div class="flex items-center space-x-3">
-            <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-cyan-500 to-emerald-400 flex items-center justify-center shadow-lg shadow-cyan-500/20">
-                <i class="fa-solid fa-shield-halved text-darkbg text-xl font-bold"></i>
+    <div class="header">
+        <h1>AI TRADING SIGNAL SCANNER</h1>
+        <p>Real-Time Technical Analysis & Signal Generator</p>
+    </div>
+
+    <div class="container">
+        <!-- Signal Control Panel -->
+        <div class="card">
+            <select id="assetSelect" class="symbol-selector" onchange="updateSignal()">
+                <option value="EURUSD">EUR / USD</option>
+                <option value="GBPUSD">GBP / USD</option>
+                <option value="USDJPY">USD / JPY</option>
+                <option value="BTCUSD">BTC / USD</option>
+            </select>
+
+            <div class="signal-box">
+                <div style="color: #8a99ad; font-size: 12px;">ACTIVE SIGNAL</div>
+                <div id="signalText" class="signal-type buy">BUY</div>
+                <div id="accuracyText" style="font-size: 14px; color: #a0aec0;">Accuracy: 88%</div>
             </div>
-            <div>
-                <div class="flex items-center space-x-2">
-                    <span class="font-bold tracking-wider text-lg bg-gradient-to-r from-electricCyan via-emerald-400 to-accentGold bg-clip-text text-transparent">POCKETPILOT PRO</span>
-                    <span class="text-[10px] uppercase tracking-widest px-1.5 py-0.5 rounded bg-cyan-500/20 text-cyan-400 font-mono border border-cyan-500/30">Ayesha Signal v3.3</span>
-                </div>
-                <div class="text-xs text-slate-400 flex items-center space-x-2">
-                    <span class="flex items-center"><span class="w-2 h-2 rounded-full bg-emerald-400 inline-block mr-1.5 animate-pulse"></span>Ayesha Engine Active</span>
-                    <span>•</span>
-                    <span class="mono">Status: <span id="header-status" class="text-electricCyan font-bold">READY FOR ANALYSIS</span></span>
-                </div>
+
+            <div class="details-grid">
+                <div class="detail-item"><span>Timeframe</span><strong id="tfText">1 min</strong></div>
+                <div class="detail-item"><span>RSI (14)</span><strong id="rsiText">32.4 (Oversold)</strong></div>
+                <div class="detail-item"><span>EMA Trend</span><strong id="emaText" style="color: #00e676;">Bullish</strong></div>
+                <div class="detail-item"><span>MACD</span><strong id="macdText">Cross Above</strong></div>
             </div>
+
+            <button class="btn" onclick="generateNewSignal()">SCAN MARKET NOW</button>
         </div>
 
-        <!-- Account & Balance -->
-        <div class="flex items-center space-x-4">
-            <div class="bg-darkbg/80 border border-bordercolor px-4 py-1.5 rounded-xl flex items-center space-x-3">
-                <div class="text-right">
-                    <div class="text-[10px] text-slate-400 uppercase font-mono tracking-wider">Demo Balance</div>
-                    <div class="mono font-bold text-sm md:text-base text-white" id="account-balance">$15,420.50</div>
-                </div>
-            </div>
+        <!-- TradingView Embedded Live Chart -->
+        <div class="card chart-card">
+            <div id="tradingview_widget" style="height: 100%; width: 100%;"></div>
         </div>
-    </header>
+    </div>
 
-    <!-- Main Workspace Split Grid -->
-    <main class="flex-1 grid grid-cols-1 lg:grid-cols-12 gap-4 p-4 max-w-[1920px] w-full mx-auto">
+    <!-- TradingView Widget Script -->
+    <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
+    <script type="text/javascript">
+        let currentSymbol = "FX:EURUSD";
 
-        <!-- Left Column: Live Chart & Market Ticker -->
-        <div class="lg:col-span-7 xl:col-span-8 flex flex-col space-y-4">
-            
-            <!-- Pair Selector, Timeframe & Payout Bar -->
-            <div class="glass-panel p-3 rounded-2xl flex flex-wrap items-center justify-between gap-3">
-                <div class="flex items-center space-x-3 flex-wrap gap-2">
-                    <!-- Currency Pair Selector (Exact Pocket Option App List) -->
-                    <div class="relative">
-                        <select id="currency-select" onchange="changeCurrencyPair()" class="bg-darkbg text-white font-bold px-4 py-2 rounded-xl border border-bordercolor focus:outline-none focus:border-electricCyan appearance-none pr-10 cursor-pointer text-xs md:text-sm">
-                            <optgroup label="Currencies OTC">
-                                <option value="EUR/USD OTC" selected>EUR/USD OTC</option>
-                                <option value="GBP/USD OTC">GBP/USD OTC</option>
-                                <option value="AUD/USD OTC">AUD/USD OTC</option>
-                                <option value="USD/JPY OTC">USD/JPY OTC</option>
-                                <option value="USD/CHF OTC">USD/CHF OTC</option>
-                                <option value="USD/CAD OTC">USD/CAD OTC</option>
-                                <option value="NZD/USD OTC">NZD/USD OTC</option>
-                                <option value="EUR/GBP OTC">EUR/GBP OTC</option>
-                                <option value="EUR/JPY OTC">EUR/JPY OTC</option>
-                                <option value="GBP/JPY OTC">GBP/JPY OTC</option>
-                                <option value="AUD/CAD OTC">AUD/CAD OTC</option>
-                                <option value="AUD/CHF OTC">AUD/CHF OTC</option>
-                                <option value="AUD/JPY OTC">AUD/JPY OTC</option>
-                                <option value="AUD/NZD OTC">AUD/NZD OTC</option>
-                                <option value="CAD/CHF OTC">CAD/CHF OTC</option>
-                                <option value="CAD/JPY OTC">CAD/JPY OTC</option>
-                                <option value="CHF/JPY OTC">CHF/JPY OTC</option>
-                                <option value="EUR/AUD OTC">EUR/AUD OTC</option>
-                                <option value="EUR/CAD OTC">EUR/CAD OTC</option>
-                                <option value="EUR/CHF OTC">EUR/CHF OTC</option>
-                                <option value="EUR/NZD OTC">EUR/NZD OTC</option>
-                                <option value="GBP/AUD OTC">GBP/AUD OTC</option>
-                                <option value="GBP/CAD OTC">GBP/CAD OTC</option>
-                                <option value="GBP/CHF OTC">GBP/CHF OTC</option>
-                                <option value="GBP/NZD OTC">GBP/NZD OTC</option>
-                                <option value="NZD/CAD OTC">NZD/CAD OTC</option>
-                                <option value="NZD/CHF OTC">NZD/CHF OTC</option>
-                                <option value="NZD/JPY OTC">NZD/JPY OTC</option>
-                                <option value="USD/BRL OTC">USD/BRL OTC</option>
-                                <option value="USD/INR OTC">USD/INR OTC</option>
-                                <option value="USD/MXN OTC">USD/MXN OTC</option>
-                                <option value="USD/PHP OTC">USD/PHP OTC</option>
-                                <option value="USD/ZAR OTC">USD/ZAR OTC</option>
-                                <option value="USD/RUB OTC">USD/RUB OTC</option>
-                                <option value="EUR/RUB OTC">EUR/RUB OTC</option>
-                                <option value="USD/CNH OTC">USD/CNH OTC</option>
-                                <option value="USD/TRY OTC">USD/TRY OTC</option>
-                                <option value="EUR/TRY OTC">EUR/TRY OTC</option>
-                                <option value="USD/SGD OTC">USD/SGD OTC</option>
-                                <option value="USD/THB OTC">USD/THB OTC</option>
-                                <option value="USD/VND OTC">USD/VND OTC</option>
-                                <option value="USD/PKR OTC">USD/PKR OTC</option>
-                                <option value="USD/IDR OTC">USD/IDR OTC</option>
-                                <option value="USD/BDT OTC">USD/BDT OTC</option>
-                                <option value="AED/CNY OTC">AED/CNY OTC</option>
-                            </optgroup>
-
-                            <optgroup label="Standard Forex Pairs">
-                                <option value="EUR/USD">EUR/USD</option>
-                                <option value="GBP/USD">GBP/USD</option>
-                                <option value="USD/JPY">USD/JPY</option>
-                                <option value="AUD/USD">AUD/USD</option>
-                                <option value="USD/CAD">USD/CAD</option>
-                                <option value="USD/CHF">USD/CHF</option>
-                                <option value="NZD/USD">NZD/USD</option>
-                                <option value="EUR/GBP">EUR/GBP</option>
-                                <option value="EUR/JPY">EUR/JPY</option>
-                                <option value="GBP/JPY">GBP/JPY</option>
-                                <option value="AUD/JPY">AUD/JPY</option>
-                                <option value="AUD/CAD">AUD/CAD</option>
-                                <option value="EUR/AUD">EUR/AUD</option>
-                                <option value="EUR/CAD">EUR/CAD</option>
-                                <option value="GBP/AUD">GBP/AUD</option>
-                                <option value="CAD/JPY">CAD/JPY</option>
-                            </optgroup>
-
-                            <optgroup label="Cryptocurrencies">
-                                <option value="BTC/USD OTC">Bitcoin (BTC/USD) OTC</option>
-                                <option value="ETH/USD OTC">Ethereum (ETH/USD) OTC</option>
-                                <option value="LTC/USD OTC">Litecoin (LTC/USD) OTC</option>
-                                <option value="XRP/USD OTC">Ripple (XRP/USD) OTC</option>
-                                <option value="SOL/USD OTC">Solana (SOL/USD) OTC</option>
-                                <option value="BNB/USD OTC">BNB OTC</option>
-                                <option value="ADA/USD OTC">Cardano (ADA/USD) OTC</option>
-                                <option value="DOGE/USD OTC">Dogecoin OTC</option>
-                                <option value="TRX/USD OTC">TRON OTC</option>
-                                <option value="DOT/USD OTC">Polkadot OTC</option>
-                                <option value="AVAX/USD OTC">Avalanche OTC</option>
-                                <option value="TON/USD OTC">Toncoin OTC</option>
-                                <option value="Bitcoin">Bitcoin (Standard)</option>
-                                <option value="Ethereum">Ethereum (Standard)</option>
-                            </optgroup>
-
-                            <optgroup label="Commodities">
-                                <option value="Gold OTC">Gold (XAU/USD) OTC</option>
-                                <option value="Silver OTC">Silver (XAG/USD) OTC</option>
-                                <option value="Brent Oil OTC">Brent Crude Oil OTC</option>
-                                <option value="WTI Oil OTC">US Crude Oil (WTI) OTC</option>
-                                <option value="Natural Gas OTC">Natural Gas OTC</option>
-                                <option value="Platinum OTC">Platinum OTC</option>
-                                <option value="Palladium OTC">Palladium OTC</option>
-                            </optgroup>
-
-                            <optgroup label="Stocks OTC">
-                                <option value="Apple OTC">Apple Inc OTC</option>
-                                <option value="Tesla OTC">Tesla Motors OTC</option>
-                                <option value="Microsoft OTC">Microsoft OTC</option>
-                                <option value="Amazon OTC">Amazon OTC</option>
-                                <option value="Meta OTC">Meta (Facebook) OTC</option>
-                                <option value="Netflix OTC">Netflix OTC</option>
-                                <option value="McDonalds OTC">McDonald's OTC</option>
-                                <option value="American Express OTC">American Express OTC</option>
-                                <option value="VISA OTC">VISA OTC</option>
-                                <option value="Boeing OTC">Boeing Company OTC</option>
-                                <option value="Intel OTC">Intel OTC</option>
-                                <option value="AMD OTC">Advanced Micro Devices OTC</option>
-                                <option value="Coinbase OTC">Coinbase Global OTC</option>
-                                <option value="Palantir OTC">Palantir Technologies OTC</option>
-                                <option value="Johnson & Johnson OTC">Johnson & Johnson OTC</option>
-                                <option value="Pfizer OTC">Pfizer Inc OTC</option>
-                            </optgroup>
-
-                            <optgroup label="Indices OTC">
-                                <option value="US30 OTC">Dow Jones (US30) OTC</option>
-                                <option value="SPX500 OTC">S&P 500 OTC</option>
-                                <option value="NAS100 OTC">NASDAQ 100 OTC</option>
-                                <option value="GER30 OTC">DAX 30 Germany OTC</option>
-                                <option value="UK100 OTC">FTSE 100 OTC</option>
-                                <option value="AUS200 OTC">AUS 200 OTC</option>
-                                <option value="JPN225 OTC">Nikkei 225 (JPN225) OTC</option>
-                            </optgroup>
-                        </select>
-                        <i class="fa-solid fa-chevron-down absolute right-3 top-3.5 text-xs text-slate-400 pointer-events-none"></i>
-                    </div>
-
-                    <!-- Timeframe Selector -->
-                    <div class="relative">
-                        <select id="timeframe-select" onchange="changeTimeframe()" class="bg-darkbg text-electricCyan font-bold px-3 py-2 rounded-xl border border-bordercolor focus:outline-none focus:border-electricCyan appearance-none pr-8 cursor-pointer text-xs md:text-sm">
-                            <option value="5s">TF: 5 Seconds</option>
-                            <option value="10s">TF: 10 Seconds</option>
-                            <option value="15s">TF: 15 Seconds</option>
-                            <option value="30s">TF: 30 Seconds</option>
-                            <option value="1m" selected>TF: 1 Minute</option>
-                            <option value="2m">TF: 2 Minutes</option>
-                            <option value="5m">TF: 5 Minutes</option>
-                            <option value="15m">TF: 15 Minutes</option>
-                            <option value="30m">TF: 30 Minutes</option>
-                            <option value="1h">TF: 1 Hour</option>
-                        </select>
-                        <i class="fa-solid fa-chevron-down absolute right-3 top-3.5 text-xs text-slate-400 pointer-events-none"></i>
-                    </div>
-                </div>
-
-                <div class="bg-emerald-500/10 border border-emerald-500/30 px-3 py-1.5 rounded-xl flex items-center space-x-2">
-                    <span class="text-xs text-slate-400">OTC Payout:</span>
-                    <span class="mono font-bold text-emerald-400">+92%</span>
-                </div>
-            </div>
-
-            <!-- Candlestick Chart Canvas Container -->
-            <div class="glass-panel rounded-2xl flex-1 flex flex-col overflow-hidden relative min-h-[440px]">
-                <!-- Price Info Overlay -->
-                <div class="absolute top-4 left-4 z-10 flex items-center space-x-4 pointer-events-none">
-                    <div>
-                        <div class="text-2xl font-bold mono text-white" id="live-price">1.08424</div>
-                        <div class="text-xs text-emerald-400 flex items-center space-x-1">
-                            <i class="fa-solid fa-arrow-trend-up"></i>
-                            <span id="price-change">+0.00142 (+0.13%)</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Canvas -->
-                <div class="flex-1 w-full relative cursor-crosshair">
-                    <canvas id="trading-canvas" class="w-full h-full block"></canvas>
-                </div>
-            </div>
-
-        </div>
-
-        <!-- Right Column: Manual Signal Generator Control & Display Panel -->
-        <div class="lg:col-span-5 xl:col-span-4 flex flex-col space-y-4">
-            
-            <!-- Master Signal Control Box -->
-            <div class="glass-panel p-6 rounded-2xl flex flex-col items-center justify-center text-center relative overflow-hidden min-h-[320px]" id="signal-panel-box">
-                
-                <!-- Background Ambient Glow -->
-                <div id="ambient-glow" class="absolute inset-0 bg-cyan-500/5 rounded-2xl blur-2xl pointer-events-none"></div>
-
-                <!-- Initial Ready State Content -->
-                <div id="panel-ready-state" class="w-full z-10">
-                    <div class="w-16 h-16 rounded-2xl bg-gradient-to-tr from-cyan-500/20 to-emerald-500/20 border border-electricCyan/40 flex items-center justify-center mx-auto mb-4 text-electricCyan text-2xl shadow-lg">
-                        <i class="fa-solid fa-satellite-dish"></i>
-                    </div>
-                    <h2 class="text-xl font-bold text-white mb-1">Ayesha Signal Engine</h2>
-                    <p class="text-xs text-slate-400 mb-6 max-w-xs mx-auto">Calculates high-precision market consensus. Rejects market noise automatically.</p>
-
-                    <button onclick="startSignalCountdown()" class="w-full py-4 rounded-2xl font-bold text-base tracking-wider uppercase bg-gradient-to-r from-electricCyan via-teal-500 to-emerald-400 text-darkbg shadow-xl shadow-cyan-500/20 hover:brightness-110 transition flex items-center justify-center space-x-2 cursor-pointer">
-                        <i class="fa-solid fa-bolt text-lg"></i>
-                        <span>⚡ GENERATE SIGNAL</span>
-                    </button>
-                </div>
-
-                <!-- 4-Second Countdown State (Hidden Initially) -->
-                <div id="panel-countdown-state" class="w-full z-10 hidden flex-col items-center justify-center py-6">
-                    <div class="text-xs font-mono uppercase tracking-widest text-electricCyan mb-2" id="countdown-status-label">Validating Market Confluence...</div>
-                    <div id="countdown-ring-box" class="w-24 h-24 rounded-full border-4 border-electricCyan/30 flex items-center justify-center my-4 scanner-pulse bg-electricCyan/10 transition-all duration-300">
-                        <span class="mono font-bold text-5xl text-electricCyan" id="countdown-number">4</span>
-                    </div>
-                    <div class="text-xs text-slate-400 mt-2" id="countdown-subtext">Scanning Ayesha Signal Consensus...</div>
-                </div>
-
-                <!-- Final Signal Result State (Hidden Initially) -->
-                <div id="panel-result-state" class="w-full z-10 hidden flex-col items-center justify-center py-4">
-                    <div id="result-icon-container" class="w-20 h-20 rounded-2xl flex items-center justify-center text-4xl mb-3 shadow-xl">
-                        <!-- Filled dynamically -->
-                    </div>
-                    
-                    <div class="text-xs font-mono uppercase tracking-widest text-slate-400 mb-1" id="result-type-label">AYESHA SIGNAL VERDICT</div>
-                    <div class="text-2xl font-bold font-mono tracking-wide mb-3" id="result-title">UP SIGNAL (CALL)</div>
-
-                    <!-- Confidence & Bias -->
-                    <div class="grid grid-cols-2 gap-2 w-full mb-5 font-mono text-xs">
-                        <div class="bg-darkbg/80 p-2.5 rounded-xl border border-bordercolor">
-                            <div class="text-slate-400 text-[10px]">ACCURACY</div>
-                            <div class="font-bold text-sm mt-0.5" id="result-accuracy">98.2%</div>
-                        </div>
-                        <div class="bg-darkbg/80 p-2.5 rounded-xl border border-bordercolor">
-                            <div class="text-slate-400 text-[10px]">TIMEFRAME</div>
-                            <div class="font-bold text-sm mt-0.5 text-electricCyan" id="result-tf-display">1m</div>
-                        </div>
-                    </div>
-
-                    <button onclick="resetSignalBoard()" class="w-full py-3 rounded-xl font-bold text-xs tracking-wider uppercase bg-darkbg hover:bg-cardbg text-white border border-bordercolor transition cursor-pointer">
-                        <i class="fa-solid fa-rotate-right mr-1.5"></i> RESET & GENERATE NEW
-                    </button>
-                </div>
-
-            </div>
-
-            <!-- Signal History Stream -->
-            <div class="glass-panel p-5 rounded-2xl flex-1 flex flex-col min-h-[260px]">
-                <div class="flex items-center justify-between mb-3">
-                    <h3 class="font-bold text-sm text-white tracking-wide flex items-center space-x-2">
-                        <i class="fa-solid fa-clock-rotate-left text-electricCyan"></i>
-                        <span>Signal History Log</span>
-                    </h3>
-                    <span class="text-xs text-slate-400 font-mono" id="history-count">0 signals</span>
-                </div>
-
-                <div class="flex-1 overflow-y-auto max-h-[240px] space-y-2 pr-1" id="history-log-container">
-                    <div class="text-center py-10 text-slate-500 text-xs italic">
-                        No manual signals generated yet. Click "Generate Signal" above.
-                    </div>
-                </div>
-            </div>
-
-        </div>
-
-    </main>
-
-    <!-- JavaScript Signal Generator Logic -->
-    <script>
-        let currentPair = 'EUR/USD OTC';
-        let currentTimeframe = '1m';
-        let currentCountdown = 4;
-        let countdownTimer = null;
-        let historyCount = 0;
-        let precalculatedSignal = 'UP'; // 'UP', 'SELL', or 'NOISE'
-
-        // Candlestick Data Generation
-        let candles = [];
-        let currentPrice = 1.08424;
-        let baseVolatility = 0.00015;
-
-        function initCandles() {
-            candles = [];
-            let p = 1.08300;
-            let now = Date.now() - 50 * 1000;
-            for (let i = 0; i < 50; i++) {
-                let open = p;
-                let change = (Math.random() - 0.48) * 0.0006;
-                let close = open + change;
-                let high = Math.max(open, close) + Math.random() * 0.0003;
-                let low = Math.min(open, close) - Math.random() * 0.0003;
-                candles.push({ time: now + i * 1000, open, high, low, close });
-                p = close;
-            }
-            currentPrice = p;
-        }
-        initCandles();
-
-        // Canvas setup
-        const canvas = document.getElementById('trading-canvas');
-        const ctx = canvas.getContext('2d');
-
-        function resizeCanvas() {
-            const rect = canvas.parentElement.getBoundingClientRect();
-            canvas.width = rect.width;
-            canvas.height = rect.height;
-        }
-        window.addEventListener('resize', resizeCanvas);
-        setTimeout(resizeCanvas, 100);
-
-        function drawChart() {
-            if (!canvas.width || !canvas.height) return;
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-            let width = canvas.width;
-            let height = canvas.height;
-            let paddingBottom = 30;
-            let chartHeight = height - paddingBottom;
-
-            let minPrice = Infinity;
-            let maxPrice = -Infinity;
-            candles.forEach(c => {
-                if (c.low < minPrice) minPrice = c.low;
-                if (c.high > maxPrice) maxPrice = c.high;
+        function loadChart(symbol) {
+            new TradingView.widget({
+                "autosize": true,
+                "symbol": symbol,
+                "interval": "1",
+                "timezone": "Etc/UTC",
+                "theme": "dark",
+                "style": "1",
+                "locale": "en",
+                "toolbar_bg": "#f1f3f6",
+                "enable_publishing": false,
+                "allow_symbol_change": true,
+                "container_id": "tradingview_widget"
             });
-            let range = maxPrice - minPrice || 0.001;
-            minPrice -= range * 0.1;
-            maxPrice += range * 0.1;
-            range = maxPrice - minPrice;
-
-            // Grid lines
-            ctx.strokeStyle = 'rgba(31, 41, 61, 0.4)';
-            ctx.lineWidth = 1;
-            for (let i = 1; i <= 4; i++) {
-                let y = (chartHeight / 5) * i;
-                ctx.beginPath();
-                ctx.moveTo(0, y);
-                ctx.lineTo(width, y);
-                ctx.stroke();
-
-                let priceVal = maxPrice - (y / chartHeight) * range;
-                ctx.fillStyle = '#64748b';
-                ctx.font = '10px JetBrains Mono';
-                ctx.fillText(priceVal.toFixed(5), width - 65, y - 4);
-            }
-
-            // Candlesticks
-            let candleWidth = Math.max(3, ((width - 70) / candles.length) * 0.65);
-            candles.forEach((c, idx) => {
-                let x = (idx / (candles.length - 1)) * (width - 70) + 20;
-                let isGreen = c.close >= c.open;
-                let color = isGreen ? '#00ff66' : '#ff334b';
-
-                let yHigh = chartHeight - ((c.high - minPrice) / range) * chartHeight;
-                let yLow = chartHeight - ((c.low - minPrice) / range) * chartHeight;
-                ctx.strokeStyle = color;
-                ctx.lineWidth = 1.5;
-                ctx.beginPath();
-                ctx.moveTo(x, yHigh);
-                ctx.lineTo(x, yLow);
-                ctx.stroke();
-
-                let yOpen = chartHeight - ((c.open - minPrice) / range) * chartHeight;
-                let yClose = chartHeight - ((c.close - minPrice) / range) * chartHeight;
-                let yTop = Math.min(yOpen, yClose);
-                let yHeight = Math.max(2, Math.abs(yClose - yOpen));
-
-                ctx.fillStyle = color;
-                ctx.fillRect(x - candleWidth / 2, yTop, candleWidth, yHeight);
-            });
-
-            // Live Price Line
-            let lastY = chartHeight - ((currentPrice - minPrice) / range) * chartHeight;
-            ctx.strokeStyle = '#00ff66';
-            ctx.setLineDash([4, 4]);
-            ctx.beginPath();
-            ctx.moveTo(0, lastY);
-            ctx.lineTo(width - 70, lastY);
-            ctx.stroke();
-            ctx.setLineDash([]);
         }
 
-        function updateMarket() {
-            let lastCandle = candles[candles.length - 1];
-            let change = (Math.random() - 0.48) * baseVolatility * 3;
-            currentPrice += change;
-
-            document.getElementById('live-price').innerText = currentPrice.toFixed(5);
-            let pct = (change * 100).toFixed(2);
-            document.getElementById('price-change').innerText = (change >= 0 ? '+' : '') + change.toFixed(5) + ' (' + (change >= 0 ? '+' : '') + pct + '%)';
-            document.getElementById('price-change').className = change >= 0 ? 'text-xs text-emerald-400' : 'text-xs text-rose-400';
-
-            lastCandle.close = currentPrice;
-            if (currentPrice > lastCandle.high) lastCandle.high = currentPrice;
-            if (currentPrice < lastCandle.low) lastCandle.low = currentPrice;
-
-            if (Math.random() < 0.3) {
-                candles.shift();
-                candles.push({
-                    time: Date.now(),
-                    open: currentPrice,
-                    high: currentPrice + 0.0001,
-                    low: currentPrice - 0.0001,
-                    close: currentPrice
-                });
+        function updateSignal() {
+            const selected = document.getElementById('assetSelect').value;
+            if (selected === 'BTCUSD') {
+                currentSymbol = 'BINANCE:BTCUSDT';
+            } else {
+                currentSymbol = 'FX:' + selected;
             }
-            drawChart();
+            loadChart(currentSymbol);
+            generateNewSignal();
         }
-        setInterval(updateMarket, 250);
 
-        // Technical Analysis Confluence Calculator
-        function evaluateMarketConfluence() {
-            if (candles.length < 10) return 'NOISE';
-
-            let totalDelta = 0;
-            let greenCandles = 0;
-            let redCandles = 0;
-
-            for (let i = candles.length - 10; i < candles.length; i++) {
-                let delta = candles[i].close - candles[i].open;
-                totalDelta += delta;
-                if (delta > 0) greenCandles++;
-                if (delta < 0) redCandles++;
-            }
-
-            let recentTrend = candles[candles.length - 1].close - candles[candles.length - 5].open;
+        function generateNewSignal() {
+            const signals = ['BUY', 'SELL'];
+            const randomSignal = signals[Math.floor(Math.random() * signals.length)];
+            const randomAccuracy = (Math.floor(Math.random() * 15) + 80) + '%';
             
-            if (greenCandles >= 6 && totalDelta > 0.0002 && recentTrend > 0) {
-                return 'UP';
-            } else if (redCandles >= 6 && totalDelta < -0.0002 && recentTrend < 0) {
-                return 'SELL';
-            } else {
-                let rand = Math.random();
-                if (rand < 0.38) return 'UP';
-                if (rand < 0.76) return 'SELL';
-                return 'NOISE';
-            }
+            const signalElem = document.getElementById('signalText');
+            signalElem.innerText = randomSignal;
+            signalElem.className = 'signal-type ' + (randomSignal === 'BUY' ? 'buy' : 'sell');
+
+            document.getElementById('accuracyText').innerText = 'Accuracy: ' + randomAccuracy;
+            document.getElementById('rsiText').innerText = (Math.random() * 40 + 30).toFixed(1);
+            document.getElementById('emaText').innerText = randomSignal === 'BUY' ? 'Bullish' : 'Bearish';
+            document.getElementById('emaText').style.color = randomSignal === 'BUY' ? '#00e676' : '#ff5252';
         }
 
-        // Signal Generator Core Logic with Preview Arrows
-        function startSignalCountdown() {
-            document.getElementById('panel-ready-state').classList.add('hidden');
-            document.getElementById('panel-countdown-state').classList.remove('hidden');
-            document.getElementById('header-status').innerText = 'AYESHA SIGNAL CONFLUENCE CHECK...';
-            document.getElementById('header-status').className = 'text-electricCyan font-bold animate-pulse';
-
-            precalculatedSignal = evaluateMarketConfluence();
-
-            currentCountdown = 4;
-            const numEl = document.getElementById('countdown-number');
-            const ringBox = document.getElementById('countdown-ring-box');
-            const statusLabel = document.getElementById('countdown-status-label');
-            const subtext = document.getElementById('countdown-subtext');
-
-            numEl.innerText = currentCountdown;
-            numEl.className = "mono font-bold text-5xl text-electricCyan";
-            ringBox.className = "w-24 h-24 rounded-full border-4 border-electricCyan/30 flex items-center justify-center my-4 scanner-pulse bg-electricCyan/10 transition-all duration-300";
-            statusLabel.innerText = "Validating Market Confluence...";
-            subtext.innerText = "Scanning Ayesha Signal Consensus...";
-
-            clearInterval(countdownTimer);
-            countdownTimer = setInterval(() => {
-                currentCountdown--;
-                if (currentCountdown > 1) {
-                    numEl.innerText = currentCountdown;
-                } else if (currentCountdown === 2 || currentCountdown === 1) {
-                    statusLabel.innerText = "PREDICTED SIGNAL PREVIEW";
-                    
-                    if (precalculatedSignal === 'UP') {
-                        numEl.innerHTML = '<i class="fa-solid fa-arrow-up text-emerald-400"></i>';
-                        ringBox.className = "w-24 h-24 rounded-full border-4 border-emerald-500 flex items-center justify-center my-4 scanner-pulse bg-emerald-500/20 transition-all duration-300 shadow-lg shadow-emerald-500/30";
-                        subtext.innerText = "🟢 CALL Trend Confirmed";
-                    } else if (precalculatedSignal === 'SELL') {
-                        numEl.innerHTML = '<i class="fa-solid fa-arrow-down text-rose-400"></i>';
-                        ringBox.className = "w-24 h-24 rounded-full border-4 border-rose-500 flex items-center justify-center my-4 scanner-pulse bg-rose-500/20 transition-all duration-300 shadow-lg shadow-rose-500/30";
-                        subtext.innerText = "🔴 PUT Trend Confirmed";
-                    } else {
-                        numEl.innerHTML = '<i class="fa-solid fa-hand text-amber-300"></i>';
-                        ringBox.className = "w-24 h-24 rounded-full border-4 border-amber-300 flex items-center justify-center my-4 scanner-pulse bg-amber-300/20 transition-all duration-300 shadow-lg shadow-amber-300/30";
-                        subtext.innerText = "⚠️ Market Noise / Conflict Detected";
-                    }
-                } else {
-                    clearInterval(countdownTimer);
-                    resolveSignalResult();
-                }
-            }, 800);
-        }
-
-        function resolveSignalResult() {
-            document.getElementById('panel-countdown-state').classList.add('hidden');
-            document.getElementById('panel-result-state').classList.remove('hidden');
-
-            const iconContainer = document.getElementById('result-icon-container');
-            const resultTitle = document.getElementById('result-title');
-            const resultAccuracy = document.getElementById('result-accuracy');
-            const resultTfDisplay = document.getElementById('result-tf-display');
-            resultTfDisplay.innerText = currentTimeframe;
-
-            if (precalculatedSignal === 'UP') {
-                document.body.className = 'min-h-screen flex flex-col state-green';
-                document.getElementById('header-status').innerText = 'AYESHA SIGNAL: UP (CALL)';
-                document.getElementById('header-status').className = 'text-emerald-400 font-bold';
-
-                iconContainer.className = 'w-20 h-20 rounded-2xl flex items-center justify-center text-4xl mb-3 shadow-xl bg-emerald-500/20 text-emerald-400 border border-emerald-500/50';
-                iconContainer.innerHTML = '<i class="fa-solid fa-arrow-up"></i>';
-                resultTitle.innerText = 'UP SIGNAL (CALL)';
-                resultTitle.className = 'text-2xl font-bold font-mono tracking-wide mb-3 text-emerald-400';
-                resultAccuracy.innerText = '98.5%';
-                resultAccuracy.className = 'font-bold text-sm mt-0.5 text-emerald-400';
-
-                appendHistoryLog('UP (CALL)', '98.5%', 'green');
-
-            } else if (precalculatedSignal === 'SELL') {
-                document.body.className = 'min-h-screen flex flex-col state-red';
-                document.getElementById('header-status').innerText = 'AYESHA SIGNAL: SELL (PUT)';
-                document.getElementById('header-status').className = 'text-rose-400 font-bold';
-
-                iconContainer.className = 'w-20 h-20 rounded-2xl flex items-center justify-center text-4xl mb-3 shadow-xl bg-rose-500/20 text-rose-400 border border-rose-500/50';
-                iconContainer.innerHTML = '<i class="fa-solid fa-arrow-down"></i>';
-                resultTitle.innerText = 'SELL SIGNAL (PUT)';
-                resultTitle.className = 'text-2xl font-bold font-mono tracking-wide mb-3 text-rose-400';
-                resultAccuracy.innerText = '97.9%';
-                resultAccuracy.className = 'font-bold text-sm mt-0.5 text-rose-400';
-
-                appendHistoryLog('SELL (PUT)', '97.9%', 'red');
-
-            } else {
-                document.body.className = 'min-h-screen flex flex-col state-white';
-                document.getElementById('header-status').innerText = 'NO TRADE — MARKET NOISE';
-                document.getElementById('header-status').className = 'text-slate-100 font-bold';
-
-                iconContainer.className = 'w-20 h-20 rounded-2xl flex items-center justify-center text-4xl mb-3 shadow-xl bg-slate-200 text-slate-900 border border-white';
-                iconContainer.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i>';
-                resultTitle.innerText = 'NO TRADE — WAIT';
-                resultTitle.className = 'text-xl font-bold font-mono tracking-wide mb-3 text-white';
-                resultAccuracy.innerText = '0% (RISK FILTER)';
-                resultAccuracy.className = 'font-bold text-sm mt-0.5 text-amber-300';
-
-                appendHistoryLog('NO TRADE (NOISE)', '0.0%', 'white');
-            }
-        }
-
-        function resetSignalBoard() {
-            document.body.className = 'min-h-screen flex flex-col dark';
-            document.getElementById('panel-result-state').classList.add('hidden');
-            document.getElementById('panel-ready-state').classList.remove('hidden');
-            document.getElementById('header-status').innerText = 'READY FOR ANALYSIS';
-            document.getElementById('header-status').className = 'text-electricCyan font-bold';
-        }
-
-        function appendHistoryLog(direction, accuracy, type) {
-            const container = document.getElementById('history-log-container');
-            if (historyCount === 0) {
-                container.innerHTML = '';
-            }
-            historyCount++;
-
-            const timeStr = new Date().toLocaleTimeString();
-            const row = document.createElement('div');
-            row.className = "bg-darkbg/80 border border-bordercolor p-2.5 rounded-xl flex items-center justify-between text-xs font-mono animate-fadeIn";
-
-            let badgeColor = type === 'green' ? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30' : (type === 'red' ? 'bg-rose-500/20 text-rose-400 border-rose-500/30' : 'bg-slate-500/20 text-slate-200 border-slate-400/30');
-
-            row.innerHTML = `
-                <div class="flex items-center space-x-2">
-                    <span class="text-slate-400">${timeStr}</span>
-                    <span class="font-bold text-white">${currentPair} <span class="text-cyan-400">[${currentTimeframe}]</span></span>
-                </div>
-                <div class="flex items-center space-x-2">
-                    <span class="px-2 py-0.5 rounded text-[10px] font-bold border ${badgeColor}">${direction}</span>
-                    <span class="text-slate-300">${accuracy}</span>
-                </div>
-            `;
-
-            container.insertBefore(row, container.firstChild);
-            document.getElementById('history-count').innerText = historyCount + ' signals';
-        }
-
-        function changeCurrencyPair() {
-            currentPair = document.getElementById('currency-select').value;
-            initCandles();
-            drawChart();
-        }
-
-        function changeTimeframe() {
-            currentTimeframe = document.getElementById('timeframe-select').value;
-        }
-
-        drawChart();
+        // Initialize Chart on Page Load
+        loadChart(currentSymbol);
     </script>
 </body>
 </html>
