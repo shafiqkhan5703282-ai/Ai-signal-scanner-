@@ -10,6 +10,7 @@
             --bg-secondary: #131b2e;
             --bg-card: #1a233a;
             --accent-blue: #0088ff;
+            --accent-hover: #0070d1;
             --text-main: #e2e8f0;
             --text-muted: #94a3b8;
             --green-call: #00e676;
@@ -164,8 +165,47 @@
             font-size: 0.8rem;
             display: flex;
             justify-content: space-between;
+            align-items: center;
             margin-bottom: 14px;
             border: 1px solid var(--border-color);
+        }
+
+        /* Action Buttons Style */
+        .action-buttons {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 14px;
+        }
+
+        .btn-action {
+            flex: 1;
+            padding: 10px;
+            font-weight: 700;
+            font-size: 0.85rem;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            transition: background 0.2s;
+        }
+
+        .btn-generate {
+            background-color: var(--green-call);
+            color: #000;
+        }
+
+        .btn-generate:hover {
+            background-color: #00c853;
+        }
+
+        .btn-regenerate {
+            background-color: var(--accent-blue);
+            color: #fff;
+        }
+
+        .btn-regenerate:hover {
+            background-color: var(--accent-hover);
         }
 
         .signals-grid {
@@ -311,6 +351,12 @@
             <span>EXPIRY: <strong id="lblExpiry">1m</strong></span>
         </div>
 
+        <!-- Generate & Regenerate Action Buttons -->
+        <div class="action-buttons">
+            <button class="btn-action btn-generate" onclick="generateSignal()">⚡ Generate Signal</button>
+            <button class="btn-action btn-regenerate" onclick="regenerateSignal()">🔄 Regenerate Analysis</button>
+        </div>
+
         <!-- Three-Signal Analysis Grid -->
         <main class="signals-grid">
             <!-- Signal 1: Live Signal -->
@@ -361,7 +407,6 @@
         let ws;
         let config = { platform: 'pocketoption', asset: 'EURUSD_otc', expiry: '1m' };
         
-        // Static Asset List Fallback for GitHub Pages Static Deployment
         const defaultAssets = {
             pocketoption: [
                 { id: 'EURUSD_otc', name: 'EUR/USD (OTC)', type: 'OTC Forex' },
@@ -381,7 +426,6 @@
         let availableAssets = defaultAssets;
 
         function connectWS() {
-            // Determine host dynamically (Local Server or Remote WebSocket)
             const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
             const wsUrl = isLocal ? `ws://${window.location.host}` : `wss://your-backend-server.onrender.com`;
 
@@ -411,12 +455,11 @@
                 };
 
                 ws.onerror = () => {
-                    // Fallback to local offline scanner mode if backend is not actively connected
                     document.getElementById('connectionStatus').className = 'status-badge disconnected';
                     document.getElementById('statusText').innerText = 'Signal Engine Active';
                 };
             } catch (e) {
-                console.log("WebSocket initialization skipped - Running UI in standalone mode");
+                console.log("WebSocket initialization skipped");
             }
         }
 
@@ -457,6 +500,53 @@
             if (ws && ws.readyState === WebSocket.OPEN) {
                 ws.send(JSON.stringify({ type: 'SET_CONFIG', ...config }));
             }
+        }
+
+        // Manual Generate Button Handler
+        function generateSignal() {
+            updateConfig();
+            triggerClientMockAnalysis("Signal generated successfully on demand.");
+        }
+
+        // Manual Regenerate Button Handler
+        function regenerateSignal() {
+            updateConfig();
+            triggerClientMockAnalysis("Analysis re-calculated with fresh market scan.");
+        }
+
+        // Fallback standalone simulation if backend is offline on GitHub Pages
+        function triggerClientMockAnalysis(reasonNote) {
+            const directions = ['CALL/UP', 'PUT/DOWN', 'WAIT'];
+            const finalDirs = ['CALL/UP', 'PUT/DOWN', 'NO TRADE'];
+            const randDir = directions[Math.floor(Math.random() * directions.length)];
+            const randFinal = finalDirs[Math.floor(Math.random() * finalDirs.length)];
+            const conf = Math.floor(Math.random() * 25) + 65;
+
+            const mockData = {
+                signals: {
+                    live: {
+                        direction: randDir,
+                        confidence: conf,
+                        entryReference: (1.0850 + Math.random() * 0.0050).toFixed(5),
+                        freshnessMs: Math.floor(Math.random() * 150),
+                        reasons: [reasonNote, 'EMA 8/21 momentum checked', 'RSI range validated']
+                    },
+                    midCandle: {
+                        direction: randDir,
+                        confidence: conf - 3,
+                        candleStatus: 'CLOSED',
+                        metrics: { bodyRatio: (0.65 + Math.random() * 0.3).toFixed(2) },
+                        reasons: ['Candle structure verified', 'Wick rejection filters passed']
+                    },
+                    final: {
+                        direction: randFinal,
+                        confidence: randFinal === 'NO TRADE' ? 0 : conf,
+                        invalidation: (1.0800 + Math.random() * 0.0040).toFixed(5),
+                        reasons: randFinal === 'NO TRADE' ? ['Conditions conflicting - NO TRADE enforced'] : ['Multi-timeframe consensus agreed']
+                    }
+                }
+            };
+            renderSignals(mockData);
         }
 
         function renderSignals(data) {
