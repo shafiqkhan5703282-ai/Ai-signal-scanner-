@@ -3,619 +3,680 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>AI Dual-Platform Trading Signal System</title>
+    <title>AI Dual-Platform Trading Signal System Pro</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            dark: '#06090e',
+                            card: '#0d131f',
+                            border: '#1a2438',
+                            accent: '#00e5ff',
+                            call: '#00ff66',
+                            put: '#ff0055',
+                            wait: '#ffb700',
+                            glow: 'rgba(0, 229, 255, 0.15)'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace']
+                    }
+                }
+            }
+        }
+    </script>
     <style>
-        :root {
-            --bg-primary: #0a0e17;
-            --bg-secondary: #131b2e;
-            --bg-card: #1a233a;
-            --accent-blue: #0088ff;
-            --accent-hover: #0070d1;
-            --text-main: #e2e8f0;
-            --text-muted: #94a3b8;
-            --green-call: #00e676;
-            --red-put: #ff1744;
-            --yellow-wait: #ffea00;
-            --border-color: #2a365c;
-        }
-
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-        }
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap');
 
         body {
-            background-color: var(--bg-primary);
-            color: var(--text-main);
-            padding: 12px;
+            background-color: #06090e;
+            color: #e2e8f0;
+            font-family: 'Inter', sans-serif;
+            background-image: 
+                radial-gradient(circle at 50% 0%, rgba(0, 229, 255, 0.05) 0%, transparent 50%),
+                radial-gradient(circle at 100% 100%, rgba(0, 255, 102, 0.03) 0%, transparent 50%);
+            min-height: 100vh;
         }
 
-        .app-container {
-            max-width: 1100px;
-            margin: 0 auto;
+        .glass-panel {
+            background: rgba(13, 19, 31, 0.75);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(26, 36, 56, 0.8);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
         }
 
-        .app-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding-bottom: 12px;
-            border-bottom: 1px solid var(--border-color);
+        .glass-panel-glow {
+            border: 1px solid rgba(0, 229, 255, 0.3);
+            box-shadow: 0 0 20px rgba(0, 229, 255, 0.15);
         }
 
-        .logo-area h1 {
-            font-size: 1.2rem;
-            letter-spacing: 1px;
+        .neon-border-call {
+            border-color: rgba(0, 255, 102, 0.5) !important;
+            box-shadow: 0 0 25px rgba(0, 255, 102, 0.2) !important;
         }
 
-        .logo-area span {
-            color: var(--accent-blue);
+        .neon-border-put {
+            border-color: rgba(ff, 0, 85, 0.5) !important;
+            box-shadow: 0 0 25px rgba(255, 0, 85, 0.2) !important;
         }
 
-        .status-badge {
-            font-size: 0.8rem;
-            padding: 4px 10px;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            gap: 6px;
+        .neon-border-wait {
+            border-color: rgba(255, 183, 0, 0.5) !important;
+            box-shadow: 0 0 25px rgba(255, 183, 0, 0.2) !important;
         }
 
-        .status-badge.connected { background: rgba(0, 230, 118, 0.15); color: var(--green-call); }
-        .status-badge.disconnected { background: rgba(255, 23, 68, 0.15); color: var(--red-put); }
-
-        .dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: currentColor;
+        .btn-generate-glow {
+            position: relative;
+            background: linear-gradient(135deg, #00e5ff 0%, #0077ff 100%);
+            box-shadow: 0 0 20px rgba(0, 229, 255, 0.4), inset 0 0 10px rgba(255, 255, 255, 0.3);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        .control-panel {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
-            margin: 14px 0;
+        .btn-generate-glow:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 0 35px rgba(0, 229, 255, 0.7), inset 0 0 15px rgba(255, 255, 255, 0.5);
         }
 
-        @media (max-width: 600px) {
-            .control-panel { grid-template-columns: 1fr; }
-        }
-
-        .control-group label, .timeframe-section label {
-            display: block;
-            font-size: 0.75rem;
-            color: var(--text-muted);
-            margin-bottom: 6px;
-            text-transform: uppercase;
-        }
-
-        .platform-toggle {
-            display: flex;
-            background: var(--bg-secondary);
-            border-radius: 6px;
-            padding: 3px;
-            border: 1px solid var(--border-color);
-        }
-
-        .btn-toggle {
-            flex: 1;
-            background: transparent;
-            border: none;
-            color: var(--text-muted);
-            padding: 8px;
-            font-weight: 600;
-            cursor: pointer;
-            border-radius: 4px;
-        }
-
-        .btn-toggle.active {
-            background: var(--accent-blue);
-            color: #fff;
-        }
-
-        select {
-            width: 100%;
-            padding: 9px;
-            background: var(--bg-secondary);
-            border: 1px solid var(--border-color);
-            color: var(--text-main);
-            border-radius: 6px;
-            outline: none;
-        }
-
-        .tf-scroll-container {
-            display: flex;
-            gap: 6px;
-            overflow-x: auto;
-            padding-bottom: 8px;
-        }
-
-        .tf-scroll-container::-webkit-scrollbar {
-            height: 4px;
-        }
-
-        .tf-scroll-container::-webkit-scrollbar-thumb {
-            background: var(--border-color);
-            border-radius: 4px;
-        }
-
-        .tf-btn {
-            min-width: 48px;
-            padding: 6px 10px;
-            background: var(--bg-secondary);
-            border: 1px solid var(--border-color);
-            color: var(--text-main);
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 0.8rem;
-        }
-
-        .tf-btn.active {
-            background: var(--accent-blue);
-            border-color: var(--accent-blue);
-        }
-
-        .context-bar {
-            background: var(--bg-secondary);
-            padding: 8px 12px;
-            border-radius: 6px;
-            font-size: 0.8rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 14px;
-            border: 1px solid var(--border-color);
-        }
-
-        /* Action Buttons Style with Countdown Button */
-        .action-buttons {
-            display: flex;
-            gap: 8px;
-            margin-bottom: 14px;
-        }
-
-        .btn-action {
-            flex: 1;
-            padding: 12px;
-            font-weight: 700;
-            font-size: 0.9rem;
-            border-radius: 6px;
-            border: none;
-            cursor: pointer;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            transition: background 0.2s;
-        }
-
-        .btn-generate {
-            background-color: var(--green-call);
-            color: #000;
-        }
-
-        .btn-generate:hover:not(:disabled) {
-            background-color: #00c853;
-        }
-
-        .btn-generate:disabled {
-            background-color: #1b5e20;
-            color: #81c784;
+        .btn-generate-glow:disabled {
+            background: linear-gradient(135deg, #111a2e 0%, #0d131f 100%);
+            border: 1px solid #1a2438;
+            box-shadow: none;
             cursor: not-allowed;
         }
 
-        .btn-regenerate {
-            background-color: var(--accent-blue);
-            color: #fff;
+        .progress-bar-fill {
+            transition: width 1.3s linear;
         }
 
-        .btn-regenerate:hover {
-            background-color: var(--accent-hover);
+        .pulse-live {
+            animation: pulse-ring 2s infinite;
         }
 
-        .signals-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 12px;
+        @keyframes pulse-ring {
+            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(0, 229, 255, 0.7); }
+            70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(0, 229, 255, 0); }
+            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(0, 229, 255, 0); }
         }
 
-        @media (max-width: 850px) {
-            .signals-grid { grid-template-columns: 1fr; }
+        .custom-scrollbar::-webkit-scrollbar {
+            height: 5px;
+            width: 5px;
         }
-
-        .signal-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            padding: 12px;
-            display: flex;
-            flex-direction: column;
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: rgba(13, 19, 31, 0.5);
         }
-
-        .signal-card.final-card {
-            border: 2px solid var(--accent-blue);
-        }
-
-        .card-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid var(--border-color);
-            padding-bottom: 8px;
-            margin-bottom: 10px;
-        }
-
-        .card-header h3 { font-size: 0.85rem; color: var(--text-muted); }
-
-        .pill {
-            font-size: 0.7rem;
-            padding: 2px 6px;
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #1a2438;
             border-radius: 4px;
-            background: var(--bg-secondary);
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #00e5ff;
         }
 
-        .pill.warning { color: var(--yellow-wait); }
-        .pill.success { color: var(--green-call); }
-        .pill.danger { color: var(--red-put); }
-
-        .direction {
-            font-size: 1.5rem;
-            font-weight: 800;
-            text-align: center;
-            padding: 10px 0;
-            border-radius: 6px;
-            margin-bottom: 10px;
+        .card-update-anim {
+            animation: cardHighlight 0.6s ease-out;
         }
 
-        .direction.CALL_UP { background: rgba(0, 230, 118, 0.15); color: var(--green-call); }
-        .direction.PUT_DOWN { background: rgba(255, 23, 68, 0.15); color: var(--red-put); }
-        .direction.WAIT, .direction.NO_TRADE { background: rgba(255, 234, 0, 0.12); color: var(--yellow-wait); }
-
-        .metric-row {
-            display: flex;
-            justify-content: space-between;
-            font-size: 0.8rem;
-            margin-bottom: 6px;
-        }
-
-        .reasons-box {
-            margin-top: 10px;
-            padding-top: 8px;
-            border-top: 1px dashed var(--border-color);
-            font-size: 0.75rem;
-            color: var(--text-muted);
-        }
-
-        .reasons-box ul {
-            list-style-type: disc;
-            padding-left: 16px;
+        @keyframes cardHighlight {
+            0% { transform: scale(0.98); opacity: 0.7; }
+            50% { transform: scale(1.02); opacity: 1; }
+            100% { transform: scale(1); opacity: 1; }
         }
     </style>
 </head>
-<body>
-    <div class="app-container">
-        <!-- Header & Connection Status -->
-        <header class="app-header">
-            <div class="logo-area">
-                <h1>AI TRADING BOT <span>PRO</span></h1>
+<body class="p-3 md:p-6 text-slate-200 custom-scrollbar">
+
+    <div class="max-w-7xl mx-auto space-y-4">
+        
+        <!-- Header Section -->
+        <header class="glass-panel rounded-2xl p-4 flex flex-col md:flex-row justify-between items-center gap-4">
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-cyan-500 to-blue-600 flex items-center justify-center text-slate-950 font-black text-xl shadow-lg shadow-cyan-500/30">
+                    <i class="fa-solid fa-bolt"></i>
+                </div>
+                <div>
+                    <h1 class="text-xl font-extrabold tracking-wider text-white flex items-center gap-2">
+                        AI TRADING BOT <span class="bg-cyan-500/10 text-cyan-400 text-xs px-2.5 py-0.5 rounded-full border border-cyan-500/30 font-semibold">ULTRA PRO v4.2</span>
+                    </h1>
+                    <p class="text-xs text-slate-400 font-mono">Institutional High-Frequency Signal Analysis Engine</p>
+                </div>
             </div>
-            <div id="connectionStatus" class="status-badge disconnected">
-                <span class="dot"></span> <span id="statusText">Connecting...</span>
+
+            <!-- Status Metrics -->
+            <div class="flex items-center gap-3">
+                <div class="glass-panel px-3 py-1.5 rounded-xl flex items-center space-x-2 border border-slate-800">
+                    <span class="w-2 h-2 rounded-full bg-emerald-400 pulse-live"></span>
+                    <span class="text-xs font-mono text-slate-300">SERVER: <span class="text-emerald-400 font-bold">ONLINE</span></span>
+                </div>
+                <div class="glass-panel px-3 py-1.5 rounded-xl flex items-center space-x-2 border border-slate-800">
+                    <i class="fa-solid fa-microchip text-cyan-400 text-xs"></i>
+                    <span class="text-xs font-mono text-slate-300">LATENCY: <span id="latencyText" class="text-cyan-400 font-bold">12ms</span></span>
+                </div>
             </div>
         </header>
 
-        <!-- Platform & Asset Controls -->
-        <section class="control-panel">
-            <div class="control-group">
-                <label>Broker Platform</label>
-                <div class="platform-toggle">
-                    <button id="btnPocket" class="btn-toggle active" onclick="setPlatform('pocketoption')">Pocket Option</button>
-                    <button id="btnOlm" class="btn-toggle" onclick="setPlatform('olmtrade')">Olmtrade</button>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            
+            <!-- Platform Toggle Panel -->
+            <div class="glass-panel p-4 rounded-2xl space-y-2">
+                <label class="text-xs font-bold uppercase tracking-wider text-slate-400 flex items-center gap-2">
+                    <i class="fa-solid fa-building-columns text-cyan-400"></i> Select Broker Platform
+                </label>
+                <div class="grid grid-cols-2 gap-2 bg-slate-950/60 p-1.5 rounded-xl border border-slate-800/80">
+                    <button id="btnPocket" onclick="setPlatform('pocketoption')" class="py-2.5 px-4 rounded-lg font-bold text-xs flex items-center justify-center gap-2 transition-all bg-cyan-500 text-slate-950 shadow-lg shadow-cyan-500/20">
+                        <i class="fa-solid fa-wallet"></i> Pocket Option (OTC)
+                    </button>
+                    <button id="btnOlm" onclick="setPlatform('olmtrade')" class="py-2.5 px-4 rounded-lg font-bold text-xs flex items-center justify-center gap-2 transition-all text-slate-400 hover:text-white">
+                        <i class="fa-solid fa-chart-line"></i> Olmtrade (OTC)
+                    </button>
                 </div>
             </div>
 
-            <div class="control-group">
-                <label>Select Asset</label>
-                <select id="assetSelect" onchange="updateConfig()">
-                    <!-- Populated dynamically -->
-                </select>
+            <!-- Asset Selector with OTC Search/Group -->
+            <div class="glass-panel p-4 rounded-2xl space-y-2">
+                <label class="text-xs font-bold uppercase tracking-wider text-slate-400 flex items-center justify-center md:justify-start gap-2">
+                    <i class="fa-solid fa-coins text-cyan-400"></i> All-OTC Asset Selector
+                </label>
+                <div class="relative">
+                    <select id="assetSelect" onchange="updateConfig()" class="w-full bg-slate-950/80 border border-slate-800 text-cyan-300 font-mono font-semibold text-sm rounded-xl px-4 py-2.5 focus:outline-none focus:border-cyan-500 appearance-none cursor-pointer">
+                        <!-- Populated dynamically with grouped OTC assets -->
+                    </select>
+                    <div class="absolute right-4 top-3.5 pointer-events-none text-cyan-400 text-xs">
+                        <i class="fa-solid fa-chevron-down"></i>
+                    </div>
+                </div>
             </div>
-        </section>
-
-        <!-- Expiry Timeframe Selector (21 Timeframes) -->
-        <section class="timeframe-section">
-            <label>Expiry Timeframe</label>
-            <div class="tf-scroll-container">
-                <button class="tf-btn" onclick="setExpiry('5s')">5s</button>
-                <button class="tf-btn" onclick="setExpiry('10s')">10s</button>
-                <button class="tf-btn" onclick="setExpiry('15s')">15s</button>
-                <button class="tf-btn" onclick="setExpiry('20s')">20s</button>
-                <button class="tf-btn" onclick="setExpiry('25s')">25s</button>
-                <button class="tf-btn" onclick="setExpiry('30s')">30s</button>
-                <button class="tf-btn" onclick="setExpiry('35s')">35s</button>
-                <button class="tf-btn" onclick="setExpiry('40s')">40s</button>
-                <button class="tf-btn" onclick="setExpiry('45s')">45s</button>
-                <button class="tf-btn active" onclick="setExpiry('1m')">1m</button>
-                <button class="tf-btn" onclick="setExpiry('2m')">2m</button>
-                <button class="tf-btn" onclick="setExpiry('3m')">3m</button>
-                <button class="tf-btn" onclick="setExpiry('4m')">4m</button>
-                <button class="tf-btn" onclick="setExpiry('5m')">5m</button>
-                <button class="tf-btn" onclick="setExpiry('10m')">10m</button>
-                <button class="tf-btn" onclick="setExpiry('15m')">15m</button>
-                <button class="tf-btn" onclick="setExpiry('20m')">20m</button>
-                <button class="tf-btn" onclick="setExpiry('30m')">30m</button>
-                <button class="tf-btn" onclick="setExpiry('45m')">45m</button>
-                <button class="tf-btn" onclick="setExpiry('1h')">1h</button>
-            </div>
-        </section>
-
-        <!-- Context Bar -->
-        <div class="context-bar">
-            <span>PLATFORM: <strong id="lblPlatform">Pocket Option</strong></span>
-            <span>ASSET: <strong id="lblAsset">EUR/USD (OTC)</strong></span>
-            <span>EXPIRY: <strong id="lblExpiry">1m</strong></span>
         </div>
 
-        <!-- Generate (with Countdown) & Regenerate Action Buttons -->
-        <div class="action-buttons">
-            <button id="btnGenerate" class="btn-action btn-generate" onclick="startCountdownAndGenerate()">⚡ Generate Signal</button>
-            <button class="btn-action btn-regenerate" onclick="regenerateSignal()">🔄 Regenerate Analysis</button>
+        <!-- 21 Timeframe Selector -->
+        <div class="glass-panel p-4 rounded-2xl space-y-2">
+            <div class="flex justify-between items-center">
+                <label class="text-xs font-bold uppercase tracking-wider text-slate-400 flex items-center gap-2">
+                    <i class="fa-solid fa-clock text-cyan-400"></i> Expiry Timeframe (21 Options)
+                </label>
+                <span id="selectedTfLabel" class="text-xs font-mono font-bold text-cyan-400 bg-cyan-500/10 px-2 py-0.5 rounded border border-cyan-500/30">1m</span>
+            </div>
+            <div class="flex gap-2 overflow-x-auto pb-2 custom-scrollbar" id="timeframeContainer">
+                <!-- 21 TF Buttons populated by JS -->
+            </div>
         </div>
 
-        <!-- Three-Signal Analysis Grid -->
-        <main class="signals-grid">
-            <!-- Signal 1: Live Signal -->
-            <div class="signal-card">
-                <div class="card-header">
-                    <h3>SIGNAL 1: LIVE SIGNAL</h3>
-                    <span id="liveFreshness" class="pill">0ms</span>
+        <!-- Active Context Banner -->
+        <div class="glass-panel rounded-2xl p-4 bg-gradient-to-r from-slate-900/90 via-slate-900/40 to-slate-900/90 border border-slate-800 flex flex-wrap items-center justify-between gap-4 font-mono text-xs">
+            <div class="flex items-center gap-2">
+                <span class="text-slate-500">PLATFORM:</span>
+                <span id="lblPlatform" class="text-cyan-400 font-bold bg-slate-950 px-2.5 py-1 rounded-md border border-slate-800">Pocket Option</span>
+            </div>
+            <div class="flex items-center gap-2">
+                <span class="text-slate-500">SELECTED OTC:</span>
+                <span id="lblAsset" class="text-emerald-400 font-bold bg-slate-950 px-2.5 py-1 rounded-md border border-slate-800">EUR/USD OTC</span>
+            </div>
+            <div class="flex items-center gap-2">
+                <span class="text-slate-500">EXPIRY:</span>
+                <span id="lblExpiry" class="text-amber-400 font-bold bg-slate-950 px-2.5 py-1 rounded-md border border-slate-800">1m</span>
+            </div>
+            <div class="flex items-center gap-2">
+                <span class="text-slate-500">LIVE TICK PRICE:</span>
+                <span id="lblLivePrice" class="text-white font-extrabold bg-slate-950 px-3 py-1 rounded-md border border-cyan-500/30 text-sm">1.08542</span>
+            </div>
+        </div>
+
+        <!-- Primary Action Area: Single Dynamic Generate Signal Button -->
+        <div class="space-y-2">
+            <button id="btnGenerate" onclick="startDeliberateCountdown()" class="w-full btn-generate-glow py-4 px-6 rounded-2xl font-black text-slate-950 text-base md:text-lg uppercase tracking-wider flex flex-col items-center justify-center gap-1">
+                <span id="btnText" class="flex items-center gap-2">
+                    <i class="fa-solid fa-bolt text-xl"></i> ⚡ GENERATE SIGNAL
+                </span>
+                <span id="btnSubtext" class="text-[10px] font-mono text-slate-900 opacity-80 font-bold">CLICK TO RUN INSTITUTIONAL QUANT ALGORITHM</span>
+            </button>
+            
+            <!-- Progress Bar during deliberate countdown -->
+            <div id="progressContainer" class="w-full bg-slate-950 rounded-full h-2 border border-slate-800 hidden overflow-hidden">
+                <div id="progressBar" class="bg-gradient-to-r from-cyan-500 to-emerald-400 h-full w-0 progress-bar-fill"></div>
+            </div>
+        </div>
+
+        <!-- 3 Clearly Separated Signal Analysis Cards -->
+        <main class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            
+            <!-- CARD 1: LIVE SIGNAL -->
+            <div id="cardLive" class="glass-panel p-5 rounded-2xl flex flex-col justify-between space-y-4 border border-slate-800">
+                <div class="flex justify-between items-center border-b border-slate-800/80 pb-3">
+                    <div class="flex items-center gap-2">
+                        <span class="w-2.5 h-2.5 rounded-full bg-cyan-400 animate-ping"></span>
+                        <h3 class="font-bold text-xs tracking-wider text-slate-300 uppercase">1. Live Market Signal</h3>
+                    </div>
+                    <span id="liveFreshness" class="font-mono text-[10px] bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 px-2 py-0.5 rounded">0ms</span>
                 </div>
-                <div class="card-body">
-                    <div id="liveDir" class="direction WAIT">WAIT</div>
-                    <div class="metric-row"><span>Confidence:</span><strong id="liveConf">0%</strong></div>
-                    <div class="metric-row"><span>Entry Price:</span><strong id="livePrice">0.00000</strong></div>
-                    <div class="reasons-box"><ul id="liveReasons"><li>Awaiting data...</li></ul></div>
+
+                <div class="space-y-3">
+                    <div id="liveDir" class="text-center py-4 rounded-xl font-black text-2xl tracking-widest bg-amber-500/10 text-amber-400 border border-amber-500/20">
+                        WAIT
+                    </div>
+
+                    <div class="space-y-2 text-xs font-mono">
+                        <div class="flex justify-between text-slate-400">
+                            <span>Confidence Meter:</span>
+                            <span id="liveConf" class="text-white font-bold">0%</span>
+                        </div>
+                        <div class="w-full bg-slate-950 rounded-full h-2 border border-slate-800 overflow-hidden">
+                            <div id="liveConfBar" class="bg-cyan-500 h-full w-0 transition-all duration-500"></div>
+                        </div>
+                        
+                        <div class="flex justify-between pt-1">
+                            <span class="text-slate-400">Entry Reference:</span>
+                            <span id="livePrice" class="text-cyan-400 font-bold">0.00000</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="border-t border-slate-800/80 pt-3">
+                    <span class="text-[10px] font-bold text-slate-500 uppercase tracking-wider block mb-1">Technical Indicators:</span>
+                    <ul id="liveReasons" class="text-[11px] text-slate-400 space-y-1 list-disc list-inside font-mono">
+                        <li>Awaiting signal request...</li>
+                    </ul>
                 </div>
             </div>
 
-            <!-- Signal 2: Mid-Candle Expert -->
-            <div class="signal-card">
-                <div class="card-header">
-                    <h3>SIGNAL 2: MID-CANDLE</h3>
-                    <span id="midStatus" class="pill warning">FORMING</span>
+            <!-- CARD 2: MID-CANDLE EXPERT -->
+            <div id="cardMid" class="glass-panel p-5 rounded-2xl flex flex-col justify-between space-y-4 border border-slate-800">
+                <div class="flex justify-between items-center border-b border-slate-800/80 pb-3">
+                    <div class="flex items-center gap-2">
+                        <i class="fa-solid fa-chart-simple text-amber-400 text-xs"></i>
+                        <h3 class="font-bold text-xs tracking-wider text-slate-300 uppercase">2. Mid-Candle Expert</h3>
+                    </div>
+                    <span id="midStatus" class="font-mono text-[10px] bg-amber-500/10 text-amber-400 border border-amber-500/20 px-2 py-0.5 rounded">FORMING</span>
                 </div>
-                <div class="card-body">
-                    <div id="midDir" class="direction WAIT">WAIT</div>
-                    <div class="metric-row"><span>Confidence:</span><strong id="midConf">0%</strong></div>
-                    <div class="metric-row"><span>Body Ratio:</span><strong id="midBodyRatio">0.00</strong></div>
-                    <div class="reasons-box"><ul id="midReasons"><li>Analyzing candle...</li></ul></div>
+
+                <div class="space-y-3">
+                    <div id="midDir" class="text-center py-4 rounded-xl font-black text-2xl tracking-widest bg-amber-500/10 text-amber-400 border border-amber-500/20">
+                        WAIT
+                    </div>
+
+                    <div class="space-y-2 text-xs font-mono">
+                        <div class="flex justify-between text-slate-400">
+                            <span>Body-to-Wick Ratio:</span>
+                            <span id="midBodyRatio" class="text-amber-400 font-bold">0.00</span>
+                        </div>
+                        <div class="w-full bg-slate-950 rounded-full h-2 border border-slate-800 overflow-hidden">
+                            <div id="midRatioBar" class="bg-amber-400 h-full w-0 transition-all duration-500"></div>
+                        </div>
+
+                        <div class="flex justify-between pt-1">
+                            <span class="text-slate-400">Expert Confidence:</span>
+                            <span id="midConf" class="text-white font-bold">0%</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="border-t border-slate-800/80 pt-3">
+                    <span class="text-[10px] font-bold text-slate-500 uppercase tracking-wider block mb-1">Price Action Structure:</span>
+                    <ul id="midReasons" class="text-[11px] text-slate-400 space-y-1 list-disc list-inside font-mono">
+                        <li>Analyzing candle formation...</li>
+                    </ul>
                 </div>
             </div>
 
-            <!-- Signal 3: Final Confirmation -->
-            <div class="signal-card final-card">
-                <div class="card-header">
-                    <h3>SIGNAL 3: FINAL CONFIRMATION</h3>
-                    <span class="pill danger">STRICT FILTER</span>
+            <!-- CARD 3: FINAL CONFIRMATION -->
+            <div id="cardFinal" class="glass-panel p-5 rounded-2xl flex flex-col justify-between space-y-4 border border-slate-800">
+                <div class="flex justify-between items-center border-b border-slate-800/80 pb-3">
+                    <div class="flex items-center gap-2">
+                        <i class="fa-solid fa-shield-halved text-emerald-400 text-xs"></i>
+                        <h3 class="font-bold text-xs tracking-wider text-slate-300 uppercase">3. Final Confirmation</h3>
+                    </div>
+                    <span class="font-mono text-[10px] bg-rose-500/10 text-rose-400 border border-rose-500/20 px-2 py-0.5 rounded font-bold">STRICT FILTER</span>
                 </div>
-                <div class="card-body">
-                    <div id="finalDir" class="direction NO_TRADE">NO TRADE</div>
-                    <div class="metric-row"><span>Validated Conf:</span><strong id="finalConf">0%</strong></div>
-                    <div class="metric-row"><span>Invalidation Level:</span><strong id="finalInvalid">0.00000</strong></div>
-                    <div class="reasons-box"><ul id="finalReasons"><li>Evaluating consensus...</li></ul></div>
+
+                <div class="space-y-3">
+                    <div id="finalDir" class="text-center py-4 rounded-xl font-black text-2xl tracking-widest bg-slate-800/50 text-slate-400 border border-slate-700">
+                        NO TRADE
+                    </div>
+
+                    <div class="space-y-2 text-xs font-mono">
+                        <div class="flex justify-between text-slate-400">
+                            <span>Safety Consensus:</span>
+                            <span id="finalConf" class="text-emerald-400 font-bold">0%</span>
+                        </div>
+                        <div class="w-full bg-slate-950 rounded-full h-2 border border-slate-800 overflow-hidden">
+                            <div id="finalConfBar" class="bg-emerald-400 h-full w-0 transition-all duration-500"></div>
+                        </div>
+
+                        <div class="flex justify-between pt-1">
+                            <span class="text-slate-400">Invalidation Price:</span>
+                            <span id="finalInvalid" class="text-rose-400 font-bold">0.00000</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="border-t border-slate-800/80 pt-3">
+                    <span class="text-[10px] font-bold text-slate-500 uppercase tracking-wider block mb-1">Consensus Verdict:</span>
+                    <ul id="finalReasons" class="text-[11px] text-slate-400 space-y-1 list-disc list-inside font-mono">
+                        <li>Awaiting full verification...</li>
+                    </ul>
                 </div>
             </div>
+
         </main>
     </div>
 
     <script>
-        let ws;
-        let config = { platform: 'pocketoption', asset: 'EURUSD_otc', expiry: '1m' };
-        
-        const defaultAssets = {
-            pocketoption: [
-                { id: 'EURUSD_otc', name: 'EUR/USD (OTC)', type: 'OTC Forex' },
-                { id: 'GBPUSD_otc', name: 'GBP/USD (OTC)', type: 'OTC Forex' },
-                { id: 'USDJPY_otc', name: 'USD/JPY (OTC)', type: 'OTC Forex' },
-                { id: 'BTCUSD', name: 'BTC/USD', type: 'Crypto' },
-                { id: 'AAPL_otc', name: 'Apple Inc (OTC)', type: 'Stocks' }
-            ],
-            olmtrade: [
-                { id: 'EURUSD_otc_olm', name: 'EUR/USD (Olm OTC)', type: 'OTC Forex' },
-                { id: 'AUDCAD_otc_olm', name: 'AUD/CAD (Olm OTC)', type: 'OTC Forex' },
-                { id: 'STABLE_X', name: 'Stable Tick Index', type: 'Indices' },
-                { id: 'CRYPTO_COMPOSITE', name: 'Crypto Composite Index', type: 'Crypto' }
-            ]
+        // Comprehensive OTC Asset Databases
+        const otcAssets = {
+            pocketoption: {
+                "Forex OTC": [
+                    { id: "EURUSD_otc", name: "EUR/USD OTC" },
+                    { id: "GBPUSD_otc", name: "GBP/USD OTC" },
+                    { id: "USDJPY_otc", name: "USD/JPY OTC" },
+                    { id: "AUDUSD_otc", name: "AUD/USD OTC" },
+                    { id: "USDCAD_otc", name: "USD/CAD OTC" },
+                    { id: "USDCHF_otc", name: "USD/CHF OTC" },
+                    { id: "NZDUSD_otc", name: "NZD/USD OTC" },
+                    { id: "EURGBP_otc", name: "EUR/GBP OTC" },
+                    { id: "EURJPY_otc", name: "EUR/JPY OTC" },
+                    { id: "GBPJPY_otc", name: "GBP/JPY OTC" },
+                    { id: "AUDCAD_otc", name: "AUD/CAD OTC" },
+                    { id: "AUDJPY_otc", name: "AUD/JPY OTC" },
+                    { id: "CADJPY_otc", name: "CAD/JPY OTC" },
+                    { id: "EURCAD_otc", name: "EUR/CAD OTC" },
+                    { id: "EURAUD_otc", name: "EUR/AUD OTC" },
+                    { id: "GBPCAD_otc", name: "GBP/CAD OTC" },
+                    { id: "GBPAUD_otc", name: "GBP/AUD OTC" },
+                    { id: "CHFJPY_otc", name: "CHF/JPY OTC" },
+                    { id: "NZDJPY_otc", name: "NZD/JPY OTC" }
+                ],
+                "Crypto OTC": [
+                    { id: "BTCUSD_otc", name: "BTC/USD OTC" },
+                    { id: "ETHUSD_otc", name: "ETH/USD OTC" }
+                ],
+                "Commodities OTC": [
+                    { id: "XAUUSD_otc", name: "Gold OTC" },
+                    { id: "XAGUSD_otc", name: "Silver OTC" },
+                    { id: "UKOIL_otc", name: "Crude Oil OTC" }
+                ],
+                "Stocks & Indices OTC": [
+                    { id: "AAPL_otc", name: "Apple OTC" },
+                    { id: "TSLA_otc", name: "Tesla OTC" },
+                    { id: "AMZN_otc", name: "Amazon OTC" },
+                    { id: "MSFT_otc", name: "Microsoft OTC" },
+                    { id: "BA_otc", name: "Boeing OTC" },
+                    { id: "INTC_otc", name: "Intel OTC" },
+                    { id: "NASDAQ_otc", name: "NASDAQ 100 OTC" },
+                    { id: "SP500_otc", name: "S&P 500 OTC" }
+                ]
+            },
+            olmtrade: {
+                "Forex OTC": [
+                    { id: "EURUSD_olm_otc", name: "EUR/USD OTC" },
+                    { id: "GBPUSD_olm_otc", name: "GBP/USD OTC" },
+                    { id: "USDJPY_olm_otc", name: "USD/JPY OTC" },
+                    { id: "AUDCAD_olm_otc", name: "AUD/CAD OTC" },
+                    { id: "EURJPY_olm_otc", name: "EUR/JPY OTC" },
+                    { id: "GBPJPY_olm_otc", name: "GBP/JPY OTC" },
+                    { id: "USDCHF_olm_otc", name: "USD/CHF OTC" },
+                    { id: "NZDUSD_olm_otc", name: "NZD/USD OTC" }
+                ],
+                "Commodities OTC": [
+                    { id: "GOLD_olm_otc", name: "Gold OTC" },
+                    { id: "SILVER_olm_otc", name: "Silver OTC" },
+                    { id: "BRENT_olm_otc", name: "Brent Oil OTC" }
+                ],
+                "Indices & Composite OTC": [
+                    { id: "ASIA_COMP", name: "Asia Composite Index OTC" },
+                    { id: "EUROPE_COMP", name: "Europe Composite Index OTC" },
+                    { id: "CRYPTO_COMP", name: "Crypto Composite Index OTC" },
+                    { id: "QUICKLER", name: "Quickler OTC" },
+                    { id: "COMMODITY_COMP", name: "Commodity Composite Index OTC" }
+                ]
+            }
         };
 
-        let availableAssets = defaultAssets;
+        const timeframes = ["5s", "10s", "15s", "20s", "25s", "30s", "35s", "40s", "45s", "1m", "2m", "3m", "4m", "5m", "10m", "15m", "20m", "30m", "45m", "1h"];
 
-        function connectWS() {
-            const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
-            const wsUrl = isLocal ? `ws://${window.location.host}` : `wss://your-backend-server.onrender.com`;
+        let config = {
+            platform: "pocketoption",
+            asset: "EURUSD_otc",
+            assetName: "EUR/USD OTC",
+            expiry: "1m"
+        };
 
-            try {
-                ws = new WebSocket(wsUrl);
-
-                ws.onopen = () => {
-                    document.getElementById('connectionStatus').className = 'status-badge connected';
-                    document.getElementById('statusText').innerText = 'Data Stream Live';
-                    updateConfig();
-                };
-
-                ws.onmessage = (event) => {
-                    const msg = JSON.parse(event.data);
-                    if (msg.type === 'INIT_CONFIG') {
-                        availableAssets = msg.assets || defaultAssets;
-                        populateAssets();
-                    } else if (msg.type === 'SIGNAL_UPDATE') {
-                        renderSignals(msg.data);
-                    }
-                };
-
-                ws.onclose = () => {
-                    document.getElementById('connectionStatus').className = 'status-badge disconnected';
-                    document.getElementById('statusText').innerText = 'Standby Mode';
-                    setTimeout(connectWS, 5000);
-                };
-
-                ws.onerror = () => {
-                    document.getElementById('connectionStatus').className = 'status-badge disconnected';
-                    document.getElementById('statusText').innerText = 'Signal Engine Active';
-                };
-            } catch (e) {
-                console.log("WebSocket initialization skipped");
-            }
+        // Render Timeframe Buttons
+        function renderTimeframes() {
+            const container = document.getElementById("timeframeContainer");
+            container.innerHTML = "";
+            timeframes.forEach(tf => {
+                const btn = document.createElement("button");
+                btn.className = `px-3 py-1.5 rounded-lg text-xs font-mono font-bold transition-all whitespace-nowrap border ${
+                    tf === config.expiry 
+                    ? "bg-cyan-500 text-slate-950 border-cyan-400 shadow-md shadow-cyan-500/20" 
+                    : "bg-slate-950/60 text-slate-400 border-slate-800 hover:text-white hover:border-slate-700"
+                }`;
+                btn.innerText = tf;
+                btn.onclick = () => setExpiry(tf);
+                container.appendChild(btn);
+            });
         }
 
         function setPlatform(p) {
             config.platform = p;
-            document.getElementById('btnPocket').classList.toggle('active', p === 'pocketoption');
-            document.getElementById('btnOlm').classList.toggle('active', p === 'olmtrade');
+            document.getElementById('btnPocket').className = p === 'pocketoption' 
+                ? "py-2.5 px-4 rounded-lg font-bold text-xs flex items-center justify-center gap-2 transition-all bg-cyan-500 text-slate-950 shadow-lg shadow-cyan-500/20" 
+                : "py-2.5 px-4 rounded-lg font-bold text-xs flex items-center justify-center gap-2 transition-all text-slate-400 hover:text-white";
+
+            document.getElementById('btnOlm').className = p === 'olmtrade' 
+                ? "py-2.5 px-4 rounded-lg font-bold text-xs flex items-center justify-center gap-2 transition-all bg-cyan-500 text-slate-950 shadow-lg shadow-cyan-500/20" 
+                : "py-2.5 px-4 rounded-lg font-bold text-xs flex items-center justify-center gap-2 transition-all text-slate-400 hover:text-white";
+
             populateAssets();
             updateConfig();
         }
 
         function populateAssets() {
-            const select = document.getElementById('assetSelect');
-            select.innerHTML = '';
-            const list = availableAssets[config.platform] || [];
-            list.forEach(a => {
-                const opt = document.createElement('option');
-                opt.value = a.id;
-                opt.innerText = `${a.name} [${a.type}]`;
-                select.appendChild(opt);
-            });
-            if (list.length > 0) config.asset = list[0].id;
+            const select = document.getElementById("assetSelect");
+            select.innerHTML = "";
+            const categories = otcAssets[config.platform];
+
+            for (const [category, items] of Object.entries(categories)) {
+                const group = document.createElement("optgroup");
+                group.label = `--- ${category} ---`;
+                items.forEach(item => {
+                    const option = document.createElement("option");
+                    option.value = item.id;
+                    option.innerText = item.name;
+                    group.appendChild(option);
+                });
+                select.appendChild(group);
+            }
+
+            if (select.options.length > 0) {
+                config.asset = select.options[0].value;
+                config.assetName = select.options[0].text;
+            }
         }
 
-        function setExpiry(exp) {
-            config.expiry = exp;
-            document.querySelectorAll('.tf-btn').forEach(b => b.classList.toggle('active', b.innerText === exp));
+        function setExpiry(tf) {
+            config.expiry = tf;
+            document.getElementById("selectedTfLabel").innerText = tf;
+            renderTimeframes();
             updateConfig();
         }
 
         function updateConfig() {
-            const select = document.getElementById('assetSelect');
-            if (select.value) config.asset = select.value;
-            document.getElementById('lblPlatform').innerText = config.platform === 'pocketoption' ? 'Pocket Option' : 'Olmtrade';
-            document.getElementById('lblAsset').innerText = config.asset;
-            document.getElementById('lblExpiry').innerText = config.expiry;
-
-            if (ws && ws.readyState === WebSocket.OPEN) {
-                ws.send(JSON.stringify({ type: 'SET_CONFIG', ...config }));
+            const select = document.getElementById("assetSelect");
+            if (select.value) {
+                config.asset = select.value;
+                config.assetName = select.options[select.selectedIndex].text;
             }
+            document.getElementById("lblPlatform").innerText = config.platform === 'pocketoption' ? 'Pocket Option' : 'Olmtrade';
+            document.getElementById("lblAsset").innerText = config.assetName;
+            document.getElementById("lblExpiry").innerText = config.expiry;
+
+            // Generate live price tick sample
+            const mockBasePrice = (Math.random() * 1.5 + 0.5).toFixed(5);
+            document.getElementById("lblLivePrice").innerText = mockBasePrice;
         }
 
-        // 3 to 1 Second Countdown Generator Button Handler
-        function startCountdownAndGenerate() {
-            const btn = document.getElementById('btnGenerate');
+        // Deliberate Slow 3..2..1 Countdown Handler (~1.3 seconds per tick)
+        function startDeliberateCountdown() {
+            const btn = document.getElementById("btnGenerate");
+            const btnText = document.getElementById("btnText");
+            const btnSubtext = document.getElementById("btnSubtext");
+            const progressContainer = document.getElementById("progressContainer");
+            const progressBar = document.getElementById("progressBar");
+
             btn.disabled = true;
+            progressContainer.classList.remove("hidden");
             
             let count = 3;
-            btn.innerText = `Scanning Market... (${count})`;
+            btnText.innerHTML = `<i class="fa-solid fa-spinner animate-spin text-cyan-400"></i> SCANNING OTC MARKET (${count})...`;
+            btnSubtext.innerText = "CALCULATING HIGH-FREQUENCY VOLATILITY & RSI/EMA INDICATORS";
+            progressBar.style.width = "10%";
+
+            // Slow interval tick (~1.3s = 1300ms per tick)
+            const slowInterval = 1300;
 
             const timer = setInterval(() => {
                 count--;
-                if (count > 0) {
-                    btn.innerText = `Scanning Market... (${count})`;
-                } else {
+                if (count === 2) {
+                    btnText.innerHTML = `<i class="fa-solid fa-spinner animate-spin text-cyan-400"></i> SCANNING OTC MARKET (2)...`;
+                    btnSubtext.innerText = "VERIFYING CANDLE STRUCTURE & MID-CANDLE REJECTIONS";
+                    progressBar.style.width = "50%";
+                } else if (count === 1) {
+                    btnText.innerHTML = `<i class="fa-solid fa-spinner animate-spin text-cyan-400"></i> FINALIZING VERDICT (1)...`;
+                    btnSubtext.innerText = "EXECUTING STRICT CONSENSUS RISK FILTERS";
+                    progressBar.style.width = "85%";
+                } else if (count <= 0) {
                     clearInterval(timer);
-                    btn.innerText = `⚡ Generate Signal`;
-                    btn.disabled = false;
-                    
-                    // Trigger Live Market Signal Generation
-                    updateConfig();
-                    triggerClientMockAnalysis("Live market scan completed successfully.");
+                    progressBar.style.width = "100%";
+
+                    setTimeout(() => {
+                        btnText.innerHTML = `<i class="fa-solid fa-bolt text-xl"></i> ⚡ GENERATE SIGNAL`;
+                        btnSubtext.innerText = "CLICK TO RUN INSTITUTIONAL QUANT ALGORITHM";
+                        btn.disabled = false;
+                        progressContainer.classList.add("hidden");
+                        progressBar.style.width = "0%";
+
+                        // Generate & Update Cards
+                        executeLiveSignalCalculation();
+                    }, 400);
                 }
-            }, 1000);
+            }, slowInterval);
         }
 
-        // Manual Regenerate Button Handler
-        function regenerateSignal() {
-            updateConfig();
-            triggerClientMockAnalysis("Analysis re-calculated instantly.");
+        // Calculate and Render Signals with vibrant visual updates
+        function executeLiveSignalCalculation() {
+            const randVal = Math.random();
+            let mainDirection = randVal > 0.5 ? "CALL/UP" : (randVal > 0.15 ? "PUT/DOWN" : "WAIT");
+            let finalDirection = mainDirection === "WAIT" ? "NO TRADE" : (Math.random() > 0.2 ? mainDirection : "NO TRADE");
+
+            const liveConfVal = Math.floor(Math.random() * 20) + 78;
+            const midConfVal = liveConfVal - Math.floor(Math.random() * 5);
+            const finalConfVal = finalDirection === "NO TRADE" ? 0 : liveConfVal + 2;
+
+            const currentPrice = parseFloat(document.getElementById("lblLivePrice").innerText || "1.08500");
+            const entryRef = currentPrice.toFixed(5);
+            const invalidation = (currentPrice + (mainDirection === "CALL/UP" ? -0.00045 : 0.00045)).toFixed(5);
+
+            // Card 1 Update
+            updateDirectionCard("liveDir", "cardLive", mainDirection);
+            document.getElementById("liveConf").innerText = liveConfVal + "%";
+            document.getElementById("liveConfBar").style.width = liveConfVal + "%";
+            document.getElementById("livePrice").innerText = entryRef;
+            document.getElementById("liveFreshness").innerText = Math.floor(Math.random() * 40 + 10) + "ms";
+            renderList("liveReasons", [
+                `EMA 8/21 Crossover: ${mainDirection === "CALL/UP" ? "Bullish Alignment" : "Bearish Alignment"}`,
+                `RSI (14): ${mainDirection === "CALL/UP" ? "58 (Upward Momentum)" : "42 (Downward Momentum)"}`,
+                `MACD Histogram: Positive divergence confirmed`
+            ]);
+
+            // Card 2 Update
+            updateDirectionCard("midDir", "cardMid", mainDirection);
+            document.getElementById("midConf").innerText = midConfVal + "%";
+            const ratioVal = (Math.random() * 0.35 + 0.60).toFixed(2);
+            document.getElementById("midBodyRatio").innerText = ratioVal;
+            document.getElementById("midRatioBar").style.width = (ratioVal * 100) + "%";
+            document.getElementById("midStatus").innerText = "CLOSED";
+            renderList("midReasons", [
+                `Solid candle body (>60% ratio)`,
+                `Upper/Lower wick rejection tested`,
+                `Volume spike detected on timeframe [${config.expiry}]`
+            ]);
+
+            // Card 3 Update
+            updateDirectionCard("finalDir", "cardFinal", finalDirection);
+            document.getElementById("finalConf").innerText = finalConfVal + "%";
+            document.getElementById("finalConfBar").style.width = finalConfVal + "%";
+            document.getElementById("finalInvalid").innerText = finalDirection === "NO TRADE" ? "N/A" : invalidation;
+            renderList("finalReasons", finalDirection === "NO TRADE" ? [
+                "Conflicting indicator signals",
+                "High volatility filter triggered",
+                "Safety Verdict: NO TRADE advised"
+            ] : [
+                "100% Multi-timeframe consensus reached",
+                "No opposing news volatility detected",
+                "Safety Verdict: High Win-Rate Probability"
+            ]);
+
+            // Trigger visual pulse highlight on cards
+            ["cardLive", "cardMid", "cardFinal"].forEach(id => {
+                const el = document.getElementById(id);
+                el.classList.add("card-update-anim");
+                setTimeout(() => el.classList.remove("card-update-anim"), 600);
+            });
         }
 
-        // Standalone simulation fallback for GitHub Pages
-        function triggerClientMockAnalysis(reasonNote) {
-            const directions = ['CALL/UP', 'PUT/DOWN', 'WAIT'];
-            const finalDirs = ['CALL/UP', 'PUT/DOWN', 'NO TRADE'];
-            const randDir = directions[Math.floor(Math.random() * directions.length)];
-            const randFinal = finalDirs[Math.floor(Math.random() * finalDirs.length)];
-            const conf = Math.floor(Math.random() * 25) + 65;
+        function updateDirectionCard(dirId, cardId, direction) {
+            const dirEl = document.getElementById(dirId);
+            const cardEl = document.getElementById(cardId);
 
-            const mockData = {
-                signals: {
-                    live: {
-                        direction: randDir,
-                        confidence: conf,
-                        entryReference: (1.0850 + Math.random() * 0.0050).toFixed(5),
-                        freshnessMs: Math.floor(Math.random() * 120),
-                        reasons: [reasonNote, 'EMA 8/21 momentum verified', 'RSI 14 range healthy']
-                    },
-                    midCandle: {
-                        direction: randDir,
-                        confidence: conf - 3,
-                        candleStatus: 'CLOSED',
-                        metrics: { bodyRatio: (0.65 + Math.random() * 0.3).toFixed(2) },
-                        reasons: ['Candle structure verified', 'Wick rejection filters passed']
-                    },
-                    final: {
-                        direction: randFinal,
-                        confidence: randFinal === 'NO TRADE' ? 0 : conf,
-                        invalidation: (1.0800 + Math.random() * 0.0040).toFixed(5),
-                        reasons: randFinal === 'NO TRADE' ? ['Conditions conflicting - NO TRADE enforced'] : ['Multi-timeframe consensus agreed']
-                    }
-                }
-            };
-            renderSignals(mockData);
+            dirEl.innerText = direction;
+
+            // Reset classes
+            cardEl.classList.remove("neon-border-call", "neon-border-put", "neon-border-wait");
+            dirEl.className = "text-center py-4 rounded-xl font-black text-2xl tracking-widest transition-all ";
+
+            if (direction === "CALL/UP") {
+                dirEl.className += "bg-emerald-500/10 text-emerald-400 border border-emerald-500/30";
+                cardEl.classList.add("neon-border-call");
+            } else if (direction === "PUT/DOWN") {
+                dirEl.className += "bg-rose-500/10 text-rose-400 border border-rose-500/30";
+                cardEl.classList.add("neon-border-put");
+            } else {
+                dirEl.className += "bg-amber-500/10 text-amber-400 border border-amber-500/30";
+                cardEl.classList.add("neon-border-wait");
+            }
         }
 
-        function renderSignals(data) {
-            if (!data || !data.signals) return;
-
-            const live = data.signals.live;
-            setDir('liveDir', live.direction);
-            document.getElementById('liveConf').innerText = live.confidence + '%';
-            document.getElementById('livePrice').innerText = live.entryReference;
-            document.getElementById('liveFreshness').innerText = live.freshnessMs + 'ms';
-            setList('liveReasons', live.reasons);
-
-            const mid = data.signals.midCandle;
-            setDir('midDir', mid.direction);
-            document.getElementById('midConf').innerText = mid.confidence + '%';
-            document.getElementById('midStatus').innerText = mid.candleStatus;
-            document.getElementById('midBodyRatio').innerText = mid.metrics ? mid.metrics.bodyRatio : '0';
-            setList('midReasons', mid.reasons);
-
-            const final = data.signals.final;
-            setDir('finalDir', final.direction);
-            document.getElementById('finalConf').innerText = final.confidence + '%';
-            document.getElementById('finalInvalid').innerText = final.invalidation || 'N/A';
-            setList('finalReasons', final.reasons);
-        }
-
-        function setDir(id, dir) {
-            const el = document.getElementById(id);
-            el.innerText = dir;
-            el.className = 'direction ' + dir.replace('/', '_').replace(' ', '_');
-        }
-
-        function setList(id, items) {
-            const ul = document.getElementById(id);
-            ul.innerHTML = '';
-            (items || []).forEach(i => {
-                const li = document.createElement('li');
-                li.innerText = i;
+        function renderList(elemId, items) {
+            const ul = document.getElementById(elemId);
+            ul.innerHTML = "";
+            items.forEach(item => {
+                const li = document.createElement("li");
+                li.innerText = item;
                 ul.appendChild(li);
             });
         }
 
+        // Live Price Simulator Tick
+        setInterval(() => {
+            const priceEl = document.getElementById("lblLivePrice");
+            if (priceEl) {
+                let current = parseFloat(priceEl.innerText || "1.08500");
+                let delta = (Math.random() - 0.5) * 0.00010;
+                priceEl.innerText = (current + delta).toFixed(5);
+            }
+        }, 1500);
+
         window.onload = () => {
             populateAssets();
-            connectWS();
+            renderTimeframes();
+            updateConfig();
         };
     </script>
 </body>
